@@ -1,0 +1,40 @@
+---
+title: Installation
+description:
+---
+
+The components are built with React, TypeScript, Tailwind CSS, and mainly with Motion (formerly Framer Motion).
+In order to use the components, you need to install the following dependencies:
+
+<InstallTabs command="tailwindcss@latest motion" />
+
+Or follow the [Tailwind CSS installation guide](https://tailwindcss.com/docs/installation) to setup Tailwind CSS in your project.
+
+Some components uses other libraries too, in each case, you can find the installation instructions in the component's documentation.
+
+## Adding a component
+
+You have two options to add a component to your project:
+
+1. Using the CLI
+2. Manually
+
+### Using the CLI
+
+To add a component using the CLI, you need to run the following command in your terminal:
+
+<InstallTabs command="shadcn add @fancy/component-name" npx />
+
+This will add the component source code and its dependencies in your project. You can then import the component in your code and start using it. 
+
+**Important note:** as of now, additional dependencies aren't installed automatically, they just get added to the `package.json` file. You need to run `npm install` or the equivalent command in your preferred package manager to install them.
+
+The appropriate link is available in the "Installation" section of each component's documentation page.
+
+### Manually
+
+Go to any of the components you want to use and copy the source code(s) from the "Installation" section. Make sure to update your imports accordingly. 
+
+## Notes
+
+If you prefer javascript instead of typescript, you can easily convert the code with a tool like [this](https://transform.tools/typescript-to-javascript).
