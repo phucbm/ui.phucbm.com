@@ -24,7 +24,7 @@ import { Tabs, Tab } from "nextra/components"
 | `hoverSlowdownRatio` | `number` | `0.5` | Multiplier applied when hovering. `1` keeps speed constant, lower values slow down, higher values speed up. |
 | `autoSlide` | `boolean` | `true` | Enables or disables continuous automatic scrolling. |
 | `infinite` | `boolean` | `true` | Determines whether the carousel loops infinitely. If `false`, scrolling stops at edges. |
-| `manualNav` | `boolean` | `true` | Toggles manual navigation controls (left/right arrows). |
+| `manualNav` | `boolean` | `false` | Toggles manual navigation controls (left/right arrows). |
 | `images` | `string[]` | Internal default array | Optional list of image URLs to render. Defaults to images inside `/public/FadingTransition/medias/`. |
 
 ---
@@ -37,7 +37,7 @@ import { Tabs, Tab } from "nextra/components"
   hoverSlowdownRatio={0.5}
   autoSlide={true}
   infinite={true}
-  manualNav={true}
+  manualNav={false}
   images={[
     "/FadingTransition/medias/1.png",
     "/FadingTransition/medias/2.png",
