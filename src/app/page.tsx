@@ -1,9 +1,9 @@
 import * as React from "react"
 import {OpenInV0Button} from "@/components/open-in-v0-button"
-import {HelloWorld} from "@/registry/new-york/blocks/hello-world/hello-world"
-import {ExampleForm} from "@/registry/new-york/blocks/example-form/example-form"
-import PokemonPage from "@/registry/new-york/blocks/complex-component/page"
-import {ExampleCard} from "@/registry/new-york/blocks/example-with-css/example-card"
+import {HelloWorld} from "@/registry/perxel/blocks/hello-world/hello-world"
+import {ExampleForm} from "@/registry/perxel/blocks/example-form/example-form"
+import PokemonPage from "@/registry/perxel/blocks/complex-component/page"
+import {ExampleCard} from "@/registry/perxel/blocks/example-with-css/example-card"
 import {metadata} from "@/lib/seo";
 import {generatePageMetadata} from "@phucbm/next-og-image";
 
