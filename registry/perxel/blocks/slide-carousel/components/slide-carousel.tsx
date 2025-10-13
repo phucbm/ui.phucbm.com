@@ -14,7 +14,7 @@ const SlideCarousel = () => {
      const speedFactorRef = useRef(DEFAULT_SLIDER_SPEED / 100);
      const baseSpeedRef = useRef(BASE_SPEED);
      const hoverSlowdownRatioRef = useRef(HOVER_SLOWDOWN_RATIO);
-     const beforeMouseEnterSpeedFactorRef = useRef(speedFactorRef.current);
+     const normalSpeedRef = useRef(DEFAULT_SLIDER_SPEED / 100); // Store the normal speed separately
      const marks = [0, 1, 2];
 
      const normalizeValue = (value: number) => value / 100;
@@ -53,11 +53,12 @@ const SlideCarousel = () => {
                }
 
                function handleMouseEnter() {
-                    beforeMouseEnterSpeedFactorRef.current = speedFactorRef.current;
-                    speedFactorRef.current = beforeMouseEnterSpeedFactorRef.current * hoverSlowdownRatioRef.current;
+                    // Use the normal speed (not the current speed) to calculate slowdown
+                    speedFactorRef.current = normalSpeedRef.current * hoverSlowdownRatioRef.current;
                }
                function handleMouseLeave() {
-                    speedFactorRef.current = beforeMouseEnterSpeedFactorRef.current; // reset when leaving
+                    // Reset to normal speed
+                    speedFactorRef.current = normalSpeedRef.current;
                }
 
                // Register listeners
@@ -72,6 +73,8 @@ const SlideCarousel = () => {
                     slide.removeEventListener("mouseenter", handleMouseEnter);
                     slide.removeEventListener("mouseleave", handleMouseLeave);
                     gsap.ticker.remove(tick);
+                    // Immediately reset slide position when component unmounts
+                    gsap.set(slide, { x: 0, clearProps: "transform" });
                };
           };
 
