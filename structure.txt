@@ -1,0 +1,84 @@
+.
+├── app
+│   ├── [[...mdxPath]]
+│   │   └── page.jsx
+│   ├── api
+│   │   └── og-image
+│   │       └── route.tsx
+│   ├── globals.css
+│   ├── icon.svg
+│   ├── layout.tsx
+│   └── robots.ts
+├── components
+│   └── og-image.tsx
+├── content
+│   ├── about.mdx
+│   ├── built-in-components.mdx
+│   ├── components
+│   │   ├── example-form.mdx
+│   │   ├── pokemon.mdx
+│   │   └── SlideCarousel.mdx
+│   └── index.mdx
+├── lib
+│   ├── seo.ts
+│   └── utils.ts
+├── mdx-components.js
+├── next-env.d.ts
+├── next.config.mjs
+├── package.json
+├── pnpm-lock.yaml
+├── postcss.config.mjs
+├── public
+│   ├── FadingTransition
+│   │   └── medias
+│   │       ├── 1.png
+│   │       ├── 2.png
+│   │       ├── 3.png
+│   │       ├── 4.png
+│   │       └── 5.png
+│   ├── images
+│   │   └── general
+│   │       ├── icon.svg
+│   │       └── logo.svg
+│   └── r
+│       ├── complex-component.json
+│       ├── example-form.json
+│       ├── example-with-css.json
+│       ├── hello-world.json
+│       └── registry.json
+├── registry
+│   └── perxel
+│       ├── blocks
+│       │   ├── complex-component
+│       │   │   ├── components
+│       │   │   │   ├── pokemon-card.tsx
+│       │   │   │   └── pokemon-image.tsx
+│       │   │   ├── hooks
+│       │   │   │   └── use-pokemon.ts
+│       │   │   ├── lib
+│       │   │   │   └── pokemon.ts
+│       │   │   └── page.tsx
+│       │   ├── example-form
+│       │   │   └── example-form.tsx
+│       │   ├── example-with-css
+│       │   │   ├── example-card.css
+│       │   │   └── example-card.tsx
+│       │   ├── hello-world
+│       │   │   └── hello-world.tsx
+│       │   └── slide-carousel
+│       │       ├── components
+│       │       │   ├── slide-carousel.css
+│       │       │   └── slide-carousel.tsx
+│       │       └── page.tsx
+│       └── ui
+│           ├── button.tsx
+│           ├── card.tsx
+│           ├── input.tsx
+│           ├── label.tsx
+│           ├── slider.tsx
+│           └── textarea.tsx
+├── registry.json
+├── structure.txt
+└── tsconfig.json
+
+28 directories, 54 files
