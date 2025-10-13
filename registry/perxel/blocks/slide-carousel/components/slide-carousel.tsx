@@ -1,31 +1,67 @@
 "use client"
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './slide-carousel.css'
 import gsap from 'gsap';
 import { Input } from "@/registry/perxel/ui/input"
 import { Label } from "@/registry/perxel/ui/label"
+import { Button } from "@/registry/perxel/ui/button"
 
 const SlideCarousel = () => {
      // Speed factor stored in a ref so we can update it without re-initializing effect
      const DEFAULT_SLIDER_SPEED = 50; // percent (100% = speedFactor 1)
      const HOVER_SLOWDOWN_RATIO = 0.5; // 0-1 ratio, > 1 faster
      const BASE_SPEED = 1;
+     const MANUAL_SLIDE_DISTANCE = 300; // pixels to move on arrow click
 
      const speedFactorRef = useRef(DEFAULT_SLIDER_SPEED / 100);
      const baseSpeedRef = useRef(BASE_SPEED);
      const hoverSlowdownRatioRef = useRef(HOVER_SLOWDOWN_RATIO);
-     const normalSpeedRef = useRef(DEFAULT_SLIDER_SPEED / 100); // Store the normal speed separately
-     const marks = [0, 1, 2];
+     const normalSpeedRef = useRef(DEFAULT_SLIDER_SPEED / 100);
+     const [isAutoSlideEnabled, setIsAutoSlideEnabled] = useState(false);
+     const isAutoSlideEnabledRef = useRef(false); // Track auto-slide state in a ref
+     const totalRef = useRef(0); // Store total in a ref so we can access it from arrow buttons
+     const xToRef = useRef<((value: number) => void) | null>(null); // Store xTo function
+     const tickFuncRef = useRef<((time: number, dt: number) => void) | null>(null); // Store tick function reference
 
      const normalizeValue = (value: number) => value / 100;
 
+     // Sync state to ref whenever it changes
+     useEffect(() => {
+          isAutoSlideEnabledRef.current = isAutoSlideEnabled;
+     }, [isAutoSlideEnabled]);
+
+     // Handle manual slide left
+     const handleSlideLeft = () => {
+          if (xToRef.current) {
+               totalRef.current += MANUAL_SLIDE_DISTANCE;
+               xToRef.current(totalRef.current);
+          }
+     };
+
+     // Handle manual slide right
+     const handleSlideRight = () => {
+          if (xToRef.current) {
+               totalRef.current -= MANUAL_SLIDE_DISTANCE;
+               xToRef.current(totalRef.current);
+          }
+     };
+
      useEffect(() => {
           const initEffect = () => {
-               let total = 0;
-
                const slide = document.querySelector('.slide-carousel .images') as HTMLElement;
                const slideItem = document.querySelector('.slide-carousel .slide-item:not(:first-child)') as HTMLElement;
                const slideItems = document.querySelectorAll('.slide-carousel .slide-item') as NodeListOf<Element>;
+
+               if (!slide || !slideItem) return;
+
+               // Kill any existing GSAP animations on this element
+               gsap.killTweensOf(slide);
+               
+               // Reset slide position to 0 immediately with clearProps
+               gsap.set(slide, { x: 0, clearProps: "all" });
+               
+               // Reset total to 0 AFTER setting the slide position
+               totalRef.current = 0;
 
                // Why minus 5? => Because the first item has no padding-right
                // So if we don't minus 5, the total width will be wrong
@@ -33,7 +69,6 @@ const SlideCarousel = () => {
                const getTotalWidth = () => {
                     return slideItem.clientWidth * slideItems.length - 5;
                }
-               if (!slide) return;
 
                const half = getTotalWidth() / 2;
                const wrap = gsap.utils.wrap(-half, 0);
@@ -46,11 +81,19 @@ const SlideCarousel = () => {
                     },
                });
 
+               // Store xTo function in ref for arrow buttons
+               xToRef.current = xTo;
 
                function tick(time: number, dt: number) {
-                    total -= speedFactorRef.current * (dt * baseSpeedRef.current);
-                    xTo(total);
+                    // Only auto-slide if enabled (using ref to get current value)
+                    if (isAutoSlideEnabledRef.current) {
+                         totalRef.current -= speedFactorRef.current * (dt * baseSpeedRef.current);
+                         xTo(totalRef.current);
+                    }
                }
+
+               // Store tick function reference
+               tickFuncRef.current = tick;
 
                function handleMouseEnter() {
                     // Use the normal speed (not the current speed) to calculate slowdown
@@ -70,32 +113,54 @@ const SlideCarousel = () => {
 
                // Cleanup on unmount
                return () => {
+                    // Remove event listeners
                     slide.removeEventListener("mouseenter", handleMouseEnter);
                     slide.removeEventListener("mouseleave", handleMouseLeave);
-                    gsap.ticker.remove(tick);
-                    // Immediately reset slide position when component unmounts
-                    gsap.set(slide, { x: 0, clearProps: "transform" });
+                    
+                    // Remove GSAP ticker using the stored reference
+                    if (tickFuncRef.current) {
+                         gsap.ticker.remove(tickFuncRef.current);
+                         tickFuncRef.current = null;
+                    }
+                    
+                    // Kill all GSAP animations on this element
+                    gsap.killTweensOf(slide);
+                    
+                    // Clear refs
+                    xToRef.current = null;
+                    
+                    // Reset both visual position and total ref
+                    gsap.set(slide, { x: 0, clearProps: "all" });
+                    totalRef.current = 0;
                };
           };
 
-          const onLoad = () => initEffect()
+          let cleanup: (() => void) | undefined;
+
+          const onLoad = () => {
+               cleanup = initEffect();
+          }
 
           if (document.readyState === 'complete') {
-               initEffect()
+               cleanup = initEffect();
           } else {
-               window.addEventListener('load', onLoad, { once: true })
+               window.addEventListener('load', onLoad, { once: true });
           }
 
+          // Return cleanup function
           return () => {
-               window.removeEventListener('load', onLoad)
+               window.removeEventListener('load', onLoad);
+               if (cleanup) {
+                    cleanup();
+               }
           }
-     }, []);
+     }, []); // Empty dependency array - only run once on mount
 
      return (
           <div className="flex flex-col gap-2 py-5">
                <div className="p-5">
                     <div className="md:max-w-1/2 w-full">
-                         <div className="flex gap-2 items-center mb-6">
+                         <div className="flex gap-4 items-end mb-6 flex-wrap">
                               <div className="">
                                    <Label className="mb-2" htmlFor="base-speed">Base Speed</Label>
                                    <Input
@@ -106,7 +171,6 @@ const SlideCarousel = () => {
                                         }}
                                         defaultValue={baseSpeedRef.current}
                                    />
-
                               </div>
 
                               <div className="">
@@ -120,6 +184,37 @@ const SlideCarousel = () => {
                                         defaultValue={hoverSlowdownRatioRef.current}
                                    />
                               </div>
+
+                              <div className="">
+                                   <Button
+                                        onClick={() => setIsAutoSlideEnabled(!isAutoSlideEnabled)}
+                                        variant={isAutoSlideEnabled ? "default" : "outline"}
+                                   >
+                                        {isAutoSlideEnabled ? "Auto Slide: ON" : "Auto Slide: OFF"}
+                                   </Button>
+                              </div>
+                         </div>
+
+                         <div className="flex gap-2 items-center">
+                              <Button
+                                   onClick={handleSlideLeft}
+                                   variant="outline"
+                                   size="icon"
+                              >
+                                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="m15 18-6-6 6-6"/>
+                                   </svg>
+                              </Button>
+                              <Button
+                                   onClick={handleSlideRight}
+                                   variant="outline"
+                                   size="icon"
+                              >
+                                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="m9 18 6-6-6-6"/>
+                                   </svg>
+                              </Button>
+                              <span className="text-sm text-muted-foreground ml-2">Manual Navigation</span>
                          </div>
                     </div>
                </div>
