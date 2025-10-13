@@ -26,7 +26,7 @@ const SlideCarousel = () => {
      const slideRef = useRef<HTMLElement | null>(null);
      const wrapRef = useRef<((value: number) => number) | null>(null);
      const isManuallyAnimatingRef = useRef(false);
-     const manualAnimationRef = useRef<gsap.core.Tween | null>(null); // Store the manual animation tween
+     const manualAnimationRef = useRef<gsap.core.Tween | null>(null);
 
      const normalizeValue = (value: number) => value / 100;
 
@@ -35,8 +35,8 @@ const SlideCarousel = () => {
           isAutoSlideEnabledRef.current = isAutoSlideEnabled;
      }, [isAutoSlideEnabled]);
 
-     // Handle manual slide left with animation
-     const handleSlideLeft = () => {
+     // Generic handler for manual slide with animation
+     const handleManualSlide = (direction: 'left' | 'right') => {
           if (xToRef.current) {
                // Kill any ongoing manual animation using the stored tween reference
                if (manualAnimationRef.current) {
@@ -44,9 +44,11 @@ const SlideCarousel = () => {
                     manualAnimationRef.current = null;
                }
                
-               // Calculate new target position (same as original)
+               // Calculate new target position
+               // Left = positive direction, Right = negative direction
+               const distance = direction === 'left' ? MANUAL_SLIDE_DISTANCE : -MANUAL_SLIDE_DISTANCE;
                const startValue = totalRef.current;
-               const endValue = totalRef.current + MANUAL_SLIDE_DISTANCE;
+               const endValue = totalRef.current + distance;
                
                // Mark that we're manually animating
                isManuallyAnimatingRef.current = true;
@@ -73,43 +75,11 @@ const SlideCarousel = () => {
           }
      };
 
+     // Handle manual slide left with animation
+     const handleSlideLeft = () => handleManualSlide('left');
+
      // Handle manual slide right with animation
-     const handleSlideRight = () => {
-          if (xToRef.current) {
-               // Kill any ongoing manual animation using the stored tween reference
-               if (manualAnimationRef.current) {
-                    manualAnimationRef.current.kill();
-                    manualAnimationRef.current = null;
-               }
-               
-               // Calculate new target position (same as original)
-               const startValue = totalRef.current;
-               const endValue = totalRef.current - MANUAL_SLIDE_DISTANCE;
-               
-               // Mark that we're manually animating
-               isManuallyAnimatingRef.current = true;
-               
-               // Animate totalRef value from start to end
-               manualAnimationRef.current = gsap.to({ value: startValue }, {
-                    value: endValue,
-                    duration: MANUAL_SLIDE_DURATION,
-                    ease: "power2.out",
-                    onUpdate: function() {
-                         // Update totalRef and apply with xTo (just like the ticker does)
-                         totalRef.current = this.targets()[0].value;
-                         if (xToRef.current) {
-                              xToRef.current(totalRef.current);
-                         }
-                    },
-                    onComplete: () => {
-                         // Ensure final value is exact
-                         totalRef.current = endValue;
-                         isManuallyAnimatingRef.current = false;
-                         manualAnimationRef.current = null;
-                    }
-               });
-          }
-     };
+     const handleSlideRight = () => handleManualSlide('right');
 
      useEffect(() => {
           const initEffect = () => {
