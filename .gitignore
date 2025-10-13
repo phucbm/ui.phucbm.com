@@ -45,3 +45,6 @@ next-env.d.ts
 /.idea/php.xml
 /.idea/ui.perxel.com.iml
 /.idea/vcs.xml
+
+# avoid committing generated index files
+_pagefind/
