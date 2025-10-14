@@ -60,9 +60,15 @@ export function TextRipple({line1, line2, className}: Props) {
     return (
         <section
             ref={scope}
-            className={`flex flex-col items-center justify-center gap-6
+            className={`flex flex-col items-center justify-center
         w-full h-[400px] overflow-hidden
-         text-7xl font-bold leading-[0.7em] uppercase ${className}`}
+        font-bold leading-[0.7em] uppercase
+         
+         text-[30px] @lg:text-[60px] @md:text-[40px]
+         gap-2 @md:gap-4
+         
+          ${className}
+         `}
         >
             <div className="flex">
                 {line1.split("").map((ch, i) => (
