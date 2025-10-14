@@ -1,11 +1,12 @@
 "use client"
 
 import * as React from "react"
-import {CheckIcon, ClipboardIcon} from "lucide-react"
 
 import {useConfig} from "@/hooks/use-config"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {Button} from "@/components/ui/button"
+import {cn} from "@/lib/utils";
+import {IconClipboard, IconClipboardCheck} from "@tabler/icons-react";
 
 type Props = {
     npmCommand?: string
@@ -59,7 +60,7 @@ export function CodeBlockCommand({
     }, [packageManager, tabs])
 
     return (
-        <div className="relative mt-6 max-h-[650px] overflow-x-auto rounded-xl bg-accent text-accent-foreground">
+        <div className="relative mt-6 max-h-[650px] overflow-x-auto px-border">
             <Tabs
                 value={packageManager}
                 onValueChange={(value) => {
@@ -68,14 +69,19 @@ export function CodeBlockCommand({
                         packageManager: value as "pnpm" | "npm" | "yarn" | "bun",
                     })
                 }}
+                className="gap-0"
             >
-                <div className="flex items-center justify-between border-b border-border bg-accent px-3 pt-2.5">
+                <div className="flex items-center justify-between border-b border-border border-dashed px-3 py-2">
                     <TabsList className="h-7 translate-y-[2px] gap-3 bg-transparent p-0 pl-1">
                         {entries.map(([key]) => (
                             <TabsTrigger
                                 key={key}
                                 value={key}
-                                className="rounded-none border-b border-transparent !bg-transparent !shadow-none p-0 pb-1.5 font-mono text-sm text-muted-foreground data-[state=active]:font-bold"
+                                className={cn(
+                                    "rounded-none border-b border-transparent !bg-transparent !shadow-none p-0 pb-1.5 font-mono text-sm text-muted-foreground cursor-pointer",
+                                    "data-[state=active]:font-bold",
+                                    "hover:text-primary"
+                                )}
                             >
                                 {key}
                             </TabsTrigger>
@@ -86,7 +92,7 @@ export function CodeBlockCommand({
                 <div className="overflow-x-auto">
                     {entries.map(([key, value]) => (
                         <TabsContent key={key} value={key} className="mt-0">
-              <pre className="px-4 p3-5">
+              <pre className="px-4 py-3">
                 <code
                     className="relative font-mono text-sm leading-none"
                     data-language="bash"
@@ -106,7 +112,7 @@ export function CodeBlockCommand({
                 onClick={copyCommand}
             >
                 <span className="sr-only">Copy</span>
-                {hasCopied ? <CheckIcon/> : <ClipboardIcon/>}
+                {hasCopied ? <IconClipboardCheck/> : <IconClipboard/>}
             </Button>
         </div>
     )

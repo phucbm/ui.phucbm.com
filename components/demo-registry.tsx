@@ -1,11 +1,7 @@
 "use client";
 
 import React, {useEffect, useMemo, useRef, useState} from "react";
-import {
-    ResizableHandle,
-    ResizablePanel,
-    ResizablePanelGroup,
-} from "@/components/ui/resizable";
+import {ResizableHandle, ResizablePanel, ResizablePanelGroup,} from "@/components/ui/resizable";
 import {cn} from "@/lib/utils";
 import {Badge} from "@/components/ui/badge";
 
@@ -81,7 +77,10 @@ export function DemoRegistry({children}: Props) {
 
                 <ResizableHandle
                     withHandle
-                    className="!border-dashed w-0 border-l border-gray-400 bg-none"
+                    className={cn(
+                        "!border-dashed w-0 border-l !bg-transparent",
+                        atFullWidth ? "border-transparent" : "border-border"
+                    )}
                 />
 
                 <ResizablePanel
@@ -90,7 +89,7 @@ export function DemoRegistry({children}: Props) {
                 />
             </ResizablePanelGroup>
 
-            <div className="z-20 absolute inset-0 rounded-md border border-dashed border-gray-400 pointer-events-none" />
+            <div className="z-20 absolute inset-0 px-border pointer-events-none"/>
         </div>
     );
 }
