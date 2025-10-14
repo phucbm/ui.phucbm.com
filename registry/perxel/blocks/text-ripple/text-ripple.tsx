@@ -1,0 +1,88 @@
+"use client";
+
+import gsap from "gsap";
+import Observer from "gsap/Observer";
+import {useRef} from "react";
+import {useGSAP} from "@gsap/react";
+import {getNormalizedMousePosition} from "normalized-mouse-position";
+import {applyRippleEffect} from "@phucbm/ripple-effect";
+
+gsap.registerPlugin(Observer);
+
+type Props = {
+    line1: string;
+    line2: string;
+    className?: string;
+};
+
+export function TextRipple({line1, line2, className}: Props) {
+    const scope = useRef<HTMLElement | null>(null);
+
+    useGSAP(
+        () => {
+            const root = scope.current;
+            if (!root) return;
+
+            const line1 = root.querySelectorAll(".hero-heading.is-top");
+            const line2 = root.querySelectorAll(".hero-heading.is-bottom");
+            const n = Math.max(line1.length, line2.length);
+            if (!n) return;
+
+            const getAreaIndex = (x: number, num: number) =>
+                Math.min(Math.floor(Math.max(0, Math.min(1, x)) * num), num - 1);
+
+            const observer = Observer.create({
+                target: window,
+                type: "pointer",
+                onMove: ({x = 0, y = 0}) => {
+                    const pos = getNormalizedMousePosition({x, y, origin: "0% 50%"});
+                    const center = getAreaIndex(pos.x, n);
+
+                    const anim = (val: number, i: number) => {
+                        const s = 1 + val * 2.5 * Math.abs(pos.y);
+                        gsap.to([line1[i], line2[i]].filter(Boolean), {scaleY: s, duration: 0.2, overwrite: "auto"});
+                    };
+
+                    applyRippleEffect({
+                        length: n,
+                        centerIndex: center,
+                        rippleRadius: 6,
+                        callback: anim,
+                    });
+                },
+            });
+
+            return () => observer.kill();
+        },
+        {scope}
+    );
+
+    return (
+        <section
+            ref={scope}
+            className={`flex flex-col items-center justify-center gap-6
+        w-full h-[400px] overflow-hidden
+         text-7xl font-bold leading-[0.7em] uppercase ${className}`}
+        >
+            <div className="flex">
+                {line1.split("").map((ch, i) => (
+                    <div key={`t-${i}`}
+                         className="hero-heading is-top text-[#06f] origin-bottom"
+                    >
+                        {ch}
+                    </div>
+                ))}
+            </div>
+
+            <div className="flex">
+                {line2.split("").map((ch, i) => (
+                    <div key={`c-${i}`}
+                         className="hero-heading is-bottom text-[#0f8] origin-top"
+                    >
+                        {ch}
+                    </div>
+                ))}
+            </div>
+        </section>
+    );
+}
