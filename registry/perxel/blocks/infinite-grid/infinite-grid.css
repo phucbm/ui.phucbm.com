@@ -1,0 +1,57 @@
+body {
+    background: #121212;
+    color: #F1F1F1;
+  }
+  
+  .mwg_effect026 {
+    width: 100%;
+    height: auto;           /* let JS set dynamically */
+    overflow: hidden;
+    pointer-events: none;
+    position: relative;     /* not fixed */
+  }
+  
+  .mwg_effect026 .container1 {
+    height: auto;
+  }
+  
+  .mwg_effect026 .wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: max-content;
+    will-change: transform;
+  }
+  
+  .mwg_effect026 .content {
+    pointer-events: none;
+    display: grid;
+    width: max-content;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10vw;
+    padding: 5vw;
+  }
+  
+  .mwg_effect026 .media {
+    width: 25vw;
+    aspect-ratio: 1;
+    user-select: none;
+  }
+  
+  .mwg_effect026 .media img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+  }
+  
+  @media (max-width: 900px) {
+    .mwg_effect026 .content {
+      gap: 20vw;
+      padding: 10vw;
+    }
+  
+    .mwg_effect026 .media {
+      width: 50vw;
+    }
+  }
+  
