@@ -48,3 +48,4 @@ next-env.d.ts
 
 # avoid committing generated index files
 _pagefind/
+public/r

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "text-ripple",
+  "type": "registry:component",
+  "title": "Text Ripple",
+  "description": "Mouse-tracked ripple effect applied to headline text.",
+  "dependencies": [
+    "gsap",
+    "gsap/Observer",
+    "react",
+    "@gsap/react",
+    "normalized-mouse-position",
+    "@phucbm/ripple-effect"
+  ],
+  "files": [
+    {
+      "path": "registry/perxel/blocks/text-ripple/text-ripple.tsx",
+      "type": "registry:component"
+    }
+  ]
+}
