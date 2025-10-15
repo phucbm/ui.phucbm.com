@@ -11,6 +11,7 @@ import {RegistryItem} from "@/lib/getRegistryItem";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import CodeBlockView, {CodeItem} from "@/components/code-block-view";
 import {cn} from "@/lib/utils";
+import {RegistryInstall} from "@/components/registry-install";
 
 type Props = {
     children: React.ReactNode;
@@ -50,6 +51,7 @@ export function MaximizeRegistry({children, registryItem, code}: Props) {
                                     <TabsList>
                                         <TabsTrigger value="preview">Preview</TabsTrigger>
                                         {hasFiles && <TabsTrigger value="code">Code</TabsTrigger>}
+                                        <TabsTrigger value="installation">Installation</TabsTrigger>
                                     </TabsList>
                                 </div>
 
@@ -76,6 +78,11 @@ export function MaximizeRegistry({children, registryItem, code}: Props) {
                             </TabsContent>
                         }
 
+                        <TabsContent value="installation" className="pt-[52px] w-full bg-background">
+                            <div className="container mx-auto">
+                                <RegistryInstall name={registryItem.name}/>
+                            </div>
+                        </TabsContent>
 
                     </Tabs>
 
