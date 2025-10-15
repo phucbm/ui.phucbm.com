@@ -1,6 +1,7 @@
 import {useMDXComponents as getThemeComponents} from 'nextra-theme-docs';
 import {RegistryInstall} from "@/components/registry-install";
 import {RegistryDemo} from "@/components/registry-demo"
+import {RegistryPropsTable} from "@/components/registry-props-table";
 
 // Get the default MDX components
 const themeComponents = getThemeComponents()
@@ -11,6 +12,7 @@ export function useMDXComponents(components: any) {
         ...themeComponents,
         ...components,
         RegistryInstall: RegistryInstall,
-        RegistryDemo: RegistryDemo
+        RegistryDemo: RegistryDemo,
+        RegistryPropsTable: RegistryPropsTable,
     }
 }

@@ -7,7 +7,7 @@ export default async function getRegistryCodeItems({registryItem}: { registryIte
     return await Promise.all(
         registryItem.files.map(async (file) => {
             const filePath = path.join(process.cwd(), file.path);
-            const filename = path.basename(filePath);
+            const filename = file.target;// path.basename(filePath);
             const ext = path.extname(filename).replace(".", ""); // e.g. "tsx", "css"
 
             const content = await fs.promises.readFile(filePath, "utf8");

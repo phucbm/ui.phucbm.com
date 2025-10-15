@@ -9,13 +9,16 @@ import {applyRippleEffect} from "@phucbm/ripple-effect";
 
 gsap.registerPlugin(Observer);
 
-type Props = {
+export type TextRippleProps = {
+    /** Top line text (split into characters) */
     line1: string;
+    /** Bottom line text (split into characters) */
     line2: string;
+    /** Optional extra classes applied to the wrapper */
     className?: string;
 };
 
-export function TextRipple({line1, line2, className}: Props) {
+export function TextRipple({line1, line2, className}: TextRippleProps) {
     const scope = useRef<HTMLElement | null>(null);
 
     useGSAP(
