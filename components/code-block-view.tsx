@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/shadcn-io/code-block';
 import {cn} from "@/lib/utils";
 
-type CodeItem = {
+export type CodeItem = {
     language: BundledLanguage;
     filename: string;
     code: string;
@@ -60,7 +60,7 @@ const CodeBlockView = ({code, contentClassName}: Props) => (
                 <CodeBlockItem key={item.language} value={item.language}>
                     <CodeBlockContent language={item.language as BundledLanguage}
                                       themes={{light: 'github-light', dark: 'github-dark'}}
-                                      className={cn("max-h-[450px] overflow-auto", contentClassName)}
+                                      className={cn("max-h-[450px] overflow-auto w-full", contentClassName)}
                     >
                         {item.code}
                     </CodeBlockContent>

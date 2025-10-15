@@ -4,7 +4,6 @@ import React, {useEffect, useMemo, useRef, useState} from "react";
 import {ResizableHandle, ResizablePanel, ResizablePanelGroup,} from "@/components/ui/resizable";
 import {cn} from "@/lib/utils";
 import {Badge} from "@/components/ui/badge";
-import {MaximizableWithHash} from "@/components/maximizable-registry";
 import {RegistryItem} from "@/lib/getRegistryItem";
 
 type Props = {

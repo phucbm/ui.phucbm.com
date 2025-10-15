@@ -1,9 +1,10 @@
 import {getRegistryItem} from "@/lib/getRegistryItem";
 import {RegistryPreview} from "@/components/registry-preview";
 import React from "react";
-import RegistryCode from "@/components/registry-code";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
-import {MaximizableWithHash} from "@/components/maximizable-registry";
+import {MaximizeRegistry} from "@/components/maximizable-registry";
+import getRegistryCodeItems from "@/lib/getRegistryCodeItems";
+import CodeBlockView from "@/components/code-block-view";
 
 type Props = {
     children: React.ReactNode;
@@ -13,7 +14,7 @@ type Props = {
 export async function RegistryDemo(props: Props) {
     const registryItem = await getRegistryItem(props.name);
     const hasFiles = registryItem.files.length > 0;
-    // const height = 450;
+    const code = await getRegistryCodeItems({registryItem});
     return (
         <>
             <Tabs defaultValue="preview" className="pt-6">
@@ -24,7 +25,7 @@ export async function RegistryDemo(props: Props) {
                         <TabsTrigger value="preview">Preview</TabsTrigger>
                         {hasFiles && <TabsTrigger value="code">Code</TabsTrigger>}
                     </TabsList>
-                    <div><MaximizableWithHash children={props.children} registryItem={registryItem}/></div>
+                    <div><MaximizeRegistry children={props.children} registryItem={registryItem} code={code}/></div>
                 </div>
 
                 {/*preview*/}
@@ -39,7 +40,7 @@ export async function RegistryDemo(props: Props) {
                 {/*code*/}
                 {hasFiles &&
                     <TabsContent value="code">
-                        <RegistryCode registryItem={registryItem}/>
+                        <CodeBlockView code={code}/>
                     </TabsContent>
                 }
 

@@ -1,11 +1,10 @@
-import fs from "fs";
-import path from "path";
 import {RegistryItem} from "@/lib/getRegistryItem";
-import CodeBlockView from "@/components/code-block-view";
+import path from "path";
+import fs from "fs";
 
-export default async function RegistryCode({registryItem}: { registryItem: RegistryItem }) {
+export default async function getRegistryCodeItems({registryItem}: { registryItem: RegistryItem }) {
     // Resolve all files listed in the registry item
-    const code = await Promise.all(
+    return await Promise.all(
         registryItem.files.map(async (file) => {
             const filePath = path.join(process.cwd(), file.path);
             const filename = path.basename(filePath);
@@ -20,6 +19,4 @@ export default async function RegistryCode({registryItem}: { registryItem: Regis
             };
         })
     );
-
-    return <CodeBlockView code={code}/>;
 }
