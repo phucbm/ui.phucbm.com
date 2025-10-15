@@ -9,12 +9,17 @@ import CodeBlockView from "@/components/code-block-view";
 type Props = {
     children: React.ReactNode;
     name?: string;
+    codeString?: string;
 };
 
-export async function RegistryDemo(props: Props) {
-    const registryItem = await getRegistryItem(props.name);
+export async function RegistryDemo({children, name, codeString}: Props) {
+    const registryItem = await getRegistryItem(name);
     const hasFiles = registryItem.files.length > 0;
-    const code = await getRegistryCodeItems({registryItem});
+    let code = await getRegistryCodeItems({registryItem});
+    if (!!code.length && !!codeString) {
+        // const codeString = jsxToString(children);
+        code = [{language: 'tsx', filename: 'example.tsx', code: codeString}];
+    }
     return (
         <>
             <Tabs defaultValue="preview" className="pt-6">
@@ -25,15 +30,14 @@ export async function RegistryDemo(props: Props) {
                         <TabsTrigger value="preview">Preview</TabsTrigger>
                         {hasFiles && <TabsTrigger value="code">Code</TabsTrigger>}
                     </TabsList>
-                    <div><MaximizeRegistry children={props.children} registryItem={registryItem} code={code}/></div>
+                    <div><MaximizeRegistry children={children} registryItem={registryItem} code={code}/></div>
                 </div>
 
                 {/*preview*/}
                 <TabsContent value="preview" className="">
                     <RegistryPreview
-                        children={props.children}
+                        children={children}
                         registryItem={registryItem}
-                        {...props}
                     />
                 </TabsContent>
 
