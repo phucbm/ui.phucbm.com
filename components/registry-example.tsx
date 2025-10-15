@@ -50,7 +50,7 @@ export async function RegistryExample({name}: Props) {
     const code = [exampleCode];
 
     return (
-        <RegistryDemo name={name} code={code}>
+        <RegistryDemo name={name} code={code} hashId="example" subtitle="Example">
             <Example/>
         </RegistryDemo>
     );

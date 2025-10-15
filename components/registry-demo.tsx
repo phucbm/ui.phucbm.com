@@ -10,9 +10,11 @@ type Props = {
     children: React.ReactNode;
     name?: string;
     code?: CodeItem[];
+    hashId?: string; // for maximizable registry
+    subtitle?: string; // for maximizable registry
 };
 
-export async function RegistryDemo({children, name, code}: Props) {
+export async function RegistryDemo({children, name, code, hashId, subtitle}: Props) {
     const registryItem = await getRegistryItem(name);
     const hasFiles = registryItem.files.length > 0;
 
@@ -31,7 +33,10 @@ export async function RegistryDemo({children, name, code}: Props) {
                         <TabsTrigger value="preview">Preview</TabsTrigger>
                         {hasFiles && <TabsTrigger value="code">Code</TabsTrigger>}
                     </TabsList>
-                    <div><MaximizeRegistry children={children} registryItem={registryItem} code={code}/></div>
+                    <div>
+                        <MaximizeRegistry children={children} registryItem={registryItem} code={code} hashId={hashId}
+                                          subtitle={subtitle}/>
+                    </div>
                 </div>
 
                 {/*preview*/}
