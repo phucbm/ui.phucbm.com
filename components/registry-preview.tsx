@@ -62,11 +62,6 @@ export function RegistryPreview({children, registryItem}: Props) {
              ref={containerRef}
              className="group relative bg-accent rounded-md overflow-hidden"
         >
-            <div className="flex justify-between items-center px-2 py-1">
-                <div></div>
-                <div><MaximizableWithHash children={children} registryItem={registryItem}/></div>
-            </div>
-
             <ResizablePanelGroup direction="horizontal" className="px-bg-pattern-transparent px-border">
                 <ResizablePanel defaultSize={100} minSize={minSizePct}>
                     <div ref={panelRef} className="relative h-full @container">
@@ -81,7 +76,7 @@ export function RegistryPreview({children, registryItem}: Props) {
                                 <Badge variant="secondary">{Math.round(panelWidth)}px</Badge>
                             </div>
                         )}
-                        <div className="[&>*]:min-h-[450px]">
+                        <div className="[&>*]:min-h-[497px]">
                             {children}
                         </div>
                     </div>

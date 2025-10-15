@@ -3,6 +3,7 @@ import {RegistryPreview} from "@/components/registry-preview";
 import React from "react";
 import RegistryCode from "@/components/registry-code";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
+import {MaximizableWithHash} from "@/components/maximizable-registry";
 
 type Props = {
     children: React.ReactNode;
@@ -16,10 +17,15 @@ export async function RegistryDemo(props: Props) {
     return (
         <>
             <Tabs defaultValue="preview" className="pt-6">
-                <TabsList>
-                    <TabsTrigger value="preview">Preview</TabsTrigger>
-                    {hasFiles && <TabsTrigger value="code">Code</TabsTrigger>}
-                </TabsList>
+
+                {/*demo header*/}
+                <div className="flex justify-between items-center">
+                    <TabsList>
+                        <TabsTrigger value="preview">Preview</TabsTrigger>
+                        {hasFiles && <TabsTrigger value="code">Code</TabsTrigger>}
+                    </TabsList>
+                    <div><MaximizableWithHash children={props.children} registryItem={registryItem}/></div>
+                </div>
 
                 {/*preview*/}
                 <TabsContent value="preview" className="">
