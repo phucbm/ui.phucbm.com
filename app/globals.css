@@ -189,3 +189,6 @@
 .nextra-code pre {
     @apply border border-dashed border-border rounded-md ring-0;
 }
+.nextra-sidebar-footer {
+    @apply bg-transparent;
+}
