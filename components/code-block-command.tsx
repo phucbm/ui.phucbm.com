@@ -79,7 +79,7 @@ export function CodeBlockCommand({
                                 key={key}
                                 value={key}
                                 className={cn(
-                                    "rounded-none border-b border-transparent !bg-transparent !shadow-none p-0 pb-1.5 font-mono text-sm text-muted-foreground cursor-pointer",
+                                    "rounded-none !border-none !bg-transparent !shadow-none p-0 pb-1.5 font-mono text-sm text-muted-foreground cursor-pointer",
                                     "data-[state=active]:font-bold data-[state=active]:text-primary",
                                     "hover:text-primary"
                                 )}
@@ -92,7 +92,7 @@ export function CodeBlockCommand({
 
                 <div className="overflow-x-auto">
                     {entries.map(([key, value]) => (
-                        <TabsContent key={key} value={key} className="mt-0">
+                        <TabsContent key={key} value={key} className="mt-0 bg-[#24292e]">
               <pre className="px-4 py-3">
                 <code
                     className="relative font-mono text-sm leading-none"
