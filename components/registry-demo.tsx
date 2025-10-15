@@ -3,23 +3,24 @@ import {RegistryPreview} from "@/components/registry-preview";
 import React from "react";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {MaximizeRegistry} from "@/components/maximizable-registry";
-import getRegistryCodeItems from "@/lib/getRegistryCodeItems";
-import CodeBlockView from "@/components/code-block-view";
+import {getRegistryCodeItems} from "@/lib/getRegistryCodeItems";
+import CodeBlockView, {CodeItem} from "@/components/code-block-view";
 
 type Props = {
     children: React.ReactNode;
     name?: string;
-    codeString?: string;
+    code?: CodeItem[];
 };
 
-export async function RegistryDemo({children, name, codeString}: Props) {
+export async function RegistryDemo({children, name, code}: Props) {
     const registryItem = await getRegistryItem(name);
     const hasFiles = registryItem.files.length > 0;
-    let code = await getRegistryCodeItems({registryItem});
-    if (!!code.length && !!codeString) {
-        // const codeString = jsxToString(children);
-        code = [{language: 'tsx', filename: 'example.tsx', code: codeString}];
+
+    // if no code is provided, get it from the registry
+    if (!code) {
+        code = await getRegistryCodeItems({registryItem});
     }
+
     return (
         <>
             <Tabs defaultValue="preview" className="pt-6">

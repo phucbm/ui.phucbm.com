@@ -1,22 +1,22 @@
+import {CodeItem} from "@/components/code-block-view";
 import {RegistryItem} from "@/lib/getRegistryItem";
-import path from "path";
-import fs from "fs";
+import {getCodeItemFromPath} from "@/lib/getCodeItemFromPath";
 
-export default async function getRegistryCodeItems({registryItem}: { registryItem: RegistryItem }) {
-    // Resolve all files listed in the registry item
-    return await Promise.all(
-        registryItem.files.map(async (file) => {
-            const filePath = path.join(process.cwd(), file.path);
-            const filename = file.target;// path.basename(filePath);
-            const ext = path.extname(filename).replace(".", ""); // e.g. "tsx", "css"
-
-            const content = await fs.promises.readFile(filePath, "utf8");
-
-            return {
-                language: ext,
-                filename,
-                code: content,
-            };
-        })
+/**
+ * Reads all files listed in a registry item and returns an array of CodeItems.
+ */
+export async function getRegistryCodeItems({
+                                               registryItem,
+                                           }: {
+    registryItem: RegistryItem;
+}): Promise<CodeItem[]> {
+    return Promise.all(
+        registryItem.files.map((file) =>
+            getCodeItemFromPath({path: file.path}).then((item) => ({
+                ...item,
+                // Preserve the filename or target name from the registry definition
+                filename: file.target || item.filename,
+            }))
+        )
     );
 }
