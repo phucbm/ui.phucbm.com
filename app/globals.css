@@ -144,10 +144,9 @@
 
 @layer utilities {
     .px-bg-pattern-transparent {
-        --tile-color:rgba(68, 76, 247, 0.05);
+        --tile-color:rgba(68, 76, 247, 0.03);
         --bg-color:#fff;
         background-color:var(--bg-color);
-        opacity:0.8;
         background-image:repeating-linear-gradient(
             45deg,
             var(--tile-color) 25%,
@@ -170,5 +169,9 @@
 
     .px-border {
         @apply border border-dashed border-border rounded-md;
+    }
+
+    .px-bg-blur {
+        @apply bg-background/30 backdrop-blur supports-[backdrop-filter]:bg-background/50;
     }
 }

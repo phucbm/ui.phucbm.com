@@ -4,8 +4,9 @@ import React, {useEffect, useMemo, useRef, useState} from "react";
 import {ResizableHandle, ResizablePanel, ResizablePanelGroup,} from "@/components/ui/resizable";
 import {cn} from "@/lib/utils";
 import {Badge} from "@/components/ui/badge";
+import {MaximizableWithHash} from "@/components/maximizable-registry";
 
-type Props = { children: React.ReactNode };
+type Props = { children: React.ReactNode, name: string };
 
 export function DemoRegistry({children}: Props) {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -50,14 +51,19 @@ export function DemoRegistry({children}: Props) {
     }, [containerWidth]);
 
     const atFullWidth =
-        containerWidth > 0 && Math.abs(panelWidth - containerWidth) <= 1;
+        containerWidth > 0 && Math.abs(panelWidth - containerWidth) <= 5;
 
     return (
         <div
             ref={containerRef}
-            className="group relative bg-background rounded-md overflow-hidden min-h-[200px] mt-3"
+            className="group relative bg-accent rounded-md overflow-hidden min-h-[200px] mt-3"
         >
-            <ResizablePanelGroup direction="horizontal">
+            <div className="flex justify-between items-center px-2">
+                <div></div>
+                <div><MaximizableWithHash children={children}/></div>
+            </div>
+
+            <ResizablePanelGroup direction="horizontal" className="bg-background px-border">
                 <ResizablePanel defaultSize={100} minSize={minSizePct}>
                     <div ref={panelRef} className="relative h-full @container">
                         {!atFullWidth && (
