@@ -6,15 +6,13 @@ import {cn} from "@/lib/utils";
 import {Badge} from "@/components/ui/badge";
 import {MaximizableWithHash} from "@/components/maximizable-registry";
 import {RegistryItem} from "@/lib/getRegistryItem";
-import {AddRegistry} from "@/components/add-registry";
 
 type Props = {
     children: React.ReactNode;
     registryItem?: RegistryItem;
-    showAddRegistry?: boolean;
 };
 
-export function DemoRegistryClient({children, registryItem, showAddRegistry = false}: Props) {
+export function DemoRegistryClient({children, registryItem}: Props) {
     const containerRef = useRef<HTMLDivElement>(null);
     const panelRef = useRef<HTMLDivElement>(null);
 
@@ -104,8 +102,6 @@ export function DemoRegistryClient({children, registryItem, showAddRegistry = fa
 
                 <div className="z-20 absolute inset-0 px-border pointer-events-none"/>
             </div>
-
-            {showAddRegistry && <AddRegistry name={registryItem.name}/>}
         </div>
     );
 }

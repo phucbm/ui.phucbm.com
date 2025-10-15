@@ -6,7 +6,6 @@
   "description": "Mouse-tracked ripple effect applied to headline text.",
   "dependencies": [
     "gsap",
-    "gsap/Observer",
     "react",
     "@gsap/react",
     "normalized-mouse-position",
@@ -15,7 +14,8 @@
   "files": [
     {
       "path": "registry/perxel/blocks/text-ripple/text-ripple.tsx",
-      "type": "registry:component"
+      "type": "registry:component",
+      "target": "components/perxel/text-ripple.tsx"
     }
   ]
 }

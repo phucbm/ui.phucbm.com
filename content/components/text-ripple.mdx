@@ -4,16 +4,29 @@ import {TextRipple} from "@/registry/perxel/blocks/text-ripple/text-ripple"
 
 Mouse-tracked ripple effect applied to headline text.
 
-## Default
-
-<DemoRegistry name="text-ripple" showAddRegistry={true}>
+<DemoRegistry name="text-ripple">
     <TextRipple
         line1="technical.architect"
         line2="creative.developer"/>
 </DemoRegistry>
 
-## Custom
+## Installation
 
-<DemoRegistry>
+<AddRegistry name="text-ripple"/>
+
+## Usage
+
+```tsx
+import {TextRipple} from "@/components/perxel/text-ripple"
+```
+```tsx
+<TextRipple
+        line1="technical.architect"
+        line2="creative.developer"/>
+```
+
+## Examples
+
+<DemoRegistry showAddRegistry={false}>
     <TextRipple line1="lorem ipsum" line2="dolor sit amet"/>
 </DemoRegistry>

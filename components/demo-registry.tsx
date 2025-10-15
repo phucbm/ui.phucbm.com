@@ -5,7 +5,6 @@ import React from "react";
 type Props = {
     children: React.ReactNode;
     name?: string;
-    showAddRegistry?: boolean;
 };
 
 export async function DemoRegistry(props: Props) {

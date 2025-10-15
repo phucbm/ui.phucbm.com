@@ -185,3 +185,7 @@
         @apply bg-background/30 backdrop-blur supports-[backdrop-filter]:bg-background/50;
     }
 }
+
+.nextra-code pre {
+    @apply border border-dashed border-border rounded-md ring-0;
+}
