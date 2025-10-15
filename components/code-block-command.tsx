@@ -92,7 +92,7 @@ export function CodeBlockCommand({
 
                 <div className="overflow-x-auto">
                     {entries.map(([key, value]) => (
-                        <TabsContent key={key} value={key} className="mt-0 bg-[#24292e]">
+                        <TabsContent key={key} value={key} className="mt-0 dark:bg-[#24292e]">
               <pre className="px-4 py-3">
                 <code
                     className="relative font-mono text-sm leading-none"
