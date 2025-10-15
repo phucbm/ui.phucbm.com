@@ -7,10 +7,11 @@ import {MaximizeIcon} from "@/components/ui/maximize";
 import React from "react";
 import {XIcon} from "@/components/ui/x";
 import {KeyBoard} from "@/components/KeyBoard";
+import {RegistryItem} from "@/lib/getRegistryItem";
 
-type Props = { children: React.ReactNode };
+type Props = { children: React.ReactNode, registryItem?: RegistryItem };
 
-export function MaximizableWithHash({children}: Props) {
+export function MaximizableWithHash({children, registryItem}: Props) {
     const {open, setOpen, hash} = useDialogHash("preview"); // URL → …/#preview
 
     return (
@@ -26,7 +27,7 @@ export function MaximizableWithHash({children}: Props) {
                            className="w-screen h-screen !max-w-none rounded-none border-none p-0 gap-0 overflow-hidden px-bg-pattern-transparent">
                 <DialogHeader className="absolute top-0 left-0 w-full z-20 border-b px-bg-blur">
                     <div className="flex justify-between items-center px-4 py-2 w-full">
-                        <DialogTitle>Enlarged view</DialogTitle>
+                        <DialogTitle>{registryItem.title}</DialogTitle>
                         <Button variant="ghost" size="sm" aria-label="Close" onClick={() => setOpen(false)}>
                             <KeyBoard keyName="ESC"/>
                             <XIcon className="h-4 w-4"/>
@@ -35,7 +36,7 @@ export function MaximizableWithHash({children}: Props) {
                 </DialogHeader>
 
 
-                <div>
+                <div className="flex justify-center items-center @container">
                     {children}
                 </div>
 

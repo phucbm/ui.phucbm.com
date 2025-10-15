@@ -144,7 +144,7 @@
 
 @layer utilities {
     .px-bg-pattern-transparent {
-        --tile-color:rgba(68, 76, 247, 0.03);
+        --tile-color:rgba(68, 76, 247, 0.04);
         --bg-color:#fff;
         background-color:var(--bg-color);
         background-image:repeating-linear-gradient(
@@ -165,6 +165,16 @@
         );
         background-position:0 0, 10px 10px;
         background-size:20px 20px;
+    }
+
+    .px-bg-diagonal {
+        --tile-color:rgba(68, 76, 247, 0.3);
+        --bg-color:#fff;
+        background-color:var(--bg-color);
+
+        opacity: 1;
+        background-image: radial-gradient(var(--tile-color) 0.75px, var(--bg-color) 0.75px);
+        background-size: 15px 15px;
     }
 
     .px-border {

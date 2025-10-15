@@ -61,11 +61,12 @@ export function TextRipple({line1, line2, className}: Props) {
         <section
             ref={scope}
             className={`flex flex-col items-center justify-center
-        w-full h-[400px] overflow-hidden
+        w-full overflow-hidden
         font-bold leading-[0.7em] uppercase
          
-         text-[30px] @lg:text-[60px] @md:text-[40px]
-         gap-2 @md:gap-4
+         h-[400px] @7xl:h-screen
+         text-[30px] @xl:text-[60px] @7xl:text-[100px]
+         gap-2 @xl:gap-4
          
           ${className}
          `}
