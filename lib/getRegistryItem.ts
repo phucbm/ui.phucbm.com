@@ -3,6 +3,11 @@ export interface RegistryItem {
     name: string;
     description: string;
     title: string;
+    files: {
+        path: string;
+        type: string;
+        target: string;
+    }[]
 }
 
 export async function getRegistryItem(name: string) {
@@ -11,6 +16,7 @@ export async function getRegistryItem(name: string) {
             name: "unnamed-registry",
             title: "Unnamed Registry",
             description: "",
+            files: []
         };
     }
 
