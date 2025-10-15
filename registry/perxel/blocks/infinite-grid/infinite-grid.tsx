@@ -1,150 +1,209 @@
-"use client";
-import React, { useEffect } from "react";
-import gsap from "gsap";
-import { Observer } from "gsap/Observer";
-import "./infinite-grid.css";
+"use client"
+import React, { useEffect, useRef } from 'react'
+import gsap from 'gsap';
+import './infinite-grid.css'
+import { Observer } from 'gsap/Observer';
 
 const InfiniteGrid = () => {
-  useEffect(() => {
-    // Ensure scroll position restoration doesn't interfere
-    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-    gsap.registerPlugin(Observer);
+     const scope = useRef<HTMLElement | null>(null);
+     
+     useEffect(() => {
+          if ('scrollRestoration' in history) {
+               history.scrollRestoration = 'manual'
+          }
+          gsap.registerPlugin(Observer);
 
-    const initEffect = () => {
-      const root = document.querySelector(".mwg_effect026") as HTMLElement;
-      if (!root) return;
+          const initEffect = () => {
+               const root = scope.current;
+               if (!root) return;
 
-      const container = root.querySelector(".container1") as HTMLElement;
-      const wrapper = root.querySelector(".wrapper") as HTMLElement;
-      if (!container || !wrapper) return;
+               const container = root.querySelector('.container1') as HTMLElement;
+               if (!container) return;
 
-      /** ───────────────────────────────
-       *  🧩 Auto height sync logic (ResizeObserver)
-       *  Keeps .mwg_effect026 matching .wrapper height
-       *  even inside fixed/resizable layouts
-       * ─────────────────────────────── */
-      const updateHeight = () => {
-        root.style.height = `${wrapper.offsetHeight}px`;
-      };
-      updateHeight(); // initial sync
+               const wrapper = root.querySelector('.wrapper') as HTMLElement;
+               if (!wrapper) return;
 
-      const ro = new ResizeObserver(updateHeight);
-      ro.observe(wrapper);
+               const closestWrapper = root.closest('.outer-wrapper');
+               console.log('Closest wrapper element:', closestWrapper);
 
-      // ───────────────────────────────
-      // GSAP setup
-      // ───────────────────────────────
-      const halfX = wrapper.clientWidth / 2;
-      const wrapX = gsap.utils.wrap(-halfX, 0);
-      const xTo = gsap.quickTo(wrapper, "x", {
-        duration: 1.5,
-        ease: "power4",
-        modifiers: { x: gsap.utils.unitize(wrapX) },
-      });
+               // Wrap helpers
+               const halfX = wrapper.clientWidth / 2;
+               const wrapX = gsap.utils.wrap(-halfX, 0);
+               const xTo = gsap.quickTo(wrapper, 'x', {
+                    duration: 1.5,
+                    ease: 'power4',
+                    modifiers: { x: gsap.utils.unitize(wrapX) }
+               });
 
-      const halfY = wrapper.clientHeight / 2;
-      const wrapY = gsap.utils.wrap(-halfY, 0);
-      const yTo = gsap.quickTo(wrapper, "y", {
-        duration: 1.5,
-        ease: "power4",
-        modifiers: { y: gsap.utils.unitize(wrapY) },
-      });
+               const halfY = wrapper.clientHeight / 2;
+               const wrapY = gsap.utils.wrap(-halfY, 0);
+               const yTo = gsap.quickTo(wrapper, 'y', {
+                    duration: 1.5,
+                    ease: 'power4',
+                    modifiers: { y: gsap.utils.unitize(wrapY) }
+               });
 
-      const scaleToX = gsap.quickTo(container, "scaleX", {
-        duration: 1.5,
-        ease: "power4",
-      });
-      const scaleToY = gsap.quickTo(container, "scaleY", {
-        duration: 1.5,
-        ease: "power4",
-      });
+               const scaleToX = gsap.quickTo(container, 'scaleX', {
+                    duration: 1.5,
+                    ease: 'power4',
+               });
 
-      // Scroll/touch/pointer interactions
-      let incrX = 0,
-        incrY = 0;
-      let interactionTimeout: NodeJS.Timeout;
+               const scaleToY = gsap.quickTo(container, 'scaleY', {
+                    duration: 1.5,
+                    ease: 'power4',
+               });
 
-      const gsapObserver = Observer.create({
-        target: window,
-        type: "wheel,touch,pointer",
-        onChangeX: (self) => {
-          incrX += self.event.type === "wheel" ? -self.deltaX : self.deltaX * 2;
-          xTo(incrX);
+               // State
+               let incrX = 0, incrY = 0;
+               let interactionTimeout: NodeJS.Timeout;
+               // GSAP Observer (wheel + touch + drag)
+               const gsapObserver = Observer.create({
+                    target: closestWrapper,
+                    type: "wheel,touch,pointer",
+                    onChangeX: (self) => {
+                         if (self.event.type === "wheel") {
+                              incrX -= self.deltaX;
+                         } else {
+                              incrX += self.deltaX * 2;
+                         }
+                    
+                         xTo(incrX);
+                    
+                         // Limit how much the container can shrink
+                         const rawScale = 1 - self.deltaX / 200;
+                         const safeScale = gsap.utils.clamp(0.8, 1.2, rawScale); // 🔒 keep between 0.8 → 1.2
+                         scaleToX(safeScale);
+                    
+                         window.clearTimeout(interactionTimeout);
+                         interactionTimeout = setTimeout(() => scaleToX(1), 66);
+                    },
+                    onChangeY: (self) => {
+                         if (self.event.type === "wheel") {
+                              incrY -= self.deltaY;
+                         } else {
+                              incrY += self.deltaY * 2;
+                         }
+                    
+                         yTo(incrY);
+                    
+                         // Limit Y-scale shrink as well
+                         const rawScale = 1 - self.deltaY / 200;
+                         const safeScale = gsap.utils.clamp(0.8, 1.2, rawScale);
+                         scaleToY(safeScale);
+                    
+                         window.clearTimeout(interactionTimeout);
+                         interactionTimeout = setTimeout(() => scaleToY(1), 66);
+                    },
+                    
+                    preventDefault: true, // another GSAP shortcut
+               });
 
-          const clampScale = gsap.utils.clamp(-100, 100);
-          const valSc = 1 - clampScale(self.deltaX / 200);
-          scaleToX(valSc);
+               // Kill when root removed
+               const observer = new MutationObserver(mutations => {
+                    const isRootRemoved = mutations.some(mutation =>
+                         mutation.type === 'childList' &&
+                         Array.from(mutation.removedNodes).includes(root as Node)
+                    );
+                    if (isRootRemoved) {
+                         gsapObserver.kill();
+                         observer.disconnect();
+                    }
+               });
+               observer.observe(document.body, { childList: true, subtree: true });
+          };
 
-          clearTimeout(interactionTimeout);
-          interactionTimeout = setTimeout(() => scaleToX(1), 66);
-        },
-        onChangeY: (self) => {
-          incrY += self.event.type === "wheel" ? -self.deltaY : self.deltaY * 2;
-          yTo(incrY);
 
-          const clampScale = gsap.utils.clamp(-100, 100);
-          const valSc = 1 - clampScale(self.deltaY / 200);
-          scaleToY(valSc);
+          const onLoad = () => initEffect()
 
-          clearTimeout(interactionTimeout);
-          interactionTimeout = setTimeout(() => scaleToY(1), 66);
-        },
-        preventDefault: true,
-      });
+          if (document.readyState === 'complete') {
+               initEffect()
+          } else {
+               window.addEventListener('load', onLoad, { once: true })
+          }
 
-      // Clean up
-      return () => {
-        gsapObserver.kill();
-        ro.disconnect();
-      };
-    };
+          return () => {
+               window.removeEventListener('load', onLoad)
+          }
+     }, []);
 
-    const onLoad = () => initEffect();
 
-    if (document.readyState === "complete") {
-      initEffect();
-    } else {
-      window.addEventListener("load", onLoad, { once: true });
-    }
+     return (
+          <section className="mwg_effect026" ref={scope}>
+               <div className="container1">
+                    <div className="wrapper"
+                    >
+                         <div className="content">
+                              <div className="media"><img src="/InfiniteGrid/medias/12.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/02.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/03.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/04.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/05.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/06.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/07.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/08.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/09.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/10.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/11.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/01.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/13.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/14.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/15.png" alt="" /></div>
+                         </div>
+                         <div className="content" aria-hidden="true">
+                              <div className="media"><img src="/InfiniteGrid/medias/12.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/02.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/03.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/04.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/05.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/06.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/07.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/08.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/09.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/10.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/11.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/01.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/13.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/14.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/15.png" alt="" /></div>
+                         </div>
+                         <div className="content" aria-hidden="true">
+                              <div className="media"><img src="/InfiniteGrid/medias/12.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/02.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/03.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/04.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/05.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/06.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/07.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/08.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/09.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/10.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/11.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/01.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/13.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/14.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/15.png" alt="" /></div>
+                         </div>
+                         <div className="content" aria-hidden="true">
+                              <div className="media"><img src="/InfiniteGrid/medias/12.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/02.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/03.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/04.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/05.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/06.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/07.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/08.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/09.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/10.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/11.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/01.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/13.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/14.png" alt="" /></div>
+                              <div className="media"><img src="/InfiniteGrid/medias/15.png" alt="" /></div>
+                         </div>
+                    </div>
+               </div>
+          </section>
+     )
+}
 
-    return () => {
-      window.removeEventListener("load", onLoad);
-    };
-  }, []);
-
-  return (
-    <section className="mwg_effect026">
-      <div className="container1">
-        <div className="wrapper">
-          {[...Array(4)].map((_, i) => (
-            <div className="content" key={i} aria-hidden={i !== 0}>
-              {[
-                "12",
-                "02",
-                "03",
-                "04",
-                "05",
-                "06",
-                "07",
-                "08",
-                "09",
-                "10",
-                "11",
-                "01",
-                "13",
-                "14",
-                "15",
-              ].map((num) => (
-                <div className="media" key={num}>
-                  <img src={`/InfiniteGrid/medias/${num}.png`} alt="" />
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-export default InfiniteGrid;
+export default InfiniteGrid
