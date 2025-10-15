@@ -6,10 +6,15 @@ import {cn} from "@/lib/utils";
 import {Badge} from "@/components/ui/badge";
 import {MaximizableWithHash} from "@/components/maximizable-registry";
 import {RegistryItem} from "@/lib/getRegistryItem";
+import {AddRegistry} from "@/components/add-registry";
 
-type Props = { children: React.ReactNode, registryItem?: RegistryItem };
+type Props = {
+    children: React.ReactNode;
+    registryItem?: RegistryItem;
+    showAddRegistry?: boolean;
+};
 
-export function DemoRegistryClient({children, registryItem}: Props) {
+export function DemoRegistryClient({children, registryItem, showAddRegistry = false}: Props) {
     const containerRef = useRef<HTMLDivElement>(null);
     const panelRef = useRef<HTMLDivElement>(null);
 
@@ -55,48 +60,52 @@ export function DemoRegistryClient({children, registryItem}: Props) {
         containerWidth > 0 && Math.abs(panelWidth - containerWidth) <= 5;
 
     return (
-        <div
-            ref={containerRef}
-            className="group relative bg-accent rounded-md overflow-hidden min-h-[200px] mt-3"
-        >
-            <div className="flex justify-between items-center px-2">
-                <div></div>
-                <div><MaximizableWithHash children={children} registryItem={registryItem}/></div>
+        <div className="space-y-6">
+            <div
+                ref={containerRef}
+                className="group relative bg-accent rounded-md overflow-hidden min-h-[200px] mt-3"
+            >
+                <div className="flex justify-between items-center px-2">
+                    <div></div>
+                    <div><MaximizableWithHash children={children} registryItem={registryItem}/></div>
+                </div>
+
+                <ResizablePanelGroup direction="horizontal" className="px-bg-pattern-transparent px-border">
+                    <ResizablePanel defaultSize={100} minSize={minSizePct}>
+                        <div ref={panelRef} className="relative h-full @container">
+                            {!atFullWidth && (
+                                <div
+                                    className={cn(
+                                        "absolute top-1 left-1/2 -translate-x-1/2 z-10 opacity-0",
+                                        "transition duration-200 scale-75 opacity-0",
+                                        "group-hover:opacity-100 group-hover:scale-100"
+                                    )}
+                                >
+                                    <Badge variant="secondary">{Math.round(panelWidth)}px</Badge>
+                                </div>
+                            )}
+                            {children}
+                        </div>
+                    </ResizablePanel>
+
+                    <ResizableHandle
+                        withHandle
+                        className={cn(
+                            "!border-dashed w-0 border-l !bg-transparent",
+                            atFullWidth ? "border-transparent" : "border-border"
+                        )}
+                    />
+
+                    <ResizablePanel
+                        defaultSize={0}
+                        className="px-bg-diagonal"
+                    />
+                </ResizablePanelGroup>
+
+                <div className="z-20 absolute inset-0 px-border pointer-events-none"/>
             </div>
 
-            <ResizablePanelGroup direction="horizontal" className="px-bg-pattern-transparent px-border">
-                <ResizablePanel defaultSize={100} minSize={minSizePct}>
-                    <div ref={panelRef} className="relative h-full @container">
-                        {!atFullWidth && (
-                            <div
-                                className={cn(
-                                    "absolute top-1 left-1/2 -translate-x-1/2 z-10 opacity-0",
-                                    "transition duration-200 scale-75 opacity-0",
-                                    "group-hover:opacity-100 group-hover:scale-100"
-                                )}
-                            >
-                                <Badge variant="secondary">{Math.round(panelWidth)}px</Badge>
-                            </div>
-                        )}
-                        {children}
-                    </div>
-                </ResizablePanel>
-
-                <ResizableHandle
-                    withHandle
-                    className={cn(
-                        "!border-dashed w-0 border-l !bg-transparent",
-                        atFullWidth ? "border-transparent" : "border-border"
-                    )}
-                />
-
-                <ResizablePanel
-                    defaultSize={0}
-                    className="px-bg-diagonal"
-                />
-            </ResizablePanelGroup>
-
-            <div className="z-20 absolute inset-0 px-border pointer-events-none"/>
+            {showAddRegistry && <AddRegistry name={registryItem.name}/>}
         </div>
     );
 }

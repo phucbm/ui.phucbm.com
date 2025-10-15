@@ -6,7 +6,8 @@ import {useConfig} from "@/hooks/use-config"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {Button} from "@/components/ui/button"
 import {cn} from "@/lib/utils";
-import {IconClipboard, IconClipboardCheck} from "@tabler/icons-react";
+import {CopyIcon} from "@/components/ui/copy";
+import {CheckIcon} from "@/components/ui/check";
 
 type Props = {
     npmCommand?: string
@@ -108,11 +109,11 @@ export function CodeBlockCommand({
             <Button
                 size="icon"
                 variant="ghost"
-                className="absolute right-2.5 top-2 z-10 h-6 w-6 [&_svg]:h-3 [&_svg]:w-3"
+                className="absolute right-2.5 top-2 z-10 h-6 w-6 [&_svg]:h-3 [&_svg]:w-3 cursor-pointer"
                 onClick={copyCommand}
             >
                 <span className="sr-only">Copy</span>
-                {hasCopied ? <IconClipboardCheck/> : <IconClipboard/>}
+                {hasCopied ? <CheckIcon/> : <CopyIcon/>}
             </Button>
         </div>
     )
