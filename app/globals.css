@@ -200,3 +200,6 @@
 .nextra-sidebar-footer {
     @apply bg-transparent;
 }
+article main {
+    @apply relative;
+}

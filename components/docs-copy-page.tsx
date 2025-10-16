@@ -1,22 +1,14 @@
 "use client"
 
-import { IconCheck, IconChevronDown, IconCopy } from "@tabler/icons-react"
+import {IconChevronDown} from "@tabler/icons-react"
 
-import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-  Popover,
-  PopoverAnchor,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { Separator } from "@/components/ui/separator"
+import {useCopyToClipboard} from "@/hooks/use-copy-to-clipboard"
+import {Button} from "@/components/ui/button"
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
+import {Popover, PopoverAnchor, PopoverContent, PopoverTrigger,} from "@/components/ui/popover"
+import {Separator} from "@/components/ui/separator"
+import {CopyIcon} from "@/components/ui/copy";
+import {CheckIcon} from "@/components/ui/check";
 
 function getPromptUrl(baseURL: string, url: string) {
   return `${baseURL}?q=${encodeURIComponent(
@@ -112,7 +104,7 @@ export function DocsCopyPage({ page, url }: { page: string; url: string }) {
           className="h-8 shadow-none md:h-7 md:text-[0.8rem]"
           onClick={() => copyToClipboard(page)}
         >
-          {isCopied ? <IconCheck /> : <IconCopy />}
+            {isCopied ? <CheckIcon/> : <CopyIcon/>}
           Copy Page
         </Button>
         <DropdownMenu>
@@ -125,6 +117,11 @@ export function DocsCopyPage({ page, url }: { page: string; url: string }) {
                 {value(url)}
               </DropdownMenuItem>
             ))}
+
+              <Separator className="mt-1"/>
+
+              <div className="text-muted-foreground text-xs p-1 pt-2">Ask questions about this page</div>
+
           </DropdownMenuContent>
         </DropdownMenu>
         <Separator
@@ -146,9 +143,11 @@ export function DocsCopyPage({ page, url }: { page: string; url: string }) {
               key={key}
               className="*:[svg]:text-muted-foreground w-full justify-start text-base font-normal"
             >
-              {value(url)}
+                {value(url)}
             </Button>
           ))}
+
+
         </PopoverContent>
       </div>
     </Popover>

@@ -28,13 +28,13 @@ export default async function Page(props) {
 
             {/*copy buttons*/}
             {
-                mdxPath[0] === 'components' &&
-                <div className="flex">
+                mdxPath && mdxPath[0] === 'components' &&
+                <div className="absolute top-0 right-0 hidden lg:flex">
                     <DocsCopyPage page={sourceCode} url={getDocsUrl({mdxPath})}/>
                 </div>
             }
 
-            <MDXContent {...props} params={params} />
+            <MDXContent {...props} params={params}/>
         </Wrapper>
     )
 }
