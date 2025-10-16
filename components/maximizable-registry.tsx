@@ -111,7 +111,9 @@ export function MaximizeRegistry({
 
                         <TabsContent value="preview">
                             <div className="flex justify-center items-center @container h-screen">
-                                {children}
+                                <div className="overflow-auto size-full max-h-screen">
+                                    {children}
+                                </div>
                             </div>
                         </TabsContent>
 
