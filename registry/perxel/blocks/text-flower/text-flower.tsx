@@ -12,24 +12,30 @@ gsap.registerPlugin(ScrollTrigger);
 
 
 export type TextFlowerProps = {
-    /** Array of text strings to display as petals around the wheel. */
+    /** Array of text strings to display as petals around the circular wheel. Each string represents one petal. */
     texts: string[];
 
-    /** Show markers for debugging. @default false */
+    /** Whether to show position markers for debugging and layout visualization. @default false */
     markers?: boolean;
 
-    /** Additional class name(s) for customizing the wheel. @default undefined */
+    /** Additional class name(s) for the outer wheel container element. Useful for layout or positioning. @default undefined */
     wheelContainerClass?: string;
 
-    /** Additional class name(s) for customizing the wheel. @default undefined */
+    /** Additional class name(s) for the rotating wheel element. Useful for customizing rotation, size, or animation. @default undefined */
     wheelClass?: string;
 
-    /** Additional class name(s) for customizing the wheel. @default undefined */
+    /** Additional class name(s) for each individual petal element. Useful for customizing text style, spacing, or hover effects. @default undefined */
     petalClass?: string;
 };
 
 
-export function TextFlower({texts, markers = false, wheelClass, wheelContainerClass, petalClass}: TextFlowerProps) {
+export function TextFlower({
+                               texts,
+                               markers = false,
+                               wheelClass,
+                               wheelContainerClass,
+                               petalClass,
+                           }: TextFlowerProps) {
     texts = texts ?? [
         "Make a song for my friend Earl.",
         "Make a song about the moon.",
@@ -52,11 +58,13 @@ export function TextFlower({texts, markers = false, wheelClass, wheelContainerCl
         const root = scope.current;
         if (!root) return;
 
+        // change scroller in case placed inside another scroll
         const scroller = root.closest('.overflow-auto') || window;
+
         const petals: NodeListOf<HTMLElement> = root.querySelectorAll('.petal');
         const wheelContainer: HTMLElement = root.querySelector('.wheel-container');
         const wheelPin = root.querySelector('.wheel-pin');
-        const wheel: HTMLElement = root.querySelector('.wheel');
+        const wheel: HTMLElement = root.querySelector('.wheel-rotation');
 
         // Function to update everything
         const updateLayout = () => {
@@ -76,13 +84,14 @@ export function TextFlower({texts, markers = false, wheelClass, wheelContainerCl
         resizeObserver.observe(wheel);
 
         // Your existing animations...
-        gsap.fromTo(wheel, {rotate: `50deg`}, {
-            rotate: `-75deg`,
+        const startRotation = 60;
+        gsap.fromTo(wheel, {rotate: startRotation}, {
+            rotate: startRotation - (360 * 0.55),
             duration: 1.5,
             scrollTrigger: {
                 trigger: wheelContainer,
-                start: 'top bottom',
-                end: 'bottom top',
+                start: 'top top',
+                end: 'bottom bottom',
                 scrub: true,
                 scroller
             }
@@ -111,12 +120,12 @@ export function TextFlower({texts, markers = false, wheelClass, wheelContainerCl
                     {/*control position and size of the wheel*/}
                     <div
                         className={cn("aspect-square absolute left-0 top-1/2 -translate-y-1/2 rounded-full",
-                            "w-[300px] @xl:w-[400px] @7xl:w-[110vh]",
+                            "w-[300px] @xl:w-[500px] @7xl:w-[110vh]",
                             "-translate-x-[90%]",
                             wheelClass)}>
 
                         {/*control rotation*/}
-                        <div className="wheel absolute size-full">
+                        <div className="wheel-rotation absolute size-full">
 
                         {/*dev grid*/}
                         {markers &&
@@ -152,12 +161,12 @@ export function TextFlower({texts, markers = false, wheelClass, wheelContainerCl
 
 function updatePetalsPosition(petals: NodeListOf<HTMLElement>, wheel: HTMLElement) {
     const startAngle = 9; // degree, starting at the top
-    const points = calculatePointsOnCircle(petals.length * 2, wheel.offsetWidth / 2, startAngle);
+    const points = calculatePointsOnCircle(petals.length * 1.5, wheel.offsetWidth / 2, startAngle);
 
     petals.forEach((petal, index) => {
         // petal
         petal.style.setProperty("--x", `${points[index].x}px`);
         petal.style.setProperty("--y", `${points[index].y}px`);
-        petal.style.setProperty("--rotate", `${points[index].rotate + 10}deg`);
+        petal.style.setProperty("--rotate", `${points[index].rotate + startAngle}deg`);
     });
 }
