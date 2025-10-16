@@ -1,19 +1,17 @@
 "use client"
-import React, { useEffect, useRef } from "react"
+import React, { useRef } from "react"
 import gsap from "gsap"
-import "./infinite-grid.css"
+import { useGSAP } from "@gsap/react"
 import { Observer } from "gsap/Observer"
+import "./infinite-grid.css"
+
+gsap.registerPlugin(Observer, useGSAP)
 
 const InfiniteGrid = () => {
   const scope = useRef<HTMLElement | null>(null)
 
-  useEffect(() => {
-    if ("scrollRestoration" in history) {
-      history.scrollRestoration = "manual"
-    }
-    gsap.registerPlugin(Observer)
-
-    const initEffect = () => {
+  useGSAP(
+    () => {
       const root = scope.current
       if (!root) return
 
@@ -71,7 +69,7 @@ const InfiniteGrid = () => {
         incrY = 0
       let interactionTimeout: NodeJS.Timeout
 
-      // === GSAP Observer (wheel + touch + pointer) ===
+      // === GSAP Observer ===
       const gsapObserver = Observer.create({
         target: closestWrapper,
         type: "wheel,touch,pointer",
@@ -112,36 +110,15 @@ const InfiniteGrid = () => {
         },
       })
 
-      // === Cleanup ===
-      const observer = new MutationObserver((mutations) => {
-        const isRootRemoved = mutations.some(
-          (mutation) =>
-            mutation.type === "childList" &&
-            Array.from(mutation.removedNodes).includes(root as Node),
-        )
-        if (isRootRemoved) {
-          gsapObserver.kill()
-          window.removeEventListener("resize", updateWraps)
-          window.removeEventListener("load", updateWraps)
-          observer.disconnect()
-        }
-      })
-
-      observer.observe(document.body, { childList: true, subtree: true })
-    }
-
-    const onLoad = () => initEffect()
-
-    if (document.readyState === "complete") {
-      initEffect()
-    } else {
-      window.addEventListener("load", onLoad, { once: true })
-    }
-
-    return () => {
-      window.removeEventListener("load", onLoad)
-    }
-  }, [])
+      // === Cleanup automatically handled by useGSAP ===
+      return () => {
+        gsapObserver.kill()
+        window.removeEventListener("resize", updateWraps)
+        window.removeEventListener("load", updateWraps)
+      }
+    },
+    { scope } // 🔥 Important: ties all animations and observers to this component only
+  )
 
   return (
     <section className="mwg_effect026" ref={scope}>
