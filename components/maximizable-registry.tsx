@@ -29,7 +29,7 @@ export function MaximizeRegistry({
                                      subtitle,
                                      hashId = "preview",
                                  }: Props) {
-    const showRefreshButton = true;
+    const showRefreshButton = false;
     const refreshDelay = 500;
     const {open, setOpen} = useDialogHash(hashId);
     const [tab, setTab] = useState("");

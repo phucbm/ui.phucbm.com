@@ -56,25 +56,6 @@ export function RegistryPreview({children, registryItem}: Props) {
     const atFullWidth =
         containerWidth > 0 && Math.abs(panelWidth - containerWidth) <= 5;
 
-
-    const [nonce, setNonce] = useState(0);
-    const [isReady, setIsReady] = useState(true);
-
-    useEffect(() => {
-        const handleRefresh = () => {
-            setIsReady(false);
-            setTimeout(() => {
-                setNonce(n => n + 1);
-                setIsReady(true);
-            }, 500);
-        };
-
-        window.addEventListener("registry:refresh-preview", handleRefresh);
-        return () => {
-            window.removeEventListener("registry:refresh-preview", handleRefresh);
-        };
-    }, []);
-
     return (
         <div data-component="demo-registry-client"
              ref={containerRef}
@@ -94,18 +75,9 @@ export function RegistryPreview({children, registryItem}: Props) {
                                 <Badge variant="secondary">{Math.round(panelWidth)}px</Badge>
                             </div>
                         )}
-
-
                         <div className="[&>*]:min-h-[497px]">
-                            {isReady ?
-                                <div key={nonce}>{children}</div> :
-                                <div className="grid place-items-center h-64">
-                                    <span className="animate-pulse text-sm text-muted-foreground">
-                                        Preparing preview…
-                                    </span>
-                                </div>}
+                            {children}
                         </div>
-
                     </div>
                 </ResizablePanel>
 
