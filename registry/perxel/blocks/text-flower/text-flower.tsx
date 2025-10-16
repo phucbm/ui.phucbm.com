@@ -18,13 +18,13 @@ export type TextFlowerProps = {
     /** Whether to show position markers for debugging and layout visualization. @default false */
     markers?: boolean;
 
-    /** Additional class name(s) for the outer wheel container element. Useful for layout or positioning. @default undefined */
+    /** Additional class name(s) for the outer wheel container element. Useful for control the sticky length. @default undefined */
     wheelContainerClass?: string;
 
-    /** Additional class name(s) for the rotating wheel element. Useful for customizing rotation, size, or animation. @default undefined */
-    wheelClass?: string;
+    /** Additional class name(s) for the wheel element. Useful for customizing position and size of the flower. @default undefined */
+    wheelPositionClass?: string;
 
-    /** Additional class name(s) for each individual petal element. Useful for customizing text style, spacing, or hover effects. @default undefined */
+    /** Additional class name(s) for each individual petal element. Useful for customizing text style or hover effects. @default undefined */
     petalClass?: string;
 };
 
@@ -32,7 +32,7 @@ export type TextFlowerProps = {
 export function TextFlower({
                                texts,
                                markers = false,
-                               wheelClass,
+                               wheelPositionClass,
                                wheelContainerClass,
                                petalClass,
                            }: TextFlowerProps) {
@@ -122,7 +122,7 @@ export function TextFlower({
                         className={cn("aspect-square absolute left-0 top-1/2 -translate-y-1/2 rounded-full",
                             "w-[300px] @xl:w-[500px] @7xl:w-[110vh]",
                             "-translate-x-[90%]",
-                            wheelClass)}>
+                            wheelPositionClass)}>
 
                         {/*control rotation*/}
                         <div className="wheel-rotation absolute size-full">
