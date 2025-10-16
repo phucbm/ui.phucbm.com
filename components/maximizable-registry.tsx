@@ -12,6 +12,7 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import CodeBlockView, {CodeItem} from "@/components/code-block-view";
 import {cn} from "@/lib/utils";
 import {RegistryInstall} from "@/components/registry-install";
+import {RefreshCWIcon} from "@/components/ui/refresh-cw";
 
 type Props = {
     children: React.ReactNode;
@@ -28,7 +29,7 @@ export function MaximizeRegistry({
                                      subtitle,
                                      hashId = "preview",
                                  }: Props) {
-    const showRefreshButton = false;
+    const showRefreshButton = true;
     const refreshDelay = 500;
     const {open, setOpen} = useDialogHash(hashId);
     const [tab, setTab] = useState("");
@@ -98,7 +99,7 @@ export function MaximizeRegistry({
                 {/* Inline button */}
                 <DialogTrigger asChild>
                     <Button variant="ghost" size="icon" aria-label="Maximize">
-                        <MaximizeIcon className="h-4 w-4"/>
+                        <MaximizeIcon/>
                     </Button>
                 </DialogTrigger>
 
@@ -137,15 +138,15 @@ export function MaximizeRegistry({
                                     {/* Refresh Preview Button */}
                                     {showRefreshButton && <Button
                                         variant="outline"
-                                        size="sm"
+                                        size="icon-sm"
                                         aria-label="Refresh preview layout"
                                         onClick={() => refreshPreview(0)}
                                     >
-                                        Refresh
+                                        <RefreshCWIcon/>
                                     </Button>}
 
                                     <Button
-                                        variant="ghost"
+                                        variant="outline"
                                         size="sm"
                                         aria-label="Close"
                                         onClick={() => setOpen(false)}

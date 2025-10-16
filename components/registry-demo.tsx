@@ -1,3 +1,4 @@
+// RegistryDemo.tsx (Server Component)
 import {getRegistryItem} from "@/lib/getRegistryItem";
 import {RegistryPreview} from "@/components/registry-preview";
 import React from "react";
@@ -5,14 +6,15 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import {MaximizeRegistry} from "@/components/maximizable-registry";
 import {getRegistryCodeItems} from "@/lib/getRegistryCodeItems";
 import CodeBlockView, {CodeItem} from "@/components/code-block-view";
+import {RegistryDemoHeader} from "@/components/registry-demo-header";
 
 type Props = {
     children: React.ReactNode;
     name?: string;
     code?: CodeItem[];
-    hashId?: string; // for maximizable registry
-    subtitle?: string; // for maximizable registry
-    fullScreenDemo?: React.ReactNode; // new prop
+    hashId?: string;
+    subtitle?: string;
+    fullScreenDemo?: React.ReactNode;
 };
 
 export async function RegistryDemo({
@@ -36,22 +38,15 @@ export async function RegistryDemo({
 
     return (
         <Tabs defaultValue="preview" className="pt-6">
-            {/* demo header */}
-            <div className="flex justify-between items-center">
-                <TabsList>
-                    <TabsTrigger value="preview">Preview</TabsTrigger>
-                    {hasFiles && <TabsTrigger value="code">Code</TabsTrigger>}
-                </TabsList>
-                <div>
-                    <MaximizeRegistry
-                        children={demoForFullscreen}
-                        registryItem={registryItem}
-                        code={code}
-                        hashId={hashId}
-                        subtitle={subtitle}
-                    />
-                </div>
-            </div>
+            {/* demo header with client-side refresh */}
+            <RegistryDemoHeader
+                hasFiles={hasFiles}
+                registryItem={registryItem}
+                code={code}
+                hashId={hashId}
+                subtitle={subtitle}
+                demoForFullscreen={demoForFullscreen}
+            />
 
             {/* preview */}
             <TabsContent value="preview">
