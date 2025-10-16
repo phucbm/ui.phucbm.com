@@ -10,15 +10,15 @@ import {applyRippleEffect} from "@phucbm/ripple-effect";
 gsap.registerPlugin(Observer);
 
 export type TextRippleProps = {
-    /** Top line text (split into characters) */
+    /** Top line text (split into characters). @default "technical.architect" */
     line1: string;
-    /** Bottom line text (split into characters) */
+    /** Bottom line text (split into characters). @default "creative.developer" */
     line2: string;
     /** Optional extra classes applied to the wrapper */
     className?: string;
 };
 
-export function TextRipple({line1, line2, className}: TextRippleProps) {
+export function TextRipple({line1 = "technical.architect", line2 = "creative.developer", className}: TextRippleProps) {
     const scope = useRef<HTMLElement | null>(null);
 
     useGSAP(
