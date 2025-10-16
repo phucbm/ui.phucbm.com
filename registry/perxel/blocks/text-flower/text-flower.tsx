@@ -52,17 +52,30 @@ export function TextFlower({texts, markers = false, wheelClass, wheelContainerCl
         const root = scope.current;
         if (!root) return;
 
-        // const isWindowScroller = !root.closest('.overflow-auto');
         const scroller = root.closest('.overflow-auto') || window;
-
         const petals: NodeListOf<HTMLElement> = root.querySelectorAll('.petal');
         const wheelContainer: HTMLElement = root.querySelector('.wheel-container');
         const wheelPin = root.querySelector('.wheel-pin');
         const wheel: HTMLElement = root.querySelector('.wheel');
 
-        updatePetalsPosition(petals, wheel);
+        // Function to update everything
+        const updateLayout = () => {
+            updatePetalsPosition(petals, wheel);
+            ScrollTrigger.refresh();
+        };
 
-        // rotate the wheel on scroll
+        // Initial setup
+        updateLayout();
+
+        // Watch for size changes
+        const resizeObserver = new ResizeObserver(() => {
+            updateLayout();
+        });
+
+        resizeObserver.observe(root);
+        resizeObserver.observe(wheel);
+
+        // Your existing animations...
         gsap.fromTo(wheel, {rotate: `50deg`}, {
             rotate: `-75deg`,
             duration: 1.5,
@@ -75,26 +88,35 @@ export function TextFlower({texts, markers = false, wheelClass, wheelContainerCl
             }
         });
 
-        // pin the wheel on screen
         ScrollTrigger.create({
-            trigger: wheelContainer,           // the container that controls the timeline
-            start: "top top",              // pin starts when top of wheelContainer hits top of viewport
-            end: "bottom bottom",          // pin ends when bottom of wheelContainer hits bottom of viewport
-            pin: wheelPin,         // the element to pin
-            pinSpacing: false,             // IMPORTANT: set to false since wheelContainer already has height
-            // markers: true,
+            trigger: wheelContainer,
+            start: "top top",
+            end: "bottom bottom",
+            pin: wheelPin,
+            pinSpacing: false,
             scroller
         });
+
+        // Cleanup
+        return () => {
+            resizeObserver.disconnect();
+        };
     }, {scope});
 
     return (
         <section ref={scope} className="size-full">
-            <div className={cn("wheel-container h-[300vh]", wheelContainerClass)}>
-                <div className="wheel-pin fl-center overflow-hidden h-screen">
+            <div className={cn("wheel-container h-[200vh] @7xl:h-[300vh]", wheelContainerClass)}>
+                <div className="wheel-pin fl-center overflow-hidden h-screen relative">
+
+                    {/*control position and size of the wheel*/}
                     <div
-                        className={cn("wheel aspect-square absolute left-0 top-1/2 -translate-y-1/2 rounded-full",
-                            "w-[110vh] -translate-x-[90%]",
+                        className={cn("aspect-square absolute left-0 top-1/2 -translate-y-1/2 rounded-full",
+                            "w-[300px] @xl:w-[400px] @7xl:w-[110vh]",
+                            "-translate-x-[90%]",
                             wheelClass)}>
+
+                        {/*control rotation*/}
+                        <div className="wheel absolute size-full">
 
                         {/*dev grid*/}
                         {markers &&
@@ -120,6 +142,7 @@ export function TextFlower({texts, markers = false, wheelClass, wheelContainerCl
                             </div>
                         ))}
 
+                        </div>
                     </div>
                 </div>
             </div>
