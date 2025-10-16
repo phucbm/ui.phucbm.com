@@ -1,14 +1,11 @@
 "use client"
 
 import {IconChevronDown} from "@tabler/icons-react"
-
-import {useCopyToClipboard} from "@/hooks/use-copy-to-clipboard"
 import {Button} from "@/components/ui/button"
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
 import {Popover, PopoverAnchor, PopoverContent, PopoverTrigger,} from "@/components/ui/popover"
 import {Separator} from "@/components/ui/separator"
-import {CopyIcon} from "@/components/ui/copy";
-import {CheckIcon} from "@/components/ui/check";
+import {getRegistryUrl} from "@/lib/getRegistryUrl";
 
 function getPromptUrl(baseURL: string, url: string) {
   return `${baseURL}?q=${encodeURIComponent(
@@ -81,8 +78,8 @@ const menuItems = {
   ),
 }
 
-export function DocsCopyPage({ page, url }: { page: string; url: string }) {
-  const { copyToClipboard, isCopied } = useCopyToClipboard()
+export function DocsCopyPage({page, url, registryName}: { page: string; url: string; registryName: string }) {
+    // const { copyToClipboard, isCopied } = useCopyToClipboard()
 
   const trigger = (
     <Button
@@ -98,15 +95,42 @@ export function DocsCopyPage({ page, url }: { page: string; url: string }) {
     <Popover>
       <div className="bg-secondary group/buttons relative flex rounded-lg *:[[data-slot=button]]:focus-visible:relative *:[[data-slot=button]]:focus-visible:z-10">
         <PopoverAnchor />
-        <Button
-          variant="secondary"
-          size="sm"
-          className="h-8 shadow-none md:h-7 md:text-[0.8rem]"
-          onClick={() => copyToClipboard(page)}
-        >
-            {isCopied ? <CheckIcon/> : <CopyIcon/>}
-          Copy Page
-        </Button>
+
+
+          {/*  <Button*/}
+          {/*  variant="secondary"*/}
+          {/*  size="sm"*/}
+          {/*  className="h-8 shadow-none md:h-7 md:text-[0.8rem]"*/}
+          {/*  onClick={() => copyToClipboard(page)}*/}
+          {/*>*/}
+          {/*    {isCopied ? <CheckIcon/> : <CopyIcon/>}*/}
+          {/*  Copy Page*/}
+          {/*</Button>*/}
+
+          <Button
+              variant="secondary"
+              size="sm"
+              className="h-8 shadow-none md:h-7 md:text-[0.8rem]"
+              asChild
+          >
+              <a
+                  href={"https://v0.dev/chat/api/open?url=" + getRegistryUrl({name: registryName})}
+                  target="_blank"
+                  rel="noopener noreferrer"
+              >
+                  Edit in <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 147 70"
+                  className="size-4.5 -translate-x-px"
+              >
+                  <path
+                      d="M56 50.203V14h14v46.156C70 65.593 65.593 70 60.156 70c-2.596 0-5.158-1-7-2.843L0 14h19.797L56 50.203ZM147 56h-14V23.953L100.953 56H133v14H96.687C85.814 70 77 61.186 77 50.312V14h14v32.156L123.156 14H91V0h36.312C138.186 0 147 8.814 147 19.688V56Z"/>
+              </svg>
+              </a>
+          </Button>
+
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild className="hidden sm:flex">
             {trigger}

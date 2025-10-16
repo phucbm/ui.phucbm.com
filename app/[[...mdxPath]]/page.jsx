@@ -30,7 +30,7 @@ export default async function Page(props) {
             {
                 mdxPath && mdxPath[0] === 'components' &&
                 <div className="absolute top-0 right-0 hidden lg:flex">
-                    <DocsCopyPage page={sourceCode} url={getDocsUrl({mdxPath})}/>
+                    <DocsCopyPage page={sourceCode} url={getDocsUrl({mdxPath})} registryName={mdxPath[1]}/>
                 </div>
             }
 
