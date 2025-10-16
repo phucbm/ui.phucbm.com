@@ -16,6 +16,11 @@
       "path": "registry/perxel/blocks/text-flower/text-flower.tsx",
       "type": "registry:component",
       "target": "components/perxel/text-flower.tsx"
+    },
+    {
+      "path": "registry/perxel/blocks/text-flower/lib/calculatePointsOnCircle.ts",
+      "type": "registry:component",
+      "target": "lib/calculatePointsOnCircle.ts"
     }
   ]
 }

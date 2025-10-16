@@ -5,6 +5,32 @@
   "items": [
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "text-flower",
+      "type": "registry:component",
+      "title": "Text Flower",
+      "description": "Animated wheel of text lines that orbit around a central anchor.",
+      "dependencies": [
+        "gsap",
+        "react",
+        "@gsap/react",
+        "normalized-mouse-position",
+        "@phucbm/ripple-effect"
+      ],
+      "files": [
+        {
+          "path": "registry/perxel/blocks/text-flower/text-flower.tsx",
+          "type": "registry:component",
+          "target": "components/perxel/text-flower.tsx"
+        },
+        {
+          "path": "registry/perxel/blocks/text-flower/lib/calculatePointsOnCircle.ts",
+          "type": "registry:component",
+          "target": "lib/calculatePointsOnCircle.ts"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
       "name": "text-ripple",
       "type": "registry:component",
       "title": "Text Ripple",
