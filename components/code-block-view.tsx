@@ -38,18 +38,22 @@ const CodeBlockView = ({code, contentClassName}: Props) => (
                     </CodeBlockFilename>
                 )}
             </CodeBlockFiles>
-            <CodeBlockSelect>
-                <CodeBlockSelectTrigger>
-                    <CodeBlockSelectValue/>
-                </CodeBlockSelectTrigger>
-                <CodeBlockSelectContent>
-                    {(item) => (
-                        <CodeBlockSelectItem key={item.language} value={item.language}>
-                            {item.language}
-                        </CodeBlockSelectItem>
-                    )}
-                </CodeBlockSelectContent>
-            </CodeBlockSelect>
+            {
+                code.length > 1 && <>
+                    <CodeBlockSelect>
+                        <CodeBlockSelectTrigger>
+                            <CodeBlockSelectValue/>
+                        </CodeBlockSelectTrigger>
+                        <CodeBlockSelectContent>
+                            {(item) => (
+                                <CodeBlockSelectItem key={item.language} value={item.language}>
+                                    {item.language}
+                                </CodeBlockSelectItem>
+                            )}
+                        </CodeBlockSelectContent>
+                    </CodeBlockSelect>
+                </>
+            }
             <CodeBlockCopyButton
                 onCopy={() => console.log('Copied code to clipboard')}
                 onError={() => console.error('Failed to copy code to clipboard')}

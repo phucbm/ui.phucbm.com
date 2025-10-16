@@ -7,9 +7,7 @@
   "dependencies": [
     "gsap",
     "react",
-    "@gsap/react",
-    "normalized-mouse-position",
-    "@phucbm/ripple-effect"
+    "@gsap/react"
   ],
   "files": [
     {

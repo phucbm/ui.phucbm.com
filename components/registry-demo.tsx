@@ -62,7 +62,7 @@ export async function RegistryDemo({
             {/* code */}
             {hasFiles && (
                 <TabsContent value="code">
-                    <CodeBlockView code={code}/>
+                    <CodeBlockView code={code.slice(0, 1)}/>
                 </TabsContent>
             )}
         </Tabs>

@@ -51,7 +51,6 @@ export function TextFlower({
         "Make a song that feels how you feel.",
         "Make a song with Suno.",
     ];
-    // texts = [...texts, ...texts];
 
     const scope = useRef<HTMLElement | null>(null);
     useGSAP(() => {
