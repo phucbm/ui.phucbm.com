@@ -28,31 +28,69 @@ export function MaximizeRegistry({
                                      subtitle,
                                      hashId = "preview",
                                  }: Props) {
+    const showRefreshButton = false;
+    const refreshDelay = 500;
     const {open, setOpen} = useDialogHash(hashId);
-    const [tab, setTab] = useState('');
+    const [tab, setTab] = useState("");
     const hasFiles = registryItem?.files?.length > 0;
+
+    // header measuring
     const headerRef = useRef<HTMLDivElement>(null);
     const [headerHeight, setHeaderHeight] = useState(0);
-
-    // measure header height and update on resize or mutation
     useEffect(() => {
         const updateHeight = () => {
             const h = headerRef.current?.offsetHeight ?? 0;
             setHeaderHeight(h);
         };
-
-        updateHeight(); // initial
+        updateHeight();
         window.addEventListener("resize", updateHeight);
-
-        // observe changes inside header (e.g. tabs wrap)
         const observer = new MutationObserver(updateHeight);
         if (headerRef.current) observer.observe(headerRef.current, {childList: true, subtree: true});
-
         return () => {
             window.removeEventListener("resize", updateHeight);
             observer.disconnect();
         };
     }, [tab]);
+
+    // preview refresh controls
+    const contentRef = useRef<HTMLDivElement>(null);
+    const [previewReady, setPreviewReady] = useState(false);
+    const [previewNonce, setPreviewNonce] = useState(0);
+    const refreshTimerRef = useRef<number | undefined>(undefined);
+
+    const clearRefreshTimer = () => {
+        if (refreshTimerRef.current) {
+            clearTimeout(refreshTimerRef.current);
+            refreshTimerRef.current = undefined;
+        }
+    };
+
+    // Button-triggered refresh for <TabsContent value="preview">
+    const refreshPreview = (delayMs = refreshDelay) => {
+        clearRefreshTimer();
+        setPreviewReady(false);
+        refreshTimerRef.current = window.setTimeout(() => {
+            setPreviewNonce((n) => n + 1);
+            setPreviewReady(true);
+            // (optional) notify children that want to re-measure without remount
+            const el = contentRef.current;
+            if (el) el.dispatchEvent(new CustomEvent("perxel:layout-refresh"));
+            refreshTimerRef.current = undefined;
+        }, delayMs);
+    };
+
+    // Auto-refresh 1s after dialog is opened/mounted
+    useEffect(() => {
+        if (!open) {
+            clearRefreshTimer();
+            setPreviewReady(false);
+            return;
+        }
+        // show loader immediately, then remount after delay
+        refreshPreview(refreshDelay);
+        return clearRefreshTimer;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [open]);
 
     return (
         <div data-component="maximizable-registry">
@@ -65,17 +103,17 @@ export function MaximizeRegistry({
                 </DialogTrigger>
 
                 <DialogContent
+                    ref={contentRef}
                     forceMount
                     showCloseButton={false}
                     className={cn(
                         "w-screen h-screen !max-w-none rounded-none border-none p-0 gap-0 overflow-hidden px-bg-pattern-transparent"
                     )}
                     style={{
-                        // inject CSS var for use anywhere inside DialogContent
                         ["--header-height" as any]: `${headerHeight}px`,
                     }}
                 >
-                    <Tabs defaultValue="preview" className="w-screen" onValueChange={v => setTab(v)}>
+                    <Tabs defaultValue="preview" className="w-screen" onValueChange={(v) => setTab(v)}>
                         <DialogHeader
                             ref={headerRef}
                             className="absolute top-0 left-0 w-full z-20 border-b px-bg-blur"
@@ -95,7 +133,17 @@ export function MaximizeRegistry({
                                 </div>
 
                                 {/* header right */}
-                                <div className="flex justify-end items-center gap-4 max-sm:w-1/3">
+                                <div className="flex justify-end items-center gap-2 max-sm:w-1/3">
+                                    {/* Refresh Preview Button */}
+                                    {showRefreshButton && <Button
+                                        variant="outline"
+                                        size="sm"
+                                        aria-label="Refresh preview layout"
+                                        onClick={() => refreshPreview(0)}
+                                    >
+                                        Refresh
+                                    </Button>}
+
                                     <Button
                                         variant="ghost"
                                         size="sm"
@@ -112,7 +160,16 @@ export function MaximizeRegistry({
                         <TabsContent value="preview">
                             <div className="flex justify-center items-center @container h-screen">
                                 <div className="overflow-auto size-full max-h-screen">
-                                    {children}
+                                    {!previewReady ? (
+                                        <div className="grid place-items-center h-[calc(100vh-var(--header-height))]">
+                      <span className="animate-pulse text-sm text-muted-foreground">
+                        Preparing preview…
+                      </span>
+                                        </div>
+                                    ) : (
+                                        // key forces a clean mount → re-run layout calculations
+                                        <div key={previewNonce}>{children}</div>
+                                    )}
                                 </div>
                             </div>
                         </TabsContent>
@@ -128,10 +185,7 @@ export function MaximizeRegistry({
                             </TabsContent>
                         )}
 
-                        <TabsContent
-                            value="installation"
-                            className="pt-[var(--header-height)] w-full"
-                        >
+                        <TabsContent value="installation" className="pt-[var(--header-height)] w-full">
                             <div className="container mx-auto px-4">
                                 <RegistryInstall name={registryItem?.name || ""}/>
                             </div>
