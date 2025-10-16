@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "infinite-grid",
+  "type": "registry:component",
+  "title": "Infinite Grid",
+  "description": "Infinite grid effect applied to a grid of images.",
+  "dependencies": [
+    "gsap",
+    "react",
+    "@gsap/react",
+    "gsap/Observer"
+  ],
+  "files": [
+    {
+      "path": "registry/perxel/blocks/infinite-grid/infinite-grid.tsx",
+      "type": "registry:component",
+      "target": "components/perxel/infinite-grid.tsx"
+    }
+  ]
+}
