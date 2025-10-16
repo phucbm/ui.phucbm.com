@@ -1,9 +1,28 @@
-import InfiniteGridPage from "@/registry/perxel/blocks/infinite-grid/infinite-grid"
+import InfiniteGrid from "@/registry/perxel/blocks/infinite-grid/infinite-grid"
 
 # Infinite Grid
 
 <RegistryDemo name="infinite-grid">
-    <div className="outer-wrapper">
-        <InfiniteGridPage/>
-    </div>
+  <div className="outer-wrapper">
+    {(() => {
+      const images = [
+         <div className="media"><img src="/InfiniteGrid/medias/12.png" alt="" /></div>,
+    <div className="media"><img src="/InfiniteGrid/medias/02.png" alt="" /></div>,
+    <div className="media"><img src="/InfiniteGrid/medias/03.png" alt="" /></div>,
+    <div className="media"><img src="/InfiniteGrid/medias/04.png" alt="" /></div>,
+    <div className="media"><img src="/InfiniteGrid/medias/05.png" alt="" /></div>,
+    <div className="media"><img src="/InfiniteGrid/medias/06.png" alt="" /></div>,
+    <div className="media"><img src="/InfiniteGrid/medias/07.png" alt="" /></div>,
+    <div className="media"><img src="/InfiniteGrid/medias/08.png" alt="" /></div>,
+    <div className="media"><img src="/InfiniteGrid/medias/09.png" alt="" /></div>,
+    <div className="media"><img src="/InfiniteGrid/medias/10.png" alt="" /></div>,
+    <div className="media"><img src="/InfiniteGrid/medias/11.png" alt="" /></div>,
+    <div className="media"><img src="/InfiniteGrid/medias/01.png" alt="" /></div>,
+    <div className="media"><img src="/InfiniteGrid/medias/13.png" alt="" /></div>,
+    <div className="media"><img src="/InfiniteGrid/medias/14.png" alt="" /></div>,
+    <div className="media"><img src="/InfiniteGrid/medias/15.png" alt="" /></div>,
+      ]
+      return <InfiniteGrid images={images} />
+    })()}
+  </div>
 </RegistryDemo>
