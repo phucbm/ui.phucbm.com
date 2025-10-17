@@ -1,20 +1,20 @@
 "use client"
-import React, { useRef } from "react"
+import React, {useRef} from "react"
 import gsap from "gsap"
-import { useGSAP } from "@gsap/react"
-import { Observer } from "gsap/Observer"
+import {useGSAP} from "@gsap/react"
+import {Observer} from "gsap/Observer"
 import "./infinite-grid.css"
 
 gsap.registerPlugin(Observer, useGSAP)
 
-interface InfiniteGridProps {
+export interface InfiniteGridProps {
   /** Array of React nodes representing images, e.g.:
    *  [<div className="media"><img src="/..." /></div>, ...]
    */
   images: React.ReactNode[]
 }
 
-const InfiniteGrid: React.FC<InfiniteGridProps> = ({ images }) => {
+export const InfiniteGrid: React.FC<InfiniteGridProps> = ({images}) => {
   const scope = useRef<HTMLDivElement | null>(null)
 
   useGSAP(
@@ -58,7 +58,7 @@ const InfiniteGrid: React.FC<InfiniteGridProps> = ({ images }) => {
 
       // === GSAP Observer
       const gsapObserver = Observer.create({
-        target: window,
+          target: root,
         type: "wheel,touch,pointer",
         preventDefault: true,
 
@@ -113,5 +113,3 @@ const InfiniteGrid: React.FC<InfiniteGridProps> = ({ images }) => {
     </div>
   )
 }
-
-export default InfiniteGrid
