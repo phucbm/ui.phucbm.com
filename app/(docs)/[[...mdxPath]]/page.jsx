@@ -1,7 +1,7 @@
 import {generateStaticParamsFor, importPage} from 'nextra/pages'
-import {useMDXComponents as getMDXComponents} from '../../mdx-components'
-import {DocsCopyPage} from "../../components/docs-copy-page";
-import {getDocsUrl} from "../../lib/getDocsUrl";
+import {useMDXComponents as getMDXComponents} from '../../../mdx-components'
+import {DocsCopyPage} from "../../../components/docs-copy-page";
+import {getDocsUrl} from "../../../lib/getDocsUrl";
 
 export const generateStaticParams = generateStaticParamsFor('mdxPath')
 
