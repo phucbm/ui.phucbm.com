@@ -7,6 +7,7 @@ import "./slide-carousel.css"
 import { Button } from "@/components/ui/button"
 import { checkBoundaries } from "@/registry/perxel/blocks/image-carousel/lib/checkBoundaries"
 import { handleManualSlide } from "@/registry/perxel/blocks/image-carousel/lib/handleManualSlide"
+import { useGSAP } from "@gsap/react"
 
 export type ImageCarouselProps = {
   baseSpeed?: number
@@ -75,82 +76,75 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
   }, [infinite])
 
   // === GSAP setup ===
-  useEffect(() => {
+  useGSAP(() => {
     const root = scope.current
     if (!root) return
-
+  
     const slide = root.querySelector(".images") as HTMLUListElement | null
     const slideItem = root.querySelector(".slide-item:not(:first-child)") as HTMLElement | null
     const container = root.querySelector(".overflow-hidden") as HTMLElement | null
     if (!slide || !slideItem || !container) return
-
+  
     slideRef.current = slide
-
-    // Reset
+  
+    // === Reset position ===
     gsap.killTweensOf(slide)
     gsap.set(slide, { x: 0 })
     totalRef.current = 0
-
-    // Dimensions
+  
+    // === Dimensions ===
     slideItemWidthRef.current = slideItem.clientWidth
     containerWidthRef.current = container.clientWidth
     totalWidthRef.current = slideItem.clientWidth * slide.querySelectorAll(".slide-item").length - 5
-
+  
     const half = totalWidthRef.current / 2
     const wrap = gsap.utils.wrap(-half, 0)
-
+  
     xToRef.current = gsap.quickTo(slide, "x", {
       duration: 0.1,
       ease: "power3",
       modifiers: { x: gsap.utils.unitize(wrap) },
     })
     noWrapXToRef.current = gsap.quickTo(slide, "x", { duration: 0.1, ease: "power3" })
-
+  
     const tick = (_t: number, dt: number) => {
       if (!autoSlideRef.current) return
-
       const moveSpeed = baseSpeedRef.current * speedFactorRef.current
       let next = totalRef.current - dt * moveSpeed
-
+  
       if (!infiniteRef.current) {
         const maxScroll = -(totalWidthRef.current - containerWidthRef.current)
         next = Math.max(maxScroll, next)
       }
-
+  
       totalRef.current = next
       const fn = infiniteRef.current ? xToRef.current : noWrapXToRef.current
       fn?.(totalRef.current)
-
       checkBoundaries(totalRef, totalWidthRef, containerWidthRef, infiniteRef, setIsLeftDisabled, setIsRightDisabled)
     }
-
-    tickRef.current = tick
+  
     gsap.ticker.add(tick)
-
-    const onEnter = () => {
-      speedFactorRef.current = normalSpeedRef.current * hoverSlowdownRatioRef.current
-    }
-    const onLeave = () => {
-      speedFactorRef.current = normalSpeedRef.current
-    }
-
+  
+    const onEnter = () => (speedFactorRef.current = normalSpeedRef.current * hoverSlowdownRatioRef.current)
+    const onLeave = () => (speedFactorRef.current = normalSpeedRef.current)
+  
     slide.addEventListener("mouseenter", onEnter)
     slide.addEventListener("mouseleave", onLeave)
-
+  
     checkBoundaries(totalRef, totalWidthRef, containerWidthRef, infiniteRef, setIsLeftDisabled, setIsRightDisabled)
-
+  
     return () => {
       slide.removeEventListener("mouseenter", onEnter)
       slide.removeEventListener("mouseleave", onLeave)
-      tickRef.current && gsap.ticker.remove(tickRef.current)
+      gsap.ticker.remove(tick)
       manualTweenRef.current?.kill()
       gsap.killTweensOf(slide)
       xToRef.current = null
       noWrapXToRef.current = null
       slideRef.current = null
     }
-  }, [infinite, autoSlide, baseSpeed, hoverSlowdownRatio])
-
+  }, { dependencies: [infinite, autoSlide, baseSpeed, hoverSlowdownRatio] })
+  
   // === Render ===
   return (
     <section className="slide-carousel" ref={scope}>
