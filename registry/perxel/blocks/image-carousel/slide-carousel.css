@@ -1,0 +1,23 @@
+.slide-carousel {
+    --slide-w:calc(30% + 5px * 2);
+}
+
+.slide-carousel .images {
+    display: inline-block;  /* keep them in a row */
+    white-space: nowrap;    /* prevent wrapping */
+  }
+  
+
+.slide-item {
+    display: inline-block;
+    width: var(--slide-w);
+}
+
+.slide-item:first-child {
+    width: calc(var(--slide-w) - 5px);
+    padding-right:5px;
+}
+
+.slide-item:not(:first-child) {
+    padding:0 5px
+}

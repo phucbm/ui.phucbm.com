@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "image-carousel",
+  "type": "registry:component",
+  "title": "Image Carousel",
+  "description": "Image carousel effect applied to a list of images.",
+  "dependencies": [
+    "gsap",
+    "react",
+    "@gsap/react",
+    "gsap/Observer"
+  ],
+  "files": [
+    {
+      "path": "registry/perxel/blocks/image-carousel/image-carousel.tsx",
+      "type": "registry:component",
+      "target": "components/perxel/image-carousel.tsx"
+    }
+  ]
+}
