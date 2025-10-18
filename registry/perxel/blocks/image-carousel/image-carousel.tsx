@@ -389,18 +389,18 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
       {/* Carousel */}
       <div className="pin-height">
         <div className="overflow-hidden cursor-grab active:cursor-grabbing">
-          <ul className="images inline-block whitespace-nowrap -mx-[calc(var(--slide-gap)/2)]">
+          <ul className="images inline-block whitespace-nowrap -mx-[calc(var(--slide-gap)/2)] ">
             {images.map((src, i) => (
               <li
                 key={`img-${i}`}
-                className="slide-item aspect-card inline-block w-[var(--slide-w)] mx-[calc(var(--slide-gap)/2)]"
+                className="select-none slide-item aspect-card inline-block w-[var(--slide-w)] mx-[calc(var(--slide-gap)/2)]"
               >
                 <Image
                   src={src}
                   alt={`slide-${i}`}
                   width={800}
                   height={1000}
-                  className="pointer-events-none user-select-none"
+                  className="pointer-events-none"
                   priority={i < 2}
                 />
               </li>
@@ -409,14 +409,14 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
               images.map((src, i) => (
                 <li
                   key={`dup-${i}`}
-                  className="slide-item aspect-card inline-block w-[var(--slide-w)] mx-[calc(var(--slide-gap)/2)]"
+                  className="select-none slide-item aspect-card inline-block w-[var(--slide-w)] mx-[calc(var(--slide-gap)/2)]"
                 >
                   <Image
                     src={src}
                     alt={`slide-dup-${i}`}
                     width={800}
                     height={1000}
-                    className="pointer-events-none user-select-none"
+                    className="pointer-events-none"
                   />
                 </li>
               ))}
