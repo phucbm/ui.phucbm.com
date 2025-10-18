@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { Observer } from "gsap/Observer";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
-import { exampleImages } from "./utils/demo-images";
+import { exampleImages } from "@/utils/demo-images";
 
 gsap.registerPlugin(Observer);
 
