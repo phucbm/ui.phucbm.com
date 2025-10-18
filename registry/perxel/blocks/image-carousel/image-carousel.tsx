@@ -20,6 +20,7 @@ export type ImageCarouselProps = {
   images?: string[];
   slideWidth?: string;
   slideGap?: string;
+  direction?: 1 | -1;
 };
 
 const DEFAULT_IMAGES = [
@@ -45,6 +46,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
   images = DEFAULT_IMAGES,
   slideWidth = "120px",
   slideGap = "35px",
+  direction = 1,
 
   infinite = true,
   manualNav = false,
@@ -178,8 +180,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
       const tick = (_t: number, dt: number) => {
         if (!autoSlideRef.current) return;
         const moveSpeed = baseSpeedRef.current * speedFactorRef.current;
-        let next = totalRef.current - dt * moveSpeed;
-
+        let next = totalRef.current - dt * moveSpeed * direction;
         if (!infiniteRef.current) {
           const maxScroll = -(
             totalWidthRef.current - containerWidthRef.current
@@ -312,6 +313,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
         slideGap,
         slideWidth,
         images.length,
+        direction,
       ],
     }
   );
