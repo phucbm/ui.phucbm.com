@@ -4,10 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { Observer } from "gsap/Observer";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { checkBoundaries } from "@/registry/perxel/blocks/image-carousel/lib/checkBoundaries";
-import { handleManualSlide } from "@/registry/perxel/blocks/image-carousel/lib/handleManualSlide";
 import { useGSAP } from "@gsap/react";
+import { exampleImages } from "./utils/demo-images";
 
 gsap.registerPlugin(Observer);
 
@@ -15,41 +13,20 @@ export type ImageCarouselProps = {
   speed?: number;
   hoverSlowdownRatio?: number;
   autoSlide?: boolean;
-  infinite?: boolean;
-  manualNav?: boolean;
   images?: string[];
   slideWidth?: string;
   slideGap?: string;
-  direction?: 1 | -1;
+  direction?: 1 | -1; // 1 = right→left, -1 = left→right
 };
-
-const DEFAULT_IMAGES = [
-  "/FadingTransition/medias/1.png",
-  "/FadingTransition/medias/2.png",
-  "/FadingTransition/medias/3.png",
-  "/FadingTransition/medias/4.png",
-  "/FadingTransition/medias/5.png",
-  "/FadingTransition/medias/4.png",
-  "/FadingTransition/medias/5.png",
-  "/FadingTransition/medias/4.png",
-  "/FadingTransition/medias/5.png",
-  "/FadingTransition/medias/4.png",
-  "/FadingTransition/medias/5.png",
-  "/FadingTransition/medias/5.png",
-  "/FadingTransition/medias/5.png",
-];
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({
   speed = 1,
   hoverSlowdownRatio = 0.5,
   autoSlide = true,
-  images = DEFAULT_IMAGES,
+  images = exampleImages,
   slideWidth = "120px",
   slideGap = "35px",
   direction = 1,
-
-  infinite = true,
-  manualNav = false,
 }) => {
   const scope = useRef<HTMLDivElement | null>(null);
   const speedFactorRef = useRef(0.5);
@@ -57,46 +34,28 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
   const hoverSlowdownRatioRef = useRef(hoverSlowdownRatio);
   const normalSpeedRef = useRef(0.5);
   const autoSlideRef = useRef(autoSlide);
-  const infiniteRef = useRef(infinite);
 
   const totalRef = useRef(0);
   const xToRef = useRef<((v: number) => void) | null>(null);
   const noWrapXToRef = useRef<((v: number) => void) | null>(null);
-  const tickRef = useRef<((t: number, dt: number) => void) | null>(null);
 
   const slideRef = useRef<HTMLUListElement | null>(null);
   const slideItemWidthRef = useRef(0);
   const containerWidthRef = useRef(0);
   const totalWidthRef = useRef(0);
 
-  const manualTweenRef = useRef<gsap.core.Tween | null>(null);
-  const [isLeftDisabled, setIsLeftDisabled] = useState(false);
-  const [isRightDisabled, setIsRightDisabled] = useState(false);
-
   // keep refs up-to-date
   useEffect(() => {
     baseSpeedRef.current = speed;
   }, [speed]);
+
   useEffect(() => {
     hoverSlowdownRatioRef.current = hoverSlowdownRatio;
   }, [hoverSlowdownRatio]);
-  // only initialize once from prop, don't override manual toggle
-  useEffect(() => {
-    autoSlideRef.current = autoSlide;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
-    infiniteRef.current = infinite;
-    checkBoundaries(
-      totalRef,
-      totalWidthRef,
-      containerWidthRef,
-      infiniteRef,
-      setIsLeftDisabled,
-      setIsRightDisabled
-    );
-  }, [infinite]);
+    autoSlideRef.current = autoSlide;
+  }, [autoSlide]);
 
   // === GSAP setup ===
   useGSAP(
@@ -104,9 +63,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
       const root = scope.current;
       if (!root) return;
       const slide = root.querySelector(".images") as HTMLUListElement | null;
-      const container = root.querySelector(
-        ".overflow-hidden"
-      ) as HTMLElement | null;
+      const container = root.querySelector(".overflow-hidden") as HTMLElement | null;
       if (!slide || !container) return;
 
       slideRef.current = slide;
@@ -117,13 +74,11 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
       totalRef.current = 0;
 
       // === PRECISE DOM MEASUREMENT ===
-      const items = Array.from(
-        slide.querySelectorAll<HTMLElement>(".slide-item")
-      );
+      const items = Array.from(slide.querySelectorAll<HTMLElement>(".slide-item"));
       if (!items.length) return;
 
       const N = images.length;
-      const renderedCount = items.length; // N or 2N (if infinite)
+      const renderedCount = items.length; // 2N (duplicated set)
       const firstSet = items.slice(0, Math.min(N, items.length));
 
       const outerWidth = (el: HTMLElement) => {
@@ -151,7 +106,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
         if (delta > 0) stepMeasured = delta;
       }
 
-      // 4️⃣ tiny rounding to eliminate subpixel drift
+      // 4️⃣ rounding to avoid subpixel drift
       const snap = gsap.utils.snap(0.5);
       setWidthMeasured = snap(setWidthMeasured);
       renderedWidthMeasured = snap(renderedWidthMeasured);
@@ -162,7 +117,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
       containerWidthRef.current = container.clientWidth;
       totalWidthRef.current = renderedWidthMeasured;
 
-      // 6️⃣ wrap exactly one logical set (fixes the “push”)
+      // 6️⃣ wrap exactly one logical set
       const wrap = gsap.utils.wrap(-setWidthMeasured, 0);
 
       xToRef.current = gsap.quickTo(slide, "x", {
@@ -180,25 +135,8 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
       const tick = (_t: number, dt: number) => {
         if (!autoSlideRef.current) return;
         const moveSpeed = baseSpeedRef.current * speedFactorRef.current;
-        let next = totalRef.current - dt * moveSpeed * direction;
-        if (!infiniteRef.current) {
-          const maxScroll = -(
-            totalWidthRef.current - containerWidthRef.current
-          );
-          next = Math.max(maxScroll, next);
-        }
-
-        totalRef.current = next;
-        const fn = infiniteRef.current ? xToRef.current : noWrapXToRef.current;
-        fn?.(totalRef.current);
-        checkBoundaries(
-          totalRef,
-          totalWidthRef,
-          containerWidthRef,
-          infiniteRef,
-          setIsLeftDisabled,
-          setIsRightDisabled
-        );
+        totalRef.current -= dt * moveSpeed * direction;
+        xToRef.current?.(totalRef.current);
       };
 
       gsap.ticker.add(tick);
@@ -212,92 +150,49 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
       slide.addEventListener("mouseenter", onEnter);
       slide.addEventListener("mouseleave", onLeave);
 
-      // ✅ === DRAG BEHAVIOR (added) ===
-      let total = totalRef.current;
-
+      // === DRAG BEHAVIOR ===
       let isDragging = false;
       const DRAG_THRESHOLD = 5;
 
       const observer = Observer.create({
         target: slide,
         type: "pointer,touch",
-
         onPress: () => {
-          console.log("press");
           isDragging = false;
-
-          // 1️⃣ Pause auto-slide
           autoSlideRef.current = false;
 
-          // 2️⃣ Read the current x position precisely
           const currentX = gsap.getProperty(slide, "x") as number;
-
-          // 3️⃣ Stop any active motion but DON'T kill quickTo yet
           gsap.set(slide, { x: currentX });
           totalRef.current = currentX;
 
-          // 4️⃣ Re-create quickTo functions fresh (flush stale tweens)
-          const wrap = gsap.utils.wrap(-totalWidthRef.current / 2, 0); // same range as before
+          // rebind quickTo
           xToRef.current = gsap.quickTo(slide, "x", {
             duration: 0.1,
             ease: "power3",
             modifiers: { x: gsap.utils.unitize(wrap) },
           });
-          noWrapXToRef.current = gsap.quickTo(slide, "x", {
-            duration: 0.1,
-            ease: "power3",
-          });
         },
-
         onDrag: (self) => {
           const delta = Math.abs(self.x - self.startX);
           if (delta < DRAG_THRESHOLD) return;
 
-          if (!isDragging) {
-            isDragging = true;
-            console.log("start drag");
-          }
-
+          if (!isDragging) isDragging = true;
           totalRef.current += self.deltaX;
-          const fn = infiniteRef.current
-            ? xToRef.current
-            : noWrapXToRef.current;
-          fn?.(totalRef.current);
+          xToRef.current?.(totalRef.current);
         },
-
         onRelease: () => {
-          console.log("release");
-
-          // 5️⃣ Resume auto-slide and keep the same xTo references
-          gsap.delayedCall(0.1, () => {
-            autoSlideRef.current = true;
-          });
-        },
-
-        onStop: () => {
-          console.log("stop");
           gsap.delayedCall(0.1, () => {
             autoSlideRef.current = true;
           });
         },
       });
 
-      checkBoundaries(
-        totalRef,
-        totalWidthRef,
-        containerWidthRef,
-        infiniteRef,
-        setIsLeftDisabled,
-        setIsRightDisabled
-      );
-
       // cleanup
       return () => {
         slide.removeEventListener("mouseenter", onEnter);
         slide.removeEventListener("mouseleave", onLeave);
         gsap.ticker.remove(tick);
-        observer.kill(); // cleanup drag
-        manualTweenRef.current?.kill();
+        observer.kill();
         gsap.killTweensOf(slide);
         xToRef.current = null;
         noWrapXToRef.current = null;
@@ -305,16 +200,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
       };
     },
     {
-      dependencies: [
-        infinite,
-        autoSlide,
-        speed,
-        hoverSlowdownRatio,
-        slideGap,
-        slideWidth,
-        images.length,
-        direction,
-      ],
+      dependencies: [autoSlide, speed, hoverSlowdownRatio, slideGap, slideWidth, images.length, direction],
     }
   );
 
@@ -329,74 +215,18 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
         } as React.CSSProperties
       }
     >
-      {/* Manual Nav */}
-      {manualNav && (
-        <div className="flex gap-2 items-center mb-3">
-          <Button
-            onClick={() =>
-              handleManualSlide(
-                "left",
-                {
-                  slideItemWidthRef,
-                  containerWidthRef,
-                  totalWidthRef,
-                  totalRef,
-                  infiniteRef,
-                  manualTweenRef,
-                  xToRef,
-                  noWrapXToRef,
-                },
-                setIsLeftDisabled,
-                setIsRightDisabled
-              )
-            }
-            variant="outline"
-            size="icon"
-            disabled={isLeftDisabled}
-          >
-            ←
-          </Button>
-          <Button
-            onClick={() =>
-              handleManualSlide(
-                "right",
-                {
-                  slideItemWidthRef,
-                  containerWidthRef,
-                  totalWidthRef,
-                  totalRef,
-                  infiniteRef,
-                  manualTweenRef,
-                  xToRef,
-                  noWrapXToRef,
-                },
-                setIsLeftDisabled,
-                setIsRightDisabled
-              )
-            }
-            variant="outline"
-            size="icon"
-            disabled={isRightDisabled}
-          >
-            →
-          </Button>
-          <span className="text-sm text-muted-foreground ml-2">
-            Manual Navigation
-          </span>
-        </div>
-      )}
-
       {/* Carousel */}
       <div className="pin-height">
         <div className="overflow-hidden cursor-grab active:cursor-grabbing">
           <ul className="images inline-block whitespace-nowrap -mx-[calc(var(--slide-gap)/2)] ">
-            {images.map((src, i) => (
+            {/* Original set */}
+            {images.map((img, i) => (
               <li
                 key={`img-${i}`}
-                className="select-none slide-item aspect-card inline-block w-[var(--slide-w)] mx-[calc(var(--slide-gap)/2)]"
+                className="select-none slide-item inline-block w-[var(--slide-w)] mx-[calc(var(--slide-gap)/2)] aspect-square"
               >
                 <Image
-                  src={src}
+                  src={img.url}
                   alt={`slide-${i}`}
                   width={800}
                   height={1000}
@@ -405,21 +235,22 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
                 />
               </li>
             ))}
-            {infinite &&
-              images.map((src, i) => (
-                <li
-                  key={`dup-${i}`}
-                  className="select-none slide-item aspect-card inline-block w-[var(--slide-w)] mx-[calc(var(--slide-gap)/2)]"
-                >
-                  <Image
-                    src={src}
-                    alt={`slide-dup-${i}`}
-                    width={800}
-                    height={1000}
-                    className="pointer-events-none"
-                  />
-                </li>
-              ))}
+
+            {/* Duplicate set for seamless wrap */}
+            {images.map((img, i) => (
+              <li
+                key={`dup-${i}`}
+                className="select-none slide-item inline-block w-[var(--slide-w)] mx-[calc(var(--slide-gap)/2)] aspect-square"
+              >
+                <Image
+                  src={img.url}
+                  alt={`slide-dup-${i}`}
+                  width={800}
+                  height={1000}
+                  className="pointer-events-none"
+                />
+              </li>
+            ))}
           </ul>
         </div>
       </div>

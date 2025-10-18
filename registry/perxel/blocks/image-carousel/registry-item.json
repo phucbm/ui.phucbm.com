@@ -10,6 +10,10 @@
     "@gsap/react",
     "gsap/Observer"
   ],
+  "registryDependencies": [
+    "https://fancycomponents.dev/r/image-trail.json",
+    "https://fancycomponents.dev/r/demo-images.json"
+  ],
   "files": [
     {
       "path": "registry/perxel/blocks/image-carousel/image-carousel.tsx",
