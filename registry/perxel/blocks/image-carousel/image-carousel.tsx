@@ -33,6 +33,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
   manualNav = false,
   images = DEFAULT_IMAGES,
 }) => {
+  const scope = useRef<HTMLDivElement | null>(null)
   const speedFactorRef = useRef(0.5)
   const baseSpeedRef = useRef(baseSpeed)
   const hoverSlowdownRatioRef = useRef(hoverSlowdownRatio)
@@ -75,9 +76,12 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
 
   // === GSAP setup ===
   useEffect(() => {
-    const slide = document.querySelector(".slide-carousel .images") as HTMLUListElement | null
-    const slideItem = document.querySelector(".slide-carousel .slide-item:not(:first-child)") as HTMLElement | null
-    const container = document.querySelector(".slide-carousel .overflow-hidden") as HTMLElement | null
+    const root = scope.current
+    if (!root) return
+
+    const slide = root.querySelector(".images") as HTMLUListElement | null
+    const slideItem = root.querySelector(".slide-item:not(:first-child)") as HTMLElement | null
+    const container = root.querySelector(".overflow-hidden") as HTMLElement | null
     if (!slide || !slideItem || !container) return
 
     slideRef.current = slide
@@ -149,7 +153,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
 
   // === Render ===
   return (
-    <section className="slide-carousel">
+    <section className="slide-carousel" ref={scope}>
       {manualNav && (
         <div className="flex gap-2 items-center mb-3">
           <Button
