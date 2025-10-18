@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { Observer } from "gsap/Observer";
 import Image from "next/image";
@@ -10,16 +10,29 @@ import { exampleImages } from "./utils/demo-images";
 gsap.registerPlugin(Observer);
 
 export type ImageCarouselProps = {
+  /** Base speed factor of the auto-scrolling motion. Higher values make the carousel scroll faster. @default 1 */
   speed?: number;
+
+  /** Ratio applied to slow down the carousel when hovering. 0.5 = half speed, 1 = same speed, > 1 = faster on hover. @default 0.5 */
   hoverSlowdownRatio?: number;
+
+  /** Whether the carousel should automatically slide without user interaction. If false, it stays static until dragged. @default true */
   autoSlide?: boolean;
-  images?: string[];
+
+  /** List of image objects to display in the carousel. Each must contain a valid `url` property. @default exampleImages (imported from ./utils/demo-images) */
+  images: { url: string }[];
+
+  /** The width of each slide item. Accepts any valid CSS size unit (e.g. `"120px"`, `"10rem"`, `"20%"`). @default "120px" */
   slideWidth?: string;
+
+  /** The horizontal gap between slides. Accepts any valid CSS size unit. @default "35px" */
   slideGap?: string;
-  direction?: 1 | -1; // 1 = right→left, -1 = left→right
+
+  /** Scroll direction of the carousel. `1` = right→left, `-1` = left→right. @default 1 */
+  direction?: 1 | -1;
 };
 
-const ImageCarousel: React.FC<ImageCarouselProps> = ({
+export const ImageCarousel: React.FC<ImageCarouselProps> = ({
   speed = 1,
   hoverSlowdownRatio = 0.5,
   autoSlide = true,
@@ -37,22 +50,14 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
 
   const totalRef = useRef(0);
   const xToRef = useRef<((v: number) => void) | null>(null);
-  const noWrapXToRef = useRef<((v: number) => void) | null>(null);
 
-  const slideRef = useRef<HTMLUListElement | null>(null);
-  const slideItemWidthRef = useRef(0);
-  const containerWidthRef = useRef(0);
-  const totalWidthRef = useRef(0);
-
-  // keep refs up-to-date
+  // === keep refs updated ===
   useEffect(() => {
     baseSpeedRef.current = speed;
   }, [speed]);
-
   useEffect(() => {
     hoverSlowdownRatioRef.current = hoverSlowdownRatio;
   }, [hoverSlowdownRatio]);
-
   useEffect(() => {
     autoSlideRef.current = autoSlide;
   }, [autoSlide]);
@@ -63,23 +68,24 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
       const root = scope.current;
       if (!root) return;
       const slide = root.querySelector(".images") as HTMLUListElement | null;
-      const container = root.querySelector(".overflow-hidden") as HTMLElement | null;
+      const container = root.querySelector(
+        ".overflow-hidden"
+      ) as HTMLElement | null;
       if (!slide || !container) return;
-
-      slideRef.current = slide;
 
       // Reset
       gsap.killTweensOf(slide);
       gsap.set(slide, { x: 0 });
       totalRef.current = 0;
 
-      // === PRECISE DOM MEASUREMENT ===
-      const items = Array.from(slide.querySelectorAll<HTMLElement>(".slide-item"));
+      // === measure slide width ===
+      const items = Array.from(
+        slide.querySelectorAll<HTMLElement>(".slide-item")
+      );
       if (!items.length) return;
 
       const N = images.length;
-      const renderedCount = items.length; // 2N (duplicated set)
-      const firstSet = items.slice(0, Math.min(N, items.length));
+      const firstSet = items.slice(0, N);
 
       const outerWidth = (el: HTMLElement) => {
         const rectW = el.getBoundingClientRect().width;
@@ -89,49 +95,21 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
         return rectW + ml + mr;
       };
 
-      // 1️⃣ measure logical set width
-      let setWidthMeasured = 0;
-      for (const el of firstSet) setWidthMeasured += outerWidth(el);
-
-      // 2️⃣ measure entire rendered track width
-      let renderedWidthMeasured = 0;
-      for (const el of items) renderedWidthMeasured += outerWidth(el);
-
-      // 3️⃣ measure actual step distance
-      let stepMeasured = outerWidth(items[0]);
-      if (items.length > 1) {
-        const x0 = items[0].getBoundingClientRect().left;
-        const x1 = items[1].getBoundingClientRect().left;
-        const delta = Math.abs(x1 - x0);
-        if (delta > 0) stepMeasured = delta;
-      }
-
-      // 4️⃣ rounding to avoid subpixel drift
+      let setWidthMeasured = firstSet.reduce(
+        (sum, el) => sum + outerWidth(el),
+        0
+      );
       const snap = gsap.utils.snap(0.5);
       setWidthMeasured = snap(setWidthMeasured);
-      renderedWidthMeasured = snap(renderedWidthMeasured);
-      stepMeasured = snap(stepMeasured);
 
-      // 5️⃣ update refs
-      slideItemWidthRef.current = stepMeasured;
-      containerWidthRef.current = container.clientWidth;
-      totalWidthRef.current = renderedWidthMeasured;
-
-      // 6️⃣ wrap exactly one logical set
       const wrap = gsap.utils.wrap(-setWidthMeasured, 0);
-
       xToRef.current = gsap.quickTo(slide, "x", {
         duration: 0.1,
         ease: "power3",
         modifiers: { x: gsap.utils.unitize(wrap) },
       });
 
-      noWrapXToRef.current = gsap.quickTo(slide, "x", {
-        duration: 0.1,
-        ease: "power3",
-      });
-
-      // === ticker ===
+      // === auto scroll ticker ===
       const tick = (_t: number, dt: number) => {
         if (!autoSlideRef.current) return;
         const moveSpeed = baseSpeedRef.current * speedFactorRef.current;
@@ -142,17 +120,20 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
       gsap.ticker.add(tick);
 
       // === hover slowdown ===
-      const onEnter = () =>
-        (speedFactorRef.current =
-          normalSpeedRef.current * hoverSlowdownRatioRef.current);
-      const onLeave = () => (speedFactorRef.current = normalSpeedRef.current);
+      const onEnter = () => {
+        speedFactorRef.current =
+          normalSpeedRef.current * hoverSlowdownRatioRef.current;
+      };
+      const onLeave = () => {
+        speedFactorRef.current = normalSpeedRef.current;
+      };
 
       slide.addEventListener("mouseenter", onEnter);
       slide.addEventListener("mouseleave", onLeave);
 
-      // === DRAG BEHAVIOR ===
-      let isDragging = false;
+      // === drag behavior ===
       const DRAG_THRESHOLD = 5;
+      let isDragging = false;
 
       const observer = Observer.create({
         target: slide,
@@ -164,26 +145,16 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
           const currentX = gsap.getProperty(slide, "x") as number;
           gsap.set(slide, { x: currentX });
           totalRef.current = currentX;
-
-          // rebind quickTo
-          xToRef.current = gsap.quickTo(slide, "x", {
-            duration: 0.1,
-            ease: "power3",
-            modifiers: { x: gsap.utils.unitize(wrap) },
-          });
         },
         onDrag: (self) => {
           const delta = Math.abs(self.x - self.startX);
           if (delta < DRAG_THRESHOLD) return;
-
           if (!isDragging) isDragging = true;
           totalRef.current += self.deltaX;
           xToRef.current?.(totalRef.current);
         },
         onRelease: () => {
-          gsap.delayedCall(0.1, () => {
-            autoSlideRef.current = true;
-          });
+          gsap.delayedCall(0.1, () => (autoSlideRef.current = true));
         },
       });
 
@@ -195,12 +166,18 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
         observer.kill();
         gsap.killTweensOf(slide);
         xToRef.current = null;
-        noWrapXToRef.current = null;
-        slideRef.current = null;
       };
     },
     {
-      dependencies: [autoSlide, speed, hoverSlowdownRatio, slideGap, slideWidth, images.length, direction],
+      dependencies: [
+        autoSlide,
+        speed,
+        hoverSlowdownRatio,
+        slideGap,
+        slideWidth,
+        images.length,
+        direction,
+      ],
     }
   );
 
@@ -215,15 +192,14 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
         } as React.CSSProperties
       }
     >
-      {/* Carousel */}
       <div className="pin-height">
         <div className="overflow-hidden cursor-grab active:cursor-grabbing">
-          <ul className="images inline-block whitespace-nowrap -mx-[calc(var(--slide-gap)/2)] ">
+          <ul className="images inline-block whitespace-nowrap -mx-[calc(var(--slide-gap)/2)]">
             {/* Original set */}
             {images.map((img, i) => (
               <li
                 key={`img-${i}`}
-                className="select-none slide-item inline-block w-[var(--slide-w)] mx-[calc(var(--slide-gap)/2)] aspect-square"
+                className="slide-item inline-block select-none w-[var(--slide-w)] mx-[calc(var(--slide-gap)/2)] aspect-square"
               >
                 <Image
                   src={img.url}
@@ -235,12 +211,11 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
                 />
               </li>
             ))}
-
-            {/* Duplicate set for seamless wrap */}
+            {/* Duplicate set for seamless loop */}
             {images.map((img, i) => (
               <li
                 key={`dup-${i}`}
-                className="select-none slide-item inline-block w-[var(--slide-w)] mx-[calc(var(--slide-gap)/2)] aspect-square"
+                className="slide-item inline-block select-none w-[var(--slide-w)] mx-[calc(var(--slide-gap)/2)] aspect-square"
               >
                 <Image
                   src={img.url}
@@ -257,5 +232,3 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
     </section>
   );
 };
-
-export { ImageCarousel };

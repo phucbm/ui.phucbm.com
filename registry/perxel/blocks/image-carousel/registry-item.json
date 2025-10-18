@@ -3,12 +3,11 @@
   "name": "image-carousel",
   "type": "registry:component",
   "title": "Image Carousel",
-  "description": "Image carousel effect applied to a list of images.",
+  "description": "A GSAP-powered infinite image carousel with draggable interaction and hover slowdown effects.",
   "dependencies": [
-    "gsap",
     "react",
-    "@gsap/react",
-    "gsap/Observer"
+    "gsap",
+    "@gsap/react"
   ],
   "registryDependencies": [
     "https://fancycomponents.dev/r/image-trail.json",
