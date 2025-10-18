@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "image-carousel",
+  "type": "registry:component",
+  "title": "Image Carousel",
+  "description": "A GSAP-powered infinite image carousel with draggable interaction and hover slowdown effects.",
+  "dependencies": [
+    "react",
+    "gsap",
+    "@gsap/react"
+  ],
+  "registryDependencies": [
+    "https://fancycomponents.dev/r/image-trail.json",
+    "https://fancycomponents.dev/r/demo-images.json"
+  ],
+  "files": [
+    {
+      "path": "registry/perxel/blocks/image-carousel/image-carousel.tsx",
+      "type": "registry:component",
+      "target": "components/perxel/image-carousel.tsx"
+    }
+  ]
+}
