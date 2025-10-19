@@ -196,7 +196,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
     >
       <div className="pin-height">
         <div className="overflow-hidden cursor-grab active:cursor-grabbing">
-          <ul className="images inline-block whitespace-nowrap -mx-[calc(var(--slide-gap)/2)]">
+          <ul className="images block whitespace-nowrap -mx-[calc(var(--slide-gap)/2)]">
             {Array.from({ length: repeatCount }).map((_, r) =>
               images.map((img, i) => (
                 <li
@@ -208,7 +208,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
                     alt={`slide-${r}-${i}`}
                     width={800}
                     height={1000}
-                    className="pointer-events-none"
+                    className="pointer-events-none h-full w-full object-cover bg-center"
                     priority={r === 0 && i < 2}
                   />
                 </li>
