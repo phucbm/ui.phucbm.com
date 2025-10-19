@@ -10,7 +10,7 @@
     "@gsap/react"
   ],
   "registryDependencies": [
-    "perxel/utils/demo-images"
+    "https://ui.perxel.com/r/demo-images.json"
   ],
   "files": [
     {

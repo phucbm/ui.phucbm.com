@@ -5,6 +5,59 @@
   "items": [
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "demo-images",
+      "type": "registry:lib",
+      "title": "Demo Images",
+      "description": "A set of sample images used by demo components such as Image Carousel.",
+      "files": [
+        {
+          "path": "registry/perxel/blocks/demo-images/demo-images.ts",
+          "type": "registry:lib",
+          "target": "utils/demo-images.ts"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "image-carousel",
+      "type": "registry:component",
+      "title": "Image Carousel",
+      "description": "A GSAP-powered infinite image carousel with draggable interaction and hover slowdown effects.",
+      "dependencies": [
+        "react",
+        "gsap",
+        "@gsap/react"
+      ],
+      "files": [
+        {
+          "path": "registry/perxel/blocks/image-carousel/image-carousel.tsx",
+          "type": "registry:component",
+          "target": "components/perxel/image-carousel.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "infinite-grid",
+      "type": "registry:component",
+      "title": "Infinite Grid",
+      "description": "Infinite grid effect applied to a grid of images.",
+      "dependencies": [
+        "gsap",
+        "react",
+        "@gsap/react",
+        "gsap/Observer"
+      ],
+      "files": [
+        {
+          "path": "registry/perxel/blocks/infinite-grid/infinite-grid.tsx",
+          "type": "registry:component",
+          "target": "components/perxel/infinite-grid.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
       "name": "text-flower",
       "type": "registry:component",
       "title": "Text Flower",
@@ -12,9 +65,7 @@
       "dependencies": [
         "gsap",
         "react",
-        "@gsap/react",
-        "normalized-mouse-position",
-        "@phucbm/ripple-effect"
+        "@gsap/react"
       ],
       "files": [
         {

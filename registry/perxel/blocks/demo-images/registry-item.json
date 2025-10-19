@@ -1,13 +1,13 @@
 {
     "$schema": "https://ui.shadcn.com/schema/registry-item.json",
     "name": "demo-images",
-    "type": "registry:utility",
+    "type": "registry:lib",
     "title": "Demo Images",
     "description": "A set of sample images used by demo components such as Image Carousel.",
     "files": [
       {
-        "path": "utils/demo-images.ts",
-        "type": "registry:utility",
+        "path": "registry/perxel/blocks/demo-images/demo-images.ts",
+        "type": "registry:lib",
         "target": "utils/demo-images.ts"
       }
     ]
