@@ -10,8 +10,7 @@
     "@gsap/react"
   ],
   "registryDependencies": [
-    "https://fancycomponents.dev/r/image-trail.json",
-    "https://fancycomponents.dev/r/demo-images.json"
+    "perxel/utils/demo-images"
   ],
   "files": [
     {
