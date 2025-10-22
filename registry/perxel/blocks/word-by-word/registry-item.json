@@ -7,14 +7,18 @@
   "dependencies": [
     "gsap",
     "react",
-    "@gsap/react",
-    "normalized-mouse-position"
+    "@gsap/react"
   ],
   "files": [
     {
       "path": "registry/perxel/blocks/word-by-word/word-by-word.tsx",
       "type": "registry:component",
       "target": "components/perxel/word-by-word.tsx"
+    },
+    {
+      "path": "registry/perxel/blocks/word-by-word/lib/splitTextIntoWords.ts",
+      "type": "registry:component",
+      "target": "lib/splitTextIntoWords.ts"
     }
   ]
 }

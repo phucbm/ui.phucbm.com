@@ -4,7 +4,7 @@ import {getRegistryItem} from "@/lib/getRegistryItem";
 export async function RegistryPropsTable({type, name}: { type?: string, name: string }) {
     const registryItem = await getRegistryItem(name);
 
-    const propsType = type || `${registryItem.title.replace(' ', '')}Props`;
+    const propsType = type || `${registryItem.title.replaceAll(' ', '')}Props`;
 
     const definition = generateDefinition({
         code: `
