@@ -28,6 +28,9 @@
         "gsap",
         "@gsap/react"
       ],
+      "registryDependencies": [
+        "https://ui.perxel.com/r/demo-images.json"
+      ],
       "files": [
         {
           "path": "registry/perxel/blocks/image-carousel/image-carousel.tsx",
@@ -53,6 +56,26 @@
           "path": "registry/perxel/blocks/infinite-grid/infinite-grid.tsx",
           "type": "registry:component",
           "target": "components/perxel/infinite-grid.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "spotlight-content",
+      "type": "registry:component",
+      "title": "Spotlight Content",
+      "description": "Spotlight content effect applied to a container.",
+      "dependencies": [
+        "gsap",
+        "react",
+        "@gsap/react",
+        "normalized-mouse-position"
+      ],
+      "files": [
+        {
+          "path": "registry/perxel/blocks/spotlight-content/spotlight-content.tsx",
+          "type": "registry:component",
+          "target": "components/perxel/spotlight-content.tsx"
         }
       ]
     },
@@ -98,6 +121,31 @@
           "path": "registry/perxel/blocks/text-ripple/text-ripple.tsx",
           "type": "registry:component",
           "target": "components/perxel/text-ripple.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "word-by-word",
+      "type": "registry:component",
+      "title": "Word by Word",
+      "description": "Word by word effect applied to a container.",
+      "dependencies": [
+        "gsap",
+        "react",
+        "@gsap/react",
+        "normalized-mouse-position"
+      ],
+      "files": [
+        {
+          "path": "registry/perxel/blocks/word-by-word/word-by-word.tsx",
+          "type": "registry:component",
+          "target": "components/perxel/word-by-word.tsx"
+        },
+        {
+          "path": "registry/perxel/blocks/word-by-word/lib/splitTextIntoWords.ts",
+          "type": "registry:component",
+          "target": "lib/splitTextIntoWords.ts"
         }
       ]
     }

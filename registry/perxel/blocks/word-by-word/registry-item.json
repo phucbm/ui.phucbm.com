@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "word-by-word",
+  "type": "registry:component",
+  "title": "Word by Word",
+  "description": "Word by word effect applied to a container.",
+  "dependencies": [
+    "gsap",
+    "react",
+    "@gsap/react"
+  ],
+  "files": [
+    {
+      "path": "registry/perxel/blocks/word-by-word/word-by-word.tsx",
+      "type": "registry:component",
+      "target": "components/perxel/word-by-word.tsx"
+    },
+    {
+      "path": "registry/perxel/blocks/word-by-word/lib/splitTextIntoWords.ts",
+      "type": "registry:component",
+      "target": "lib/splitTextIntoWords.ts"
+    }
+  ]
+}
