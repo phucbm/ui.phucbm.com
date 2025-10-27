@@ -15,11 +15,13 @@ export interface InfiniteGridProps {
 
 export const InfiniteGrid: React.FC<InfiniteGridProps> = ({ images }) => {
   const scope = useRef<HTMLDivElement | null>(null)
+  const containerScale = useRef<HTMLDivElement | null>(null)
 
   useGSAP(
     () => {
       const root = scope.current
-      if (!root) return
+      const containerScaleElement = containerScale.current
+      if (!root || !containerScale) return
 
       const container = root.querySelector(".container1") as HTMLElement
       const wrapper = root.querySelector(".wrapper") as HTMLElement
@@ -60,7 +62,12 @@ export const InfiniteGrid: React.FC<InfiniteGridProps> = ({ images }) => {
         target: root,
         type: "wheel,touch,pointer",
         preventDefault: true,
-
+        onPress: () => {
+          containerScaleElement.style.scale = "1"
+        },
+        onRelease: () => {
+          containerScaleElement.style.scale = "1.1";
+        },
         onChangeX: (self) => {
           incrX += self.event.type === "wheel" ? -self.deltaX : self.deltaX * 2
           xTo(incrX)
@@ -95,24 +102,26 @@ export const InfiniteGrid: React.FC<InfiniteGridProps> = ({ images }) => {
   )
 
   return (
-    <div ref={scope}>
-      <section className="h-[500px] w-full overflow-hidden pointer-events-none [body:has([data-slot='dialog-trigger'][data-state='open'])_&]:h-full">
-        <div className="container1 h-full">
-          <div className="wrapper grid grid-cols-2 w-max will-change-transform">
-            {[...Array(4)].map((_, i) => (
-              <div
-                className="content pointer-events-none grid w-max grid-cols-5 gap-[5vw] p-[calc(5vw/2)] max-[900px]:gap-[20vw] max-[900px]:p-[calc(20vw/2)]"
-                key={i}
-                aria-hidden={i !== 0}
-              >
-                {images.map((img, index) => (
-                  <React.Fragment key={index}>{img}</React.Fragment>
-                ))}
-              </div>
-            ))}
+    <section ref={scope}>
+      <div className="h-[500px] w-full overflow-hidden pointer-events-none [body:has([data-slot='dialog-trigger'][data-state='open'])_&]:h-full">
+        <div ref={containerScale} className="scale-[1.1] transition-transform duration-300">
+          <div className="container1 h-full">
+            <div className="wrapper grid grid-cols-2 w-max will-change-transform">
+              {[...Array(4)].map((_, i) => (
+                <div
+                  className="content pointer-events-none grid w-max grid-cols-5 gap-[5vw] p-[calc(5vw/2)] max-[900px]:gap-[20vw] max-[900px]:p-[calc(20vw/2)]"
+                  key={i}
+                  aria-hidden={i !== 0}
+                >
+                  {images.map((img, index) => (
+                    <React.Fragment key={index}>{img}</React.Fragment>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   )
 }
