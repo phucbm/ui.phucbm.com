@@ -16,12 +16,12 @@ const navbar = (
     <Navbar
         logo={<div className="flex items-center justify-start gap-2">
             <img src="/images/general/icon.svg" alt="Logo" width={20} height={20} className="h-[20px] aspect-square"/>
-            <span className="font-bold">PERXEL</span>
+            <span className="font-bold">ui/phucbm</span>
         </div>}
         // ... Your additional navbar options
     />
 )
-const footer = <Footer>MIT {new Date().getFullYear()} © Perxel UI</Footer>
+const footer = <Footer>MIT {new Date().getFullYear()} © ui/phucbm</Footer>
 
 export default async function RootLayout({children}) {
     return (
@@ -29,7 +29,7 @@ export default async function RootLayout({children}) {
             // banner={banner}
             navbar={navbar}
             pageMap={await getPageMap()}
-            docsRepositoryBase="https://github.com/phucbm/ui.perxel.com/tree/main"
+            docsRepositoryBase="https://github.com/ui/phucbm.perxel.com/tree/main"
             footer={footer}
         >
             <div className="container mx-auto">

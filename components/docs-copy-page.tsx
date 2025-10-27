@@ -9,7 +9,7 @@ import {getRegistryUrl} from "@/lib/getRegistryUrl";
 
 function getPromptUrl(baseURL: string, url: string) {
   return `${baseURL}?q=${encodeURIComponent(
-    `I’m looking at this documentation from Perxel UI: ${url}.
+    `I’m looking at this documentation from ui/phucbm: ${url}.
 Help me understand how to use it. Be ready to explain concepts, give examples, or help debug based on it.
   `
   )}`
