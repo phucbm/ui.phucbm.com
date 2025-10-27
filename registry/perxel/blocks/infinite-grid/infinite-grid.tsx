@@ -1,9 +1,8 @@
 "use client"
-import React, {useRef} from "react"
+import React, { useRef } from "react"
 import gsap from "gsap"
-import {useGSAP} from "@gsap/react"
-import {Observer} from "gsap/Observer"
-import "./infinite-grid.css"
+import { useGSAP } from "@gsap/react"
+import { Observer } from "gsap/Observer"
 
 gsap.registerPlugin(Observer, useGSAP)
 
@@ -14,7 +13,7 @@ export interface InfiniteGridProps {
   images: React.ReactNode[]
 }
 
-export const InfiniteGrid: React.FC<InfiniteGridProps> = ({images}) => {
+export const InfiniteGrid: React.FC<InfiniteGridProps> = ({ images }) => {
   const scope = useRef<HTMLDivElement | null>(null)
 
   useGSAP(
@@ -58,7 +57,7 @@ export const InfiniteGrid: React.FC<InfiniteGridProps> = ({images}) => {
 
       // === GSAP Observer
       const gsapObserver = Observer.create({
-          target: root,
+        target: root,
         type: "wheel,touch,pointer",
         preventDefault: true,
 
@@ -96,12 +95,16 @@ export const InfiniteGrid: React.FC<InfiniteGridProps> = ({images}) => {
   )
 
   return (
-    <div className="mwg_effect026_wrapper" ref={scope}>
-      <section className="mwg_effect026">
-        <div className="container1">
-          <div className="wrapper">
+    <div ref={scope}>
+      <section className="h-[500px] w-full overflow-hidden pointer-events-none [body:has([data-slot='dialog-trigger'][data-state='open'])_&]:h-full">
+        <div className="container1 h-full">
+          <div className="wrapper grid grid-cols-2 w-max will-change-transform">
             {[...Array(4)].map((_, i) => (
-              <div className="content" key={i} aria-hidden={i !== 0}>
+              <div
+                className="content pointer-events-none grid w-max grid-cols-5 gap-[5vw] p-[calc(5vw/2)] max-[900px]:gap-[20vw] max-[900px]:p-[calc(20vw/2)]"
+                key={i}
+                aria-hidden={i !== 0}
+              >
                 {images.map((img, index) => (
                   <React.Fragment key={index}>{img}</React.Fragment>
                 ))}
