@@ -4,6 +4,7 @@ import {SandpackCodeEditor, SandpackLayout, SandpackPreview, SandpackProvider,} 
 import {getRegistryCodeItems} from "@/lib/getRegistryCodeItems";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import {RegistryPreview} from "@/components/registry-preview";
+import {SandPackFullScreen} from "@/components/registry-sandpack-fullscreen";
 
 type Props = {
     registryItem: RegistryItem
@@ -37,25 +38,43 @@ export async function RegistrySandpack({registryItem}: Props) {
     console.log('dependencies', dependencies)
     return (
         <div>
-            <SandpackProvider template="react"
-                              options={{
-                                  externalResources: ["https://cdn.tailwindcss.com"],
-                                  initMode: "lazy",
-                              }}
-                              customSetup={{
-                                  dependencies: dependencies
-                              }}
-                              files={files}
-            >
 
 
-                <Tabs defaultValue="preview" className="pt-6">
+            <Tabs defaultValue="preview" className="pt-6">
                     <div className="flex justify-between items-center">
                         <TabsList>
                             <TabsTrigger value="preview">Preview</TabsTrigger>
                             <TabsTrigger value="code">Code</TabsTrigger>
                         </TabsList>
+                        <div>
+                            <SandPackFullScreen
+                                options={{
+                                    externalResources: ["https://cdn.tailwindcss.com"],
+                                    initMode: "lazy",
+                                }}
+                                customSetup={{
+                                    dependencies: dependencies
+                                }}
+                                files={files}
+                                registryItem={registryItem}
+                                // code={code}
+                                // hashId={hashId}
+                                // subtitle={subtitle}
+                            />
+                        </div>
                     </div>
+
+
+                <SandpackProvider template="react"
+                                  options={{
+                                      externalResources: ["https://cdn.tailwindcss.com"],
+                                      initMode: "lazy",
+                                  }}
+                                  customSetup={{
+                                      dependencies: dependencies
+                                  }}
+                                  files={files}
+                >
 
                     {/* preview */}
                     <TabsContent value="preview">
@@ -71,9 +90,11 @@ export async function RegistrySandpack({registryItem}: Props) {
                             <SandpackCodeEditor showLineNumbers={true} readOnly={true}/>
                         </SandpackLayout>
                     </TabsContent>
+
+
+                </SandpackProvider>
                 </Tabs>
 
-            </SandpackProvider>
         </div>
     );
 }

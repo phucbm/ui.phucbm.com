@@ -24,6 +24,7 @@
   "homepage": "https://github.com/phucbm/nextra-docs-starter#readme",
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.20.0",
+    "@codesandbox/sandpack-themes": "^2.0.21",
     "@gsap/react": "^2.1.2",
     "@icons-pack/react-simple-icons": "^13.8.0",
     "@phucbm/next-og-image": "^1.0.1",
