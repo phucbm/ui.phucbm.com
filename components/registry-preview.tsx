@@ -8,10 +8,10 @@ import {RegistryItem} from "@/lib/getRegistryItem";
 
 type Props = {
     children: React.ReactNode;
-    registryItem?: RegistryItem;
+    // registryItem?: RegistryItem;
 };
 
-export function RegistryPreview({children, registryItem}: Props) {
+export function RegistryPreview({children}: Props) {
     const containerRef = useRef<HTMLDivElement>(null);
     const panelRef = useRef<HTMLDivElement>(null);
 

@@ -67,7 +67,7 @@ export function TextRipple({line1 = "technical.architect", line2 = "creative.dev
         w-full overflow-hidden
         font-bold leading-[0.7em] uppercase
          
-         h-[400px] @7xl:h-screen
+         h-[300px] @7xl:h-screen
          text-[30px] @xl:text-[60px] @7xl:text-[100px]
          gap-2 @xl:gap-4
          

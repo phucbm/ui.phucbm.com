@@ -1,11 +1,9 @@
 // RegistryDemo.tsx (Server Component)
 import {getRegistryItem} from "@/lib/getRegistryItem";
-import {RegistryPreview} from "@/components/registry-preview";
 import React from "react";
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
-import {MaximizeRegistry} from "@/components/maximizable-registry";
 import {getRegistryCodeItems} from "@/lib/getRegistryCodeItems";
-import CodeBlockView, {CodeItem} from "@/components/code-block-view";
+import {CodeItem} from "@/components/code-block-view";
+import {RegistrySandpack} from "@/components/registry-sandpack";
 
 type Props = {
     children: React.ReactNode;
@@ -36,35 +34,38 @@ export async function RegistryDemo({
     const demoForFullscreen = fullScreenDemo ?? children;
 
     return (
-        <Tabs defaultValue="preview" className="pt-6">
-            {/* demo header */}
-            <div className="flex justify-between items-center">
-                <TabsList>
-                    <TabsTrigger value="preview">Preview</TabsTrigger>
-                    {hasFiles && <TabsTrigger value="code">Code</TabsTrigger>}
-                </TabsList>
-                <div>
-                    <MaximizeRegistry
-                        children={demoForFullscreen}
-                        registryItem={registryItem}
-                        code={code}
-                        hashId={hashId}
-                        subtitle={subtitle}
-                    />
-                </div>
-            </div>
+        <>
+            <RegistrySandpack registryItem={registryItem}/>
+            {/*    <Tabs defaultValue="preview" className="pt-6">*/}
+            {/*    /!* demo header *!/*/}
+            {/*    <div className="flex justify-between items-center">*/}
+            {/*        <TabsList>*/}
+            {/*            <TabsTrigger value="preview">Preview</TabsTrigger>*/}
+            {/*            {hasFiles && <TabsTrigger value="code">Code</TabsTrigger>}*/}
+            {/*        </TabsList>*/}
+            {/*        <div>*/}
+            {/*            <MaximizeRegistry*/}
+            {/*                children={demoForFullscreen}*/}
+            {/*                registryItem={registryItem}*/}
+            {/*                code={code}*/}
+            {/*                hashId={hashId}*/}
+            {/*                subtitle={subtitle}*/}
+            {/*            />*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
 
-            {/* preview */}
-            <TabsContent value="preview">
-                <RegistryPreview children={children} registryItem={registryItem}/>
-            </TabsContent>
+            {/*    /!* preview *!/*/}
+            {/*    <TabsContent value="preview">*/}
+            {/*        <RegistryPreview children={children}/>*/}
+            {/*    </TabsContent>*/}
 
-            {/* code */}
-            {hasFiles && (
-                <TabsContent value="code">
-                    <CodeBlockView code={code.slice(0, 1)}/>
-                </TabsContent>
-            )}
-        </Tabs>
+            {/*    /!* code *!/*/}
+            {/*    {hasFiles && (*/}
+            {/*        <TabsContent value="code">*/}
+            {/*            <CodeBlockView code={code.slice(0, 1)}/>*/}
+            {/*        </TabsContent>*/}
+            {/*    )}*/}
+            {/*</Tabs>*/}
+        </>
     );
 }
