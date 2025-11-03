@@ -8,8 +8,9 @@
     "start": "next start",
     "postbuild": "pnpm build:pagefind && pnpm build:registry",
     "build:pagefind": "pagefind --site .next/server/app --output-path public/_pagefind",
-    "build:registry": "pnpm index-registry && pnpm shadcn build",
+    "build:registry": "pnpm index-registry && pnpm shadcn build && pnpm clean-example-registry",
     "index-registry": "tsx scripts/index-registry.ts",
+    "clean-example-registry": "tsx scripts/clean-example-registry.ts",
     "index-registry:dry": "tsx scripts/index-registry.ts --dry"
   },
   "repository": {

@@ -60,7 +60,7 @@
       ],
       "files": [
         {
-          "path": "registry/phucbm/blocks/infinite-grid/example.tsx",
+          "path": "registry/phucbm/blocks/infinite-grid/example.transformed.tsx",
           "type": "registry:component",
           "target": "index.tsx"
         }
@@ -135,7 +135,7 @@
       ],
       "files": [
         {
-          "path": "registry/phucbm/blocks/text-flower/example.tsx",
+          "path": "registry/phucbm/blocks/text-flower/example.transformed.tsx",
           "type": "registry:component",
           "target": "index.tsx"
         }
@@ -180,7 +180,7 @@
       ],
       "files": [
         {
-          "path": "registry/phucbm/blocks/text-ripple/example.tsx",
+          "path": "registry/phucbm/blocks/text-ripple/example.transformed.tsx",
           "type": "registry:component",
           "target": "index.tsx"
         }
@@ -226,7 +226,7 @@
       ],
       "files": [
         {
-          "path": "registry/phucbm/blocks/word-by-word/example.tsx",
+          "path": "registry/phucbm/blocks/word-by-word/example.transformed.tsx",
           "type": "registry:component",
           "target": "index.tsx"
         }

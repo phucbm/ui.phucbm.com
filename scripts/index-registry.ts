@@ -113,11 +113,51 @@ async function findExampleFiles(itemDir: string): Promise<string[]> {
     }
 }
 
-function generateExampleItem(
+async function transformImportPaths(
+    exampleFilePath: string,
+    baseItem: RegistryItem
+): Promise<string> {
+    const content = await fs.readFile(exampleFilePath, "utf8");
+
+    if (!Array.isArray(baseItem.files)) return content;
+
+    let transformed = content;
+
+    // Transform each file's import path
+    for (const file of baseItem.files) {
+        if (!file.path || !file.target) continue;
+
+        // Extract the registry source path (e.g., "registry/phucbm/blocks/text-flower/text-flower.tsx")
+        const sourcePath = file.path;
+
+        // Extract the target path without extension (e.g., "components/phucbm/text-flower")
+        const targetPath = file.target.replace(/\.(tsx?|jsx?)$/, "");
+
+        // Create regex to match import from registry path
+        // Matches: import {...} from "@/registry/phucbm/blocks/text-flower/text-flower"
+        const registryPathPattern = sourcePath
+            .replace(/^registry\//, "")
+            .replace(/\.(tsx?|jsx?)$/, "")
+            .replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // Escape regex special chars
+
+        const importRegex = new RegExp(
+            `(from\\s+["']@/)registry/${registryPathPattern}(["'])`,
+            "g"
+        );
+
+        // Replace with target path
+        // Result: import {...} from "@/components/phucbm/text-flower"
+        transformed = transformed.replace(importRegex, `$1${targetPath}$2`);
+    }
+
+    return transformed;
+}
+
+async function generateExampleItem(
     baseItem: RegistryItem,
     exampleFileName: string,
     itemDir: string
-): RegistryItem {
+): Promise<RegistryItem> {
     // Extract suffix from example file (e.g., "example.tsx" -> "", "example-01.tsx" -> "-01")
     const match = exampleFileName.match(/^example(-.*)?\.tsx$/);
     const suffix = match?.[1] || "";
@@ -126,7 +166,17 @@ function generateExampleItem(
 
     // Build the example file path
     const exampleFilePath = path.join(itemDir, exampleFileName);
-    const exampleFileRel = path.relative(ROOT, exampleFilePath);
+
+    // Transform import paths in the example file content
+    const transformedContent = await transformImportPaths(exampleFilePath, baseItem);
+
+    // Write transformed content to a temporary file
+    const transformedFileName = exampleFileName.replace(/\.tsx$/, ".transformed.tsx");
+    const transformedFilePath = path.join(itemDir, transformedFileName);
+    await fs.writeFile(transformedFilePath, transformedContent, "utf8");
+
+    // Use the transformed file path for the registry
+    const exampleFileRel = path.relative(ROOT, transformedFilePath);
 
     // Create files array: ONLY the example file with target as "index.tsx"
     const files: RegistryFile[] = [
@@ -165,7 +215,7 @@ async function generateExampleItems(
     const exampleItems: RegistryItem[] = [];
 
     for (const exampleFile of exampleFiles) {
-        const exampleItem = generateExampleItem(baseItem, exampleFile, itemDir);
+        const exampleItem = await generateExampleItem(baseItem, exampleFile, itemDir);
         exampleItems.push(exampleItem);
     }
 
