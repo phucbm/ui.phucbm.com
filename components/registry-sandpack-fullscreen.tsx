@@ -7,10 +7,10 @@ import {MaximizeIcon} from "@/components/ui/maximize";
 import React from "react";
 import {RegistryItem} from "@/lib/getRegistryItem";
 import {cn} from "@/lib/utils";
-import {Sandpack} from "@codesandbox/sandpack-react";
 import {KeyBoard} from "@/components/KeyBoard";
 import {XIcon} from "@/components/ui/x";
-import {aquaBlue} from "@codesandbox/sandpack-themes";
+import {SandpackPlayground} from "@/components/sandpack-playground";
+import {SandpackProviderProps} from "@codesandbox/sandpack-react";
 
 type Props = {
     // children: React.ReactNode;
@@ -21,9 +21,12 @@ type Props = {
     options?: any;
     customSetup?: any;
     files?: any;
+    sandpackProps:SandpackProviderProps;
 };
 
 export function SandPackFullScreen({
+
+                                       sandpackProps,
                                        // children,
                                        options,
                                        customSetup,
@@ -70,27 +73,29 @@ export function SandPackFullScreen({
                         </div>
                     </DialogHeader>
 
-                    <Sandpack
-                        template="react"
-                        theme={aquaBlue}
-                        options={{
-                            showLineNumbers: true,
-                            editorWidthPercentage: 40,
-                            classes: {
-                                "sp-wrapper": "custom-wrapper h-screen [--sp-layout-height:100vh!important] [&_iframe]:px-bg-pattern-transparent",
-                                "sp-layout": "custom-layout h-full",
-                                "sp-tab-button": "custom-tab",
-                            },
-                            autorun: true,
-                            autoReload: true,
-                            initMode: "user-visible",
-                            recompileMode: "delayed",
-                            recompileDelay: 300,
-                            ...options
-                        }}
-                        customSetup={customSetup}
-                        files={files}
-                    />
+                    {/*<Sandpack*/}
+                    {/*    template="react"*/}
+                    {/*    theme={aquaBlue}*/}
+                    {/*    options={{*/}
+                    {/*        showLineNumbers: true,*/}
+                    {/*        editorWidthPercentage: 40,*/}
+                    {/*        classes: {*/}
+                    {/*            "sp-wrapper": "custom-wrapper h-screen [--sp-layout-height:100vh!important] [&_iframe]:px-bg-pattern-transparent",*/}
+                    {/*            "sp-layout": "custom-layout h-full",*/}
+                    {/*            "sp-tab-button": "custom-tab",*/}
+                    {/*        },*/}
+                    {/*        autorun: true,*/}
+                    {/*        autoReload: true,*/}
+                    {/*        initMode: "user-visible",*/}
+                    {/*        recompileMode: "delayed",*/}
+                    {/*        recompileDelay: 300,*/}
+                    {/*        ...options*/}
+                    {/*    }}*/}
+                    {/*    customSetup={customSetup}*/}
+                    {/*    files={files}*/}
+                    {/*/>*/}
+
+                    <SandpackPlayground sandpackProps={sandpackProps}/>
                 </DialogContent>
             </Dialog>
         </div>

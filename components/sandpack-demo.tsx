@@ -1,11 +1,5 @@
 import {RegistryItem} from "@/lib/getRegistryItem";
-import {
-    SandpackCodeEditor,
-    SandpackFileExplorer,
-    SandpackLayout,
-    SandpackPreview,
-    SandpackProvider
-} from "@codesandbox/sandpack-react";
+import {SandpackPreview, SandpackProvider, SandpackProviderProps} from "@codesandbox/sandpack-react";
 import {RegistryPreview} from "@/components/registry-preview";
 import {getSandpackFiles} from "@/lib/getSandpackFiles";
 import {aquaBlue} from "@codesandbox/sandpack-themes";
@@ -24,46 +18,37 @@ export async function SandpackDemo({registryItem}: Props) {
     })
 
     const height = 500;
+
+    const sandpackProps = {
+        theme: {aquaBlue},
+        options: {
+            externalResources: ["https://cdn.tailwindcss.com"],
+            initMode: "lazy",
+        },
+        customSetup: {
+            dependencies: dependencies
+        },
+        files: files,
+        style: {
+            [`--sp-layout-height` as any]: `${height}px`
+        }
+    } as SandpackProviderProps;
+
+
     return (
         <div className="mt-6">
 
-            {/*<div className="flex justify-between items-center hidden">*/}
+            {/*<div className="flex justify-between items-center">*/}
             {/*    <div>*/}
             {/*        Preview*/}
             {/*    </div>*/}
             {/*    <div>*/}
-            {/*        <SandPackFullScreen*/}
-            {/*            options={{*/}
-            {/*                externalResources: ["https://cdn.tailwindcss.com"],*/}
-            {/*                initMode: "lazy",*/}
-            {/*            }}*/}
-            {/*            customSetup={{*/}
-            {/*                dependencies: dependencies*/}
-            {/*            }}*/}
-            {/*            files={files}*/}
-            {/*            registryItem={registryItem}*/}
-            {/*            // code={code}*/}
-            {/*            // hashId={hashId}*/}
-            {/*            // subtitle={subtitle}*/}
-            {/*        />*/}
+            {/*        <SandPackFullScreen sandpackProps={sandpackProps}/>*/}
             {/*    </div>*/}
             {/*</div>*/}
 
-            <SandpackProvider template="react-ts"
-                              theme={aquaBlue}
-                              options={{
-                                  externalResources: ["https://cdn.tailwindcss.com"],
-                                  initMode: "lazy",
-                              }}
-                              customSetup={{
-                                  dependencies: dependencies
-                              }}
-                              files={files}
-                              style={{[`--sp-layout-height` as any]: `${height}px`}}
-            >
-
+            <SandpackProvider template="react-ts" {...sandpackProps}>
                 <RegistryPreview children={<SandpackPreview showOpenInCodeSandbox={false}/>} height={height}/>
-
             </SandpackProvider>
 
 
