@@ -1,5 +1,12 @@
 import {RegistryItem} from "@/lib/getRegistryItem";
-import {SandpackPreview, SandpackProvider, SandpackProviderProps} from "@codesandbox/sandpack-react";
+import {
+    SandpackCodeEditor,
+    SandpackFileExplorer,
+    SandpackLayout,
+    SandpackPreview,
+    SandpackProvider,
+    SandpackProviderProps
+} from "@codesandbox/sandpack-react";
 import {RegistryPreview} from "@/components/registry-preview";
 import {getSandpackFiles} from "@/lib/getSandpackFiles";
 import {aquaBlue} from "@codesandbox/sandpack-themes";
@@ -9,7 +16,6 @@ type Props = {
 };
 
 async function SandpackDemo({registryItem}: Props) {
-    console.log('SandpackDemo rendering for:', registryItem.name);
     const files = await getSandpackFiles({registryItem});
 
     const dependencies = {};
@@ -53,6 +59,15 @@ async function SandpackDemo({registryItem}: Props) {
                 <RegistryPreview children={
                     <SandpackPreview showOpenInCodeSandbox={false}/>
                 } height={height}/>
+
+                <SandpackLayout className="mt-2">
+                    <SandpackFileExplorer/>
+                    <SandpackCodeEditor closableTabs={true}
+                                        showTabs={true}
+                                        showLineNumbers={true}
+                                        showRunButton={true}
+                    />
+                </SandpackLayout>
 
             </SandpackProvider>
 
