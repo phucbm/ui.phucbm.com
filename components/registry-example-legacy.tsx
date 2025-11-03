@@ -6,7 +6,7 @@
 // type Props = { name: string };
 //
 // /**
-//  * Loads "@/registry/perxel/blocks/${name}/example"
+//  * Loads "@/registry/phucbm/blocks/${name}/example"
 //  * expecting a named export `Example` (client or server is fine).
 //  */
 // export async function RegistryExample({name}: Props) {
@@ -20,7 +20,7 @@
 //         const mod = await import(
 //             /* webpackInclude: /example(\.tsx|\.jsx|\.ts|\.js)$/ */
 //             /* webpackMode: "lazy" */
-//             `@/registry/perxel/blocks/${name}/example`
+//             `@/registry/phucbm/blocks/${name}/example`
 //             );
 //
 //         // Prefer named export `Example`, but gracefully fall back to default.

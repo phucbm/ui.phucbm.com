@@ -5,8 +5,8 @@ import {useRef} from 'react';
 import {useGSAP} from "@gsap/react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
-import {calculatePointsOnCircle} from "@/registry/perxel/lib/calculatePointsOnCircle";
-import {cn} from "@/registry/perxel/lib/utils";
+import {calculatePointsOnCircle} from "@/registry/phucbm/lib/calculatePointsOnCircle";
+import {cn} from "@/registry/phucbm/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
 

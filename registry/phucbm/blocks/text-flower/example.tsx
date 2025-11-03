@@ -1,4 +1,4 @@
-import {TextFlower} from "@/registry/perxel/blocks/text-flower/text-flower";
+import {TextFlower} from "@/registry/phucbm/blocks/text-flower/text-flower";
 
 export default function Example() {
     const texts = [

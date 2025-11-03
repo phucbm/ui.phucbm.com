@@ -1,4 +1,4 @@
-import {TextRipple} from "@/registry/perxel/blocks/text-ripple/text-ripple";
+import {TextRipple} from "@/registry/phucbm/blocks/text-ripple/text-ripple";
 
 export default function Example() {
     return (

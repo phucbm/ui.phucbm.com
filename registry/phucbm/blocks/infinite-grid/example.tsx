@@ -1,4 +1,4 @@
-import {InfiniteGrid} from "@/registry/perxel/blocks/infinite-grid/infinite-grid";
+import {InfiniteGrid} from "@/registry/phucbm/blocks/infinite-grid/infinite-grid";
 
 export default function Example() {
     const images = [

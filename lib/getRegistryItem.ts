@@ -22,7 +22,7 @@ export async function getRegistryItem(name: string) {
     }
 
     const mod = await import(
-        `@/registry/perxel/blocks/${name}/registry-item.json`
+        `@/registry/phucbm/blocks/${name}/registry-item.json`
         );
     return mod.default as RegistryItem;
 }
