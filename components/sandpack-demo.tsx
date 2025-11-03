@@ -60,7 +60,7 @@ async function SandpackDemo({registryItem}: Props) {
                     <SandpackPreview showOpenInCodeSandbox={false}/>
                 } height={height}/>
 
-                <SandpackLayout>
+                <SandpackLayout className="mt-2">
                     <SandpackFileExplorer/>
                     <SandpackCodeEditor closableTabs={true}
                                         showTabs={true}
