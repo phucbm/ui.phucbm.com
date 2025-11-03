@@ -42,7 +42,7 @@ export async function SandpackExampleCode({registryItem}: Props) {
 
             <SandpackProvider template="react-ts" {...sandpackProps}>
                 <SandpackLayout className="!border-none">
-                    <SandpackCodeEditor showLineNumbers={true} readOnly={true}/>
+                    <SandpackCodeEditor showLineNumbers readOnly={true}/>
                 </SandpackLayout>
             </SandpackProvider>
 

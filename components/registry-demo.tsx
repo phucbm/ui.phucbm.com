@@ -2,7 +2,7 @@
 import {getRegistryItem} from "@/lib/getRegistryItem";
 import React from "react";
 import {CodeItem} from "@/components/code-block-view";
-import {SandpackDemo} from "@/components/sandpack-demo";
+import SandpackDemo from "@/components/sandpack-demo";
 
 type Props = {
     children: React.ReactNode;

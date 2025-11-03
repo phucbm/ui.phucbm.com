@@ -8,7 +8,8 @@ type Props = {
     registryItem: RegistryItem
 };
 
-export async function SandpackDemo({registryItem}: Props) {
+async function SandpackDemo({registryItem}: Props) {
+    console.log('SandpackDemo rendering for:', registryItem.name);
     const files = await getSandpackFiles({registryItem});
 
     const dependencies = {};
@@ -23,7 +24,7 @@ export async function SandpackDemo({registryItem}: Props) {
         theme: {aquaBlue},
         options: {
             externalResources: ["https://cdn.tailwindcss.com"],
-            initMode: "lazy",
+            initMode: "user-visible",
         },
         customSetup: {
             dependencies: dependencies
@@ -47,11 +48,16 @@ export async function SandpackDemo({registryItem}: Props) {
             {/*    </div>*/}
             {/*</div>*/}
 
-            <SandpackProvider template="react-ts" {...sandpackProps}>
-                <RegistryPreview children={<SandpackPreview showOpenInCodeSandbox={false}/>} height={height}/>
-            </SandpackProvider>
+            <SandpackProvider key={registryItem.name} template="react-ts" {...sandpackProps}>
 
+                <RegistryPreview children={
+                    <SandpackPreview showOpenInCodeSandbox={false}/>
+                } height={height}/>
+
+            </SandpackProvider>
 
         </div>
     );
 }
+
+export default SandpackDemo
