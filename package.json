@@ -28,6 +28,7 @@
     "@codesandbox/sandpack-themes": "^2.0.21",
     "@gsap/react": "^2.1.2",
     "@icons-pack/react-simple-icons": "^13.8.0",
+    "@phucbm/magnetic-button": "^1.0.1",
     "@phucbm/next-og-image": "^1.0.1",
     "@phucbm/ripple-effect": "^1.0.0",
     "@radix-ui/react-dialog": "^1.1.15",

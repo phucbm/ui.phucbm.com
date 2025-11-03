@@ -20,6 +20,9 @@ importers:
       '@icons-pack/react-simple-icons':
         specifier: ^13.8.0
         version: 13.8.0(react@19.2.0)
+      '@phucbm/magnetic-button':
+        specifier: ^1.0.1
+        version: 1.0.1
       '@phucbm/next-og-image':
         specifier: ^1.0.1
         version: 1.0.1(next@15.5.4(@babel/core@7.28.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -1083,6 +1086,14 @@ packages:
     resolution: {integrity: sha512-NkT+YAdgS2FPCn8mIA9bQhiBs+xmniMGq1LFPDhcFn0+2yIUEiIG06t7bsZlhdjknEQRTSdT7YitP6fC5qwP0g==}
     cpu: [x64]
     os: [win32]
+
+  '@phucbm/lerp@1.0.1':
+    resolution: {integrity: sha512-sVROm5chgbHAI8/Hv/coMMEuHKsRUOR8PEgj+W0u2cDWDqB4HCVMdzzQ5s+0nm8nO1cdntnUmKzaVtqbR58WNw==}
+    engines: {node: '>=16'}
+
+  '@phucbm/magnetic-button@1.0.1':
+    resolution: {integrity: sha512-BiV5/pqXSI68cGOVdLWSVB6TqztmLGxLXHe9aJZ3advjTm0h33ciPxPT68Ny3pK6hqWBxQFPkAthC2wpANzDvg==}
+    engines: {node: '>=16'}
 
   '@phucbm/next-og-image@1.0.1':
     resolution: {integrity: sha512-FFv/PXisrIyb1XSN3LCEIU+4KJ5dLtRaJ6nc2ks4huirn+DeprQky8CKzBKSyQrtw/zHPatB4pqxQZ4oVuJgcA==}
@@ -6162,6 +6173,12 @@ snapshots:
 
   '@pagefind/windows-x64@1.4.0':
     optional: true
+
+  '@phucbm/lerp@1.0.1': {}
+
+  '@phucbm/magnetic-button@1.0.1':
+    dependencies:
+      '@phucbm/lerp': 1.0.1
 
   '@phucbm/next-og-image@1.0.1(next@15.5.4(@babel/core@7.28.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:

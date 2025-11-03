@@ -6,6 +6,7 @@ const COMPONENTS: MetaRecord = {
     // 'word-by-word': {display: 'hidden'},
     // 'spotlight-content': {display: 'hidden'},
     'infinite-grid': '',
+    'magnetic': '',
     // 'image-carousel': {display: 'hidden'},
 }
 
