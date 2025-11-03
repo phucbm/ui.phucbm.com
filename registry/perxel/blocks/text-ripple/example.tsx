@@ -1,7 +1,7 @@
 import {TextRipple} from "@/registry/perxel/blocks/text-ripple/text-ripple";
 
-export function Example() {
+export default function Example() {
     return (
-        <TextRipple line1="lorem ipsum" line2="dolor sit amet"/>
+        <TextRipple line1="lorem ipsum" line2="dolor sit amet" className="h-[500px]"/>
     );
 }

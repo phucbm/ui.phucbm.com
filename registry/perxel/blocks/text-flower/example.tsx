@@ -1,6 +1,6 @@
 import {TextFlower} from "@/registry/perxel/blocks/text-flower/text-flower";
 
-export function Example() {
+export default function Example() {
     const texts = [
         "🐧 Watch the penguins waddle by.",
         "🐘 See the elephants remember everything.",

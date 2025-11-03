@@ -4,14 +4,13 @@ import React, {useEffect, useMemo, useRef, useState} from "react";
 import {ResizableHandle, ResizablePanel, ResizablePanelGroup,} from "@/components/ui/resizable";
 import {cn} from "@/lib/utils";
 import {Badge} from "@/components/ui/badge";
-import {RegistryItem} from "@/lib/getRegistryItem";
 
 type Props = {
     children: React.ReactNode;
-    // registryItem?: RegistryItem;
+    height?: number;
 };
 
-export function RegistryPreview({children}: Props) {
+export function RegistryPreview({children, height = 450}: Props) {
     const containerRef = useRef<HTMLDivElement>(null);
     const panelRef = useRef<HTMLDivElement>(null);
 
@@ -62,8 +61,10 @@ export function RegistryPreview({children}: Props) {
              className="group relative bg-accent rounded-md overflow-hidden"
         >
             <ResizablePanelGroup direction="horizontal" className="px-bg-pattern-transparent px-border">
+
+                {/*main panel*/}
                 <ResizablePanel defaultSize={100} minSize={minSizePct}>
-                    <div ref={panelRef} className="relative h-full @container">
+                    <div ref={panelRef} className="relative h-full">
                         {!atFullWidth && (
                             <div
                                 className={cn(
@@ -75,12 +76,13 @@ export function RegistryPreview({children}: Props) {
                                 <Badge variant="secondary">{Math.round(panelWidth)}px</Badge>
                             </div>
                         )}
-                        <div className="[&>*]:min-h-[497px]">
+                        <div className="[&>*]:min-h-full" style={{height: `${height}px`}}>
                             {children}
                         </div>
                     </div>
                 </ResizablePanel>
 
+                {/*handle*/}
                 <ResizableHandle
                     withHandle
                     className={cn(
@@ -89,12 +91,14 @@ export function RegistryPreview({children}: Props) {
                     )}
                 />
 
+                {/*resize panel*/}
                 <ResizablePanel
                     defaultSize={0}
                     className="px-bg-diagonal"
                 />
             </ResizablePanelGroup>
 
+            {/*border*/}
             <div className="z-20 absolute inset-0 px-border pointer-events-none"/>
         </div>
     );
