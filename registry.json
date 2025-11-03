@@ -5,20 +5,6 @@
   "items": [
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
-      "name": "demo-images",
-      "type": "registry:lib",
-      "title": "Demo Images",
-      "description": "A set of sample images used by demo components such as Image Carousel.",
-      "files": [
-        {
-          "path": "registry/perxel/blocks/demo-images/demo-images.ts",
-          "type": "registry:lib",
-          "target": "utils/demo-images.ts"
-        }
-      ]
-    },
-    {
-      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
       "name": "image-carousel",
       "type": "registry:component",
       "title": "Image Carousel",
@@ -48,8 +34,7 @@
       "dependencies": [
         "gsap",
         "react",
-        "@gsap/react",
-        "gsap/Observer"
+        "@gsap/react"
       ],
       "files": [
         {
@@ -88,7 +73,9 @@
       "dependencies": [
         "gsap",
         "react",
-        "@gsap/react"
+        "@gsap/react",
+        "tailwind-merge",
+        "clsx"
       ],
       "files": [
         {
@@ -98,8 +85,13 @@
         },
         {
           "path": "registry/perxel/blocks/text-flower/lib/calculatePointsOnCircle.ts",
-          "type": "registry:component",
+          "type": "registry:lib",
           "target": "lib/calculatePointsOnCircle.ts"
+        },
+        {
+          "path": "registry/perxel/blocks/text-flower/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "lib/utils.ts"
         }
       ]
     },
@@ -133,8 +125,7 @@
       "dependencies": [
         "gsap",
         "react",
-        "@gsap/react",
-        "normalized-mouse-position"
+        "@gsap/react"
       ],
       "files": [
         {
