@@ -62,7 +62,7 @@
         {
           "path": "registry/phucbm/blocks/infinite-grid/example.tsx",
           "type": "registry:component",
-          "target": "components/phucbm/infinite-grid-example.tsx"
+          "target": "index.tsx"
         }
       ]
     },
@@ -137,7 +137,7 @@
         {
           "path": "registry/phucbm/blocks/text-flower/example.tsx",
           "type": "registry:component",
-          "target": "components/phucbm/text-flower-example.tsx"
+          "target": "index.tsx"
         }
       ]
     },
@@ -182,7 +182,7 @@
         {
           "path": "registry/phucbm/blocks/text-ripple/example.tsx",
           "type": "registry:component",
-          "target": "components/phucbm/text-ripple-example.tsx"
+          "target": "index.tsx"
         }
       ]
     },
@@ -228,7 +228,7 @@
         {
           "path": "registry/phucbm/blocks/word-by-word/example.tsx",
           "type": "registry:component",
-          "target": "components/phucbm/word-by-word-example.tsx"
+          "target": "index.tsx"
         }
       ]
     }
