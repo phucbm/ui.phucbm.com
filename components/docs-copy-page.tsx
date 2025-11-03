@@ -114,7 +114,10 @@ export function DocsCopyPage({page, url, registryName}: { page: string; url: str
               asChild
           >
               <a
-                  href={"https://v0.dev/chat/api/open?url=" + getRegistryUrl({name: registryName})}
+                  href={`https://v0.dev/chat/api/open?url=${getRegistryUrl({
+                      name: registryName,
+                      fileNamePostfix: '-example'
+                  })}`}
                   target="_blank"
                   rel="noopener noreferrer"
               >
