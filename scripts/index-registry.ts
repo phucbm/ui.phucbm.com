@@ -8,14 +8,14 @@
  * pnpm tsx scripts/build-registry.ts --merge
  */
 
-import {promises as fs} from "fs";
+import { promises as fs } from "fs";
 import path from "path";
 import url from "url";
-import {config} from "dotenv";
+import { config } from "dotenv";
 
 // Load environment variables from .env files
-config({path: path.resolve(process.cwd(), ".env.local")});
-config({path: path.resolve(process.cwd(), ".env")});
+config({ path: path.resolve(process.cwd(), ".env.local") });
+config({ path: path.resolve(process.cwd(), ".env") });
 
 interface RegistryFile {
     path: string;
@@ -54,7 +54,7 @@ function toPosix(p: string) {
     return p.split(path.sep).join("/");
 }
 
-function getRegistryUrl({name, fileNamePostfix = ''}: { name: string, fileNamePostfix?: string }) {
+function getRegistryUrl({ name, fileNamePostfix = '' }: { name: string, fileNamePostfix?: string }) {
     const folder = process.env.NEXT_PUBLIC_REGISTRY_FOLDER || "r";
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
@@ -128,28 +128,18 @@ function generateExampleItem(
     const exampleFilePath = path.join(itemDir, exampleFileName);
     const exampleFileRel = path.relative(ROOT, exampleFilePath);
 
-    // Determine target path for example file
-    const baseTarget = baseItem.files?.[0]?.target;
-    let exampleTarget: string | undefined;
-    if (baseTarget) {
-        const targetDir = path.dirname(baseTarget);
-        const targetExt = path.extname(baseTarget);
-        const targetBase = path.basename(baseTarget, targetExt);
-        exampleTarget = `${targetDir}/${targetBase}${nameSuffix}${targetExt}`;
-    }
-
-    // Create files array: ONLY the example file (not the base component files)
+    // Create files array: ONLY the example file with target as "index.tsx"
     const files: RegistryFile[] = [
         {
             path: toPosix(exampleFileRel),
             type: baseItem.files?.[0]?.type,
-            ...(exampleTarget && { target: exampleTarget }),
+            target: "index.tsx",
         },
     ];
 
     // Add base registry as registryDependencies using getRegistryUrl
     const registryDependencies: string[] = [
-        getRegistryUrl({name: baseItem.name}),
+        getRegistryUrl({ name: baseItem.name }),
         ...(baseItem.registryDependencies || []),
     ];
 
