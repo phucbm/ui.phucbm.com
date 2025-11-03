@@ -8,19 +8,14 @@ import {
 } from "@codesandbox/sandpack-react";
 import {RegistryPreview} from "@/components/registry-preview";
 import {getSandpackFiles} from "@/lib/getSandpackFiles";
+import {aquaBlue} from "@codesandbox/sandpack-themes";
 
 type Props = {
     registryItem: RegistryItem
 };
 
-export async function RegistrySandpack({registryItem}: Props) {
-    const sandpackFiles = await getSandpackFiles({registryItem});
-
-    const files = {};
-
-    sandpackFiles.forEach(file => {
-        files[file.filename] = file.code;
-    })
+export async function SandpackDemo({registryItem}: Props) {
+    const files = await getSandpackFiles({registryItem});
 
     const dependencies = {};
 
@@ -55,6 +50,7 @@ export async function RegistrySandpack({registryItem}: Props) {
             {/*</div>*/}
 
             <SandpackProvider template="react-ts"
+                              theme={aquaBlue}
                               options={{
                                   externalResources: ["https://cdn.tailwindcss.com"],
                                   initMode: "lazy",
@@ -67,11 +63,6 @@ export async function RegistrySandpack({registryItem}: Props) {
             >
 
                 <RegistryPreview children={<SandpackPreview showOpenInCodeSandbox={false}/>} height={height}/>
-
-                <SandpackLayout>
-                    <SandpackFileExplorer/>
-                    <SandpackCodeEditor/>
-                </SandpackLayout>
 
             </SandpackProvider>
 

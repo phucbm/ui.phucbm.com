@@ -1,17 +1,17 @@
-import {CodeItem} from "@/components/code-block-view";
 import {RegistryItem} from "@/lib/getRegistryItem";
 import {getCodeItemFromPath} from "@/lib/getCodeItemFromPath";
 import path from "path";
+import {SandpackFiles} from "@codesandbox/sandpack-react";
 
 /**
- * Reads all files listed in a registry item (including example.tsx) and returns an array of CodeItems
+ * Reads all files listed in a registry item (including example.tsx) and returns an object
  * with transformed import paths for Sandpack compatibility.
  */
 export async function getSandpackFiles({
                                            registryItem,
                                        }: {
     registryItem: RegistryItem;
-}): Promise<CodeItem[]> {
+}): Promise<SandpackFiles> {
     const componentName = registryItem.name;
 
     // Find the main component file
@@ -70,29 +70,28 @@ export async function getSandpackFiles({
         return transformedCode;
     }
 
-    // Step 5 & 6: Set correct filenames and transform code
-    const result: CodeItem[] = [];
+    // Step 5 & 6: Build result object
+    const result: SandpackFiles = {};
+
+    // Add App.tsx first (transformed example.tsx)
+    result["/App.tsx"] = {
+        code: transformImports(exampleCodeItem.code),
+        active: true,
+        readOnly: false,
+        hidden: false,
+    };
 
     // Add transformed registry files
     registryItem.files.forEach((file, index) => {
-        result.push({
-            language: registryCodeItems[index].language,
-            filename: `${file.target}`,
+        result[`/${file.target}`] = {
             code: transformImports(registryCodeItems[index].code),
-        });
-    });
-
-    // Add transformed example.tsx as App.tsx
-    result.push({
-        language: exampleCodeItem.language,
-        filename: "App.tsx",
-        code: transformImports(exampleCodeItem.code),
+            readOnly: false,
+            hidden: false,
+        };
     });
 
     // Add tsconfig.json
-    result.push({
-        language: "json",
-        filename: "tsconfig.json",
+    result["/tsconfig.json"] = {
         code: `{
   "include": [
     "./**/*"
@@ -108,7 +107,10 @@ export async function getSandpackFiles({
     }
   }
 }`,
-    });
+        readOnly: true,
+        active: false,
+        hidden: true,
+    };
 
     return result;
 }

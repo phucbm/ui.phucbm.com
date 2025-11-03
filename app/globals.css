@@ -200,6 +200,10 @@
 .nextra-sidebar-footer {
     @apply bg-transparent;
 }
+
+article {
+    @apply relative max-w-[1100px] mx-auto;
+}
 article main {
     @apply relative;
 }

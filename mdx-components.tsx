@@ -3,6 +3,7 @@ import {RegistryInstall} from "@/components/registry-install";
 import {RegistryDemo} from "@/components/registry-demo"
 import {RegistryPropsTable} from "@/components/registry-props-table";
 import {RegistryExample} from "@/components/registry-example";
+import {RegistryPlayground} from "@/components/registry-playground";
 
 // Get the default MDX components
 const themeComponents = getThemeComponents()
@@ -16,5 +17,6 @@ export function useMDXComponents(components: any) {
         RegistryDemo: RegistryDemo,
         RegistryPropsTable: RegistryPropsTable,
         RegistryExample: RegistryExample,
+        RegistryPlayground: RegistryPlayground,
     }
 }

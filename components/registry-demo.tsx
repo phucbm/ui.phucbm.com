@@ -2,7 +2,7 @@
 import {getRegistryItem} from "@/lib/getRegistryItem";
 import React from "react";
 import {CodeItem} from "@/components/code-block-view";
-import {RegistrySandpack} from "@/components/registry-sandpack";
+import {SandpackDemo} from "@/components/sandpack-demo";
 
 type Props = {
     children: React.ReactNode;
@@ -16,5 +16,5 @@ type Props = {
 export async function RegistryDemo({name}: Props) {
     const registryItem = await getRegistryItem(name);
 
-    return <RegistrySandpack registryItem={registryItem}/>;
+    return <SandpackDemo registryItem={registryItem}/>;
 }
