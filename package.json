@@ -66,6 +66,7 @@
     "@types/node": "22.13.10",
     "@types/react": "19.0.10",
     "@types/react-dom": "19.1.2",
+    "dotenv": "^17.2.3",
     "eslint": "^9.32.0",
     "eslint-config-next": "15.3.1",
     "pagefind": "^1.4.0",

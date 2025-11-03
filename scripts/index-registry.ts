@@ -8,9 +8,14 @@
  * pnpm tsx scripts/build-registry.ts --merge
  */
 
-import { promises as fs } from "fs";
+import {promises as fs} from "fs";
 import path from "path";
 import url from "url";
+import {config} from "dotenv";
+
+// Load environment variables from .env files
+config({path: path.resolve(process.cwd(), ".env.local")});
+config({path: path.resolve(process.cwd(), ".env")});
 
 interface RegistryFile {
     path: string;
@@ -25,6 +30,7 @@ interface RegistryItem {
     title?: string;
     description?: string;
     dependencies?: string[];
+    registryDependencies?: string[];
     files?: RegistryFile[];
 }
 
@@ -46,6 +52,17 @@ const isMerge = argv.has("--merge");
 
 function toPosix(p: string) {
     return p.split(path.sep).join("/");
+}
+
+function getRegistryUrl({name, fileNamePostfix = ''}: { name: string, fileNamePostfix?: string }) {
+    const folder = process.env.NEXT_PUBLIC_REGISTRY_FOLDER || "r";
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+
+    if (!siteUrl) {
+        throw new Error("NEXT_PUBLIC_SITE_URL environment variable is not set");
+    }
+
+    return `${siteUrl}/${folder}/${name}${fileNamePostfix}.json`;
 }
 
 async function walkForRegistryItems(dir: string): Promise<string[]> {
@@ -121,14 +138,19 @@ function generateExampleItem(
         exampleTarget = `${targetDir}/${targetBase}${nameSuffix}${targetExt}`;
     }
 
-    // Create files array: example file first, then original component files
+    // Create files array: ONLY the example file (not the base component files)
     const files: RegistryFile[] = [
         {
             path: toPosix(exampleFileRel),
             type: baseItem.files?.[0]?.type,
             ...(exampleTarget && { target: exampleTarget }),
         },
-        ...(baseItem.files || []),
+    ];
+
+    // Add base registry as registryDependencies using getRegistryUrl
+    const registryDependencies: string[] = [
+        getRegistryUrl({name: baseItem.name}),
+        ...(baseItem.registryDependencies || []),
     ];
 
     const exampleItem: RegistryItem = {
@@ -138,6 +160,7 @@ function generateExampleItem(
         title: `${baseItem.title || baseItem.name}${titleSuffix}`,
         ...(baseItem.description && { description: baseItem.description }),
         ...(baseItem.dependencies && { dependencies: [...baseItem.dependencies] }),
+        registryDependencies,
         files,
     };
 

@@ -55,16 +55,14 @@
         "react",
         "@gsap/react"
       ],
+      "registryDependencies": [
+        "http://localhost:3000/r/infinite-grid.json"
+      ],
       "files": [
         {
           "path": "registry/perxel/blocks/infinite-grid/example.tsx",
           "type": "registry:component",
           "target": "components/perxel/infinite-grid-example.tsx"
-        },
-        {
-          "path": "registry/perxel/blocks/infinite-grid/infinite-grid.tsx",
-          "type": "registry:component",
-          "target": "components/perxel/infinite-grid.tsx"
         }
       ]
     },
@@ -132,26 +130,14 @@
         "tailwind-merge",
         "clsx"
       ],
+      "registryDependencies": [
+        "http://localhost:3000/r/text-flower.json"
+      ],
       "files": [
         {
           "path": "registry/perxel/blocks/text-flower/example.tsx",
           "type": "registry:component",
           "target": "components/perxel/text-flower-example.tsx"
-        },
-        {
-          "path": "registry/perxel/blocks/text-flower/text-flower.tsx",
-          "type": "registry:component",
-          "target": "components/perxel/text-flower.tsx"
-        },
-        {
-          "path": "registry/perxel/lib/calculatePointsOnCircle.ts",
-          "type": "registry:lib",
-          "target": "lib/calculatePointsOnCircle.ts"
-        },
-        {
-          "path": "registry/perxel/lib/utils.ts",
-          "type": "registry:lib",
-          "target": "lib/utils.ts"
         }
       ]
     },
@@ -189,16 +175,14 @@
         "normalized-mouse-position",
         "@phucbm/ripple-effect"
       ],
+      "registryDependencies": [
+        "http://localhost:3000/r/text-ripple.json"
+      ],
       "files": [
         {
           "path": "registry/perxel/blocks/text-ripple/example.tsx",
           "type": "registry:component",
           "target": "components/perxel/text-ripple-example.tsx"
-        },
-        {
-          "path": "registry/perxel/blocks/text-ripple/text-ripple.tsx",
-          "type": "registry:component",
-          "target": "components/perxel/text-ripple.tsx"
         }
       ]
     },
@@ -237,21 +221,14 @@
         "react",
         "@gsap/react"
       ],
+      "registryDependencies": [
+        "http://localhost:3000/r/word-by-word.json"
+      ],
       "files": [
         {
           "path": "registry/perxel/blocks/word-by-word/example.tsx",
           "type": "registry:component",
           "target": "components/perxel/word-by-word-example.tsx"
-        },
-        {
-          "path": "registry/perxel/blocks/word-by-word/word-by-word.tsx",
-          "type": "registry:component",
-          "target": "components/perxel/word-by-word.tsx"
-        },
-        {
-          "path": "registry/perxel/blocks/word-by-word/lib/splitTextIntoWords.ts",
-          "type": "registry:component",
-          "target": "lib/splitTextIntoWords.ts"
         }
       ]
     }
