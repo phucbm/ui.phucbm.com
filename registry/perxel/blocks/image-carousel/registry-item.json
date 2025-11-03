@@ -10,13 +10,13 @@
     "@gsap/react"
   ],
   "registryDependencies": [
-    "https://ui.perxel.com/r/demo-images.json"
+    "https://ui.phucbm.com/r/demo-images.json"
   ],
   "files": [
     {
-      "path": "registry/perxel/blocks/image-carousel/image-carousel.tsx",
+      "path": "registry/phucbm/blocks/image-carousel/image-carousel.tsx",
       "type": "registry:component",
-      "target": "components/perxel/image-carousel.tsx"
+      "target": "components/phucbm/image-carousel.tsx"
     }
   ]
 }

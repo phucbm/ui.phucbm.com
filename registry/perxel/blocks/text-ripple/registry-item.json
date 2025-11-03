@@ -13,9 +13,9 @@
   ],
   "files": [
     {
-      "path": "registry/perxel/blocks/text-ripple/text-ripple.tsx",
+      "path": "registry/phucbm/blocks/text-ripple/text-ripple.tsx",
       "type": "registry:component",
-      "target": "components/perxel/text-ripple.tsx"
+      "target": "components/phucbm/text-ripple.tsx"
     }
   ]
 }

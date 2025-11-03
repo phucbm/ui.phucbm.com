@@ -13,17 +13,17 @@
   ],
   "files": [
     {
-      "path": "registry/perxel/blocks/text-flower/text-flower.tsx",
+      "path": "registry/phucbm/blocks/text-flower/text-flower.tsx",
       "type": "registry:component",
-      "target": "components/perxel/text-flower.tsx"
+      "target": "components/phucbm/text-flower.tsx"
     },
     {
-      "path": "registry/perxel/lib/calculatePointsOnCircle.ts",
+      "path": "registry/phucbm/lib/calculatePointsOnCircle.ts",
       "type": "registry:lib",
       "target": "lib/calculatePointsOnCircle.ts"
     },
     {
-      "path": "registry/perxel/lib/utils.ts",
+      "path": "registry/phucbm/lib/utils.ts",
       "type": "registry:lib",
       "target": "lib/utils.ts"
     }

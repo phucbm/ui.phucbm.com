@@ -12,9 +12,9 @@
   ],
   "files": [
     {
-      "path": "registry/perxel/blocks/spotlight-content/spotlight-content.tsx",
+      "path": "registry/phucbm/blocks/spotlight-content/spotlight-content.tsx",
       "type": "registry:component",
-      "target": "components/perxel/spotlight-content.tsx"
+      "target": "components/phucbm/spotlight-content.tsx"
     }
   ]
 }

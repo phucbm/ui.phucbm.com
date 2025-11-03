@@ -11,9 +11,9 @@
   ],
   "files": [
     {
-      "path": "registry/perxel/blocks/infinite-grid/infinite-grid.tsx",
+      "path": "registry/phucbm/blocks/infinite-grid/infinite-grid.tsx",
       "type": "registry:component",
-      "target": "components/perxel/infinite-grid.tsx"
+      "target": "components/phucbm/infinite-grid.tsx"
     }
   ]
 }

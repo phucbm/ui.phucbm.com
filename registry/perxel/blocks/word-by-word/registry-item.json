@@ -11,12 +11,12 @@
   ],
   "files": [
     {
-      "path": "registry/perxel/blocks/word-by-word/word-by-word.tsx",
+      "path": "registry/phucbm/blocks/word-by-word/word-by-word.tsx",
       "type": "registry:component",
-      "target": "components/perxel/word-by-word.tsx"
+      "target": "components/phucbm/word-by-word.tsx"
     },
     {
-      "path": "registry/perxel/blocks/word-by-word/lib/splitTextIntoWords.ts",
+      "path": "registry/phucbm/blocks/word-by-word/lib/splitTextIntoWords.ts",
       "type": "registry:component",
       "target": "lib/splitTextIntoWords.ts"
     }
