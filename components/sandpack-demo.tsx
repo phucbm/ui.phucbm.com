@@ -15,10 +15,12 @@ import {OpenInV0Button} from "@/components/OpenInV0Button";
 import {getRegistryUrl} from "@/lib/getRegistryUrl";
 
 type Props = {
-    registryItem: RegistryItem
+    registryItem: RegistryItem;
+    height?: number;
+    editorHeight?: number;
 };
 
-async function SandpackDemo({registryItem}: Props) {
+async function SandpackDemo({registryItem, height = 400, editorHeight = 300}: Props) {
     const files = await getSandpackFiles({registryItem});
 
     const dependencies = {};
@@ -26,8 +28,6 @@ async function SandpackDemo({registryItem}: Props) {
     registryItem.dependencies.forEach(dependency => {
         dependencies[dependency] = 'latest';
     })
-
-    const height = 500;
 
     const sandpackProps = {
         theme: {aquaBlue},
@@ -53,20 +53,9 @@ async function SandpackDemo({registryItem}: Props) {
     return (
         <div className="mt-6">
 
-            {/*<div className="flex justify-between items-center">*/}
-            {/*    <div>*/}
-            {/*        Preview*/}
-            {/*    </div>*/}
-            {/*    <div>*/}
-            {/*        <SandPackFullScreen sandpackProps={sandpackProps}/>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
-
             <SandpackProvider key={registryItem.name} template="react-ts" {...sandpackProps}>
 
-                <RegistryPreview children={
-                    <SandpackPreview showOpenInCodeSandbox={false}/>
-                } height={height}/>
+                <RegistryPreview children={<SandpackPreview showOpenInCodeSandbox={false}/>} height={height}/>
 
                 <div className="mt-4 text-sm text-slate-500 flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
@@ -77,7 +66,8 @@ async function SandpackDemo({registryItem}: Props) {
                         <OpenInV0Button text="Open in" url={exampleRegistryUrl}/>
                     </div>
                 </div>
-                <SandpackLayout className="mt-2">
+
+                <SandpackLayout className="mt-2" style={{[`--sp-layout-height` as any]: `${editorHeight}px`}}>
                     <SandpackFileExplorer/>
                     <SandpackCodeEditor closableTabs={true}
                                         showTabs={true}
