@@ -237,8 +237,8 @@ async function main() {
     const base: RegistryRoot = {
         $schema:
             existing.$schema ?? "https://ui.shadcn.com/schema/registry.json",
-        name: existing.name ?? "perxel",
-        homepage: existing.homepage ?? "https://ui.perxel.com",
+        name: existing.name ?? "phucbm",
+        homepage: existing.homepage ?? "https://ui.phucbm.com",
         items: [],
     };
 
