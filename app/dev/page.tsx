@@ -1,7 +1,7 @@
-import {SpotlightContent} from "@/registry/perxel/blocks/spotlight-content/spotlight-content";
+import Example from "@/registry/perxel/blocks/text-flower/example";
 
 export default function Page() {
     return (
-        <SpotlightContent/>
+        <Example/>
     );
 }

@@ -7,7 +7,8 @@ export interface RegistryItem {
         path: string;
         type: string;
         target: string;
-    }[]
+    }[];
+    dependencies?: string[]
 }
 
 export async function getRegistryItem(name: string) {

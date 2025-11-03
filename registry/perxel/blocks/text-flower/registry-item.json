@@ -7,7 +7,9 @@
   "dependencies": [
     "gsap",
     "react",
-    "@gsap/react"
+    "@gsap/react",
+    "tailwind-merge",
+    "clsx"
   ],
   "files": [
     {
@@ -17,8 +19,13 @@
     },
     {
       "path": "registry/perxel/blocks/text-flower/lib/calculatePointsOnCircle.ts",
-      "type": "registry:component",
+      "type": "registry:lib",
       "target": "lib/calculatePointsOnCircle.ts"
+    },
+    {
+      "path": "lib/utils.ts",
+      "type": "registry:lib",
+      "target": "lib/utils.ts"
     }
   ]
 }
