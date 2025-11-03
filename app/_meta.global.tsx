@@ -3,10 +3,10 @@ import {MetaRecord} from "nextra";
 const COMPONENTS: MetaRecord = {
     'text-ripple': '',
     'text-flower': '',
-    'word-by-word': {display: 'hidden'},
-    'spotlight-content': {display: 'hidden'},
-    'infinite-grid': {display: 'hidden'},
-    'image-carousel': {display: 'hidden'},
+    // 'word-by-word': {display: 'hidden'},
+    // 'spotlight-content': {display: 'hidden'},
+    'infinite-grid': '',
+    // 'image-carousel': {display: 'hidden'},
 }
 
 

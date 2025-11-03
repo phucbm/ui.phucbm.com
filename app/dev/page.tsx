@@ -1,4 +1,4 @@
-import Example from "@/registry/perxel/blocks/text-flower/example";
+import Example from "@/registry/perxel/blocks/infinite-grid/example";
 
 export default function Page() {
     return (
