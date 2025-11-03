@@ -1,27 +1,26 @@
 import {RegistryItem} from "@/lib/getRegistryItem";
-import {getRegistryCodeItems} from "@/lib/getRegistryCodeItems";
-import {SandpackPreview, SandpackProvider} from "@codesandbox/sandpack-react";
+import {
+    SandpackCodeEditor,
+    SandpackFileExplorer,
+    SandpackLayout,
+    SandpackPreview,
+    SandpackProvider
+} from "@codesandbox/sandpack-react";
 import {RegistryPreview} from "@/components/registry-preview";
-import {getExampleCodeForSandpack} from "@/lib/getExampleCodeForSandpack";
+import {getSandpackFiles} from "@/lib/getSandpackFiles";
 
 type Props = {
     registryItem: RegistryItem
 };
 
 export async function RegistrySandpack({registryItem}: Props) {
-    const codeFiles = await getRegistryCodeItems({registryItem});
+    const sandpackFiles = await getSandpackFiles({registryItem});
 
-    const files = {
-        '/App.js': {
-            code: await getExampleCodeForSandpack(registryItem),
-            active: true
-        }
-    };
+    const files = {};
 
-    codeFiles.forEach(file => {
+    sandpackFiles.forEach(file => {
         files[file.filename] = file.code;
     })
-
 
     const dependencies = {};
 
@@ -55,7 +54,7 @@ export async function RegistrySandpack({registryItem}: Props) {
             {/*    </div>*/}
             {/*</div>*/}
 
-            <SandpackProvider template="react"
+            <SandpackProvider template="react-ts"
                               options={{
                                   externalResources: ["https://cdn.tailwindcss.com"],
                                   initMode: "lazy",
@@ -68,6 +67,11 @@ export async function RegistrySandpack({registryItem}: Props) {
             >
 
                 <RegistryPreview children={<SandpackPreview showOpenInCodeSandbox={false}/>} height={height}/>
+
+                <SandpackLayout>
+                    <SandpackFileExplorer/>
+                    <SandpackCodeEditor/>
+                </SandpackLayout>
 
             </SandpackProvider>
 

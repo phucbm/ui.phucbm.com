@@ -29,10 +29,9 @@ export default async function RootLayout({children}) {
             // banner={banner}
             navbar={navbar}
             pageMap={await getPageMap()}
-            docsRepositoryBase="https://github.com/ui/phucbm.perxel.com/tree/main"
             footer={footer}
         >
-            <div className="container mx-auto">
+            <div className="p-docs-container">
                 {children}
             </div>
         </Layout>
