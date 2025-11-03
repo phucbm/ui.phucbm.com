@@ -7,13 +7,14 @@ import {Observer} from "gsap/Observer"
 gsap.registerPlugin(Observer, useGSAP)
 
 export interface InfiniteGridProps {
+    /** Array of images. **/
     images: {
         url: string;
-        alt: string;
+        title: string;
     }[]
 }
 
-export const InfiniteGrid: React.FC<InfiniteGridProps> = ({ images }) => {
+export function InfiniteGrid({images}: InfiniteGridProps) {
     const scope = useRef<HTMLDivElement | null>(null)
     const containerScale = useRef<HTMLDivElement | null>(null)
 
@@ -113,10 +114,10 @@ export const InfiniteGrid: React.FC<InfiniteGridProps> = ({ images }) => {
                                     key={i}
                                     aria-hidden={i !== 0}
                                 >
-                                    {images.map(({url, alt}, index) => (
+                                    {images.map(({url, title}, index) => (
                                         <div key={index}
                                              className="w-[50vw] md:w-[18vw] aspect-square select-none">
-                                            <img src={url} alt={alt}
+                                            <img src={url} alt={title}
                                                  className="w-full h-full object-cover"
                                                  loading="eager"/>
                                         </div>
