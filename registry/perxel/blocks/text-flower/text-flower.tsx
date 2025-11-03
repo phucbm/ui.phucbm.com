@@ -3,10 +3,10 @@
 import * as React from 'react';
 import {useRef} from 'react';
 import {useGSAP} from "@gsap/react";
-import {calculatePointsOnCircle} from "@/registry/perxel/blocks/text-flower/lib/calculatePointsOnCircle";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
-import {cn} from "@/lib/utils";
+import {calculatePointsOnCircle} from "@/registry/perxel/lib/calculatePointsOnCircle";
+import {cn} from "@/registry/perxel/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
 

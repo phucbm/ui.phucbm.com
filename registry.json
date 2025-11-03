@@ -84,12 +84,12 @@
           "target": "components/perxel/text-flower.tsx"
         },
         {
-          "path": "registry/perxel/blocks/text-flower/lib/calculatePointsOnCircle.ts",
+          "path": "registry/perxel/lib/calculatePointsOnCircle.ts",
           "type": "registry:lib",
           "target": "lib/calculatePointsOnCircle.ts"
         },
         {
-          "path": "registry/perxel/blocks/text-flower/lib/utils.ts",
+          "path": "registry/perxel/lib/utils.ts",
           "type": "registry:lib",
           "target": "lib/utils.ts"
         }
