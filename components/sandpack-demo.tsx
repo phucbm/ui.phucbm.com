@@ -10,6 +10,9 @@ import {
 import {RegistryPreview} from "@/components/registry-preview";
 import {getSandpackFiles} from "@/lib/getSandpackFiles";
 import {aquaBlue} from "@codesandbox/sandpack-themes";
+import {IconCode} from "@tabler/icons-react";
+import {OpenInV0Button} from "@/components/OpenInV0Button";
+import {getRegistryUrl} from "@/lib/getRegistryUrl";
 
 type Props = {
     registryItem: RegistryItem
@@ -41,6 +44,11 @@ async function SandpackDemo({registryItem}: Props) {
         }
     } as SandpackProviderProps;
 
+    // example registry url
+    const exampleRegistryUrl = getRegistryUrl({
+        name: registryItem.name,
+        fileNamePostfix: '-example'
+    });
 
     return (
         <div className="mt-6">
@@ -60,6 +68,15 @@ async function SandpackDemo({registryItem}: Props) {
                     <SandpackPreview showOpenInCodeSandbox={false}/>
                 } height={height}/>
 
+                <div className="mt-4 text-sm text-slate-500 flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                        <IconCode className="w-5"/> Live Playground · Edit and see changes instantly
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span>Or edit with AI support by </span>
+                        <OpenInV0Button text="Open in" url={exampleRegistryUrl}/>
+                    </div>
+                </div>
                 <SandpackLayout className="mt-2">
                     <SandpackFileExplorer/>
                     <SandpackCodeEditor closableTabs={true}
