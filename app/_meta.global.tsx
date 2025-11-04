@@ -7,6 +7,7 @@ const COMPONENTS: MetaRecord = {
     // 'spotlight-content': {display: 'hidden'},
     'infinite-grid': '',
     'magnetic': '',
+    'moving-border': '',
     // 'image-carousel': {display: 'hidden'},
 }
 

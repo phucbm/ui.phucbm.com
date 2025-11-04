@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "moving-border",
+  "type": "registry:component",
+  "title": "Moving Border",
+  "description": "",
+  "dependencies": [
+    "gsap",
+    "react",
+    "@gsap/react",
+    "tailwind-merge",
+    "clsx"
+  ],
+  "files": [
+    {
+      "path": "registry/phucbm/blocks/moving-border/moving-border.tsx",
+      "type": "registry:component",
+      "target": "components/phucbm/moving-border.tsx"
+    },
+    {
+      "path": "registry/phucbm/lib/utils.ts",
+      "type": "registry:lib",
+      "target": "lib/utils.ts"
+    }
+  ]
+}
