@@ -13,11 +13,11 @@ export interface MagneticData {
 
 export type MagneticProps = {
     children: React.ReactNode;
-    /** Defines the range within which the magnetic effect is active (in pixels) */
+    /** Defines the range within which the magnetic effect is active (in pixels). @default 50 */
     distance?: number;
-    /** Controls the strength of the magnetic pull (0 = weak, 1 = strong) */
+    /** Controls the strength of the magnetic pull (0 = weak, 1 = strong). @default 0.3 */
     attraction?: number;
-    /** Controls the speed of the magnetic movement (0 = slow, 1 = instant) */
+    /** Controls the speed of the magnetic movement (0 = slow, 1 = instant). @default 0.1 */
     speed?: number;
     /** Callback fired when mouse enters the magnetic area */
     onEnter?: (data: MagneticData) => void;
@@ -25,9 +25,7 @@ export type MagneticProps = {
     onExit?: (data: MagneticData) => void;
     /** CSS class added when the magnetic effect is active */
     activeClass?: string;
-    /** Disable magnetic effect on touch devices (default: true) */
-    disableOnTouch?: boolean;
-    /** Show debug area visualization */
+    /** Show debug area visualization. @default `false` */
     dev?: boolean;
 };
 
@@ -39,13 +37,12 @@ export function Magnetic({
                              onEnter,
                              onExit,
                              activeClass,
-                             disableOnTouch,
                              dev = false,
                          }: MagneticProps) {
     const scope = useRef(null);
     const instanceRef = useRef<any>(null);
     const [debugAreaSize, setDebugAreaSize] = useState({width: 0, height: 0});
-    const [isActive, setIsActive] = useState(false);
+    const [isActive, setIsActive] = useState(dev);
 
     useEffect(() => {
         const root = scope.current as HTMLElement | null;
@@ -67,7 +64,6 @@ export function Magnetic({
             attraction,
             speed,
             activeClass,
-            disableOnTouch,
             onEnter: handleEnter,
             onExit: handleExit,
         });
@@ -85,7 +81,7 @@ export function Magnetic({
                 magneticInstance.destroy();
             }
         };
-    }, [distance, attraction, speed, activeClass, disableOnTouch, onEnter, onExit, dev]);
+    }, [distance, attraction, speed, activeClass, onEnter, onExit, dev]);
 
     return (
         <span ref={scope} className="inline-block relative">

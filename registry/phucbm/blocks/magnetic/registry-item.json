@@ -3,7 +3,7 @@
   "name": "magnetic",
   "type": "registry:component",
   "title": "Magnetic",
-  "description": "Create magnetic wrapper",
+  "description": "Add smooth magnetic attraction effects for HTML elements.",
   "dependencies": [
     "react",
     "@phucbm/magnetic-button"

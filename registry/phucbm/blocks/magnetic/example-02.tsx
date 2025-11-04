@@ -13,14 +13,14 @@ interface MagneticPreset {
 const PRESETS: MagneticPreset[] = [
     {name: 'Default', distance: 50, attraction: 0.3, speed: 0.1},
     {name: 'Strong Attraction', distance: 120, attraction: 0.2, speed: 0.15},
-    {name: 'Quick & Subtle', distance: 80, attraction: 0.8, speed: 0.05},
+    {name: 'Quick & Subtle', distance: 80, attraction: 0.5, speed: 0.5},
 ];
 
 export default function MagneticExample_02() {
     const [distance, setDistance] = useState(50);
     const [attraction, setAttraction] = useState(0.5);
     const [speed, setSpeed] = useState(0.1);
-    const [activePreset, setActivePreset] = useState<string>('');
+    const [activePreset, setActivePreset] = useState<string>('Default');
 
     const handlePresetClick = (preset: MagneticPreset) => {
         setActivePreset(preset.name);
@@ -38,9 +38,12 @@ export default function MagneticExample_02() {
                 dev={true}
             >
                 <button
-                    className="relative inline-flex items-center justify-center px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-500/50 transition-colors duration-200"
+                    className="relative inline-flex items-center justify-center
+                    px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white
+                    font-bold uppercase
+                    shadow-lg shadow-blue-500/50 transition-colors duration-200"
                 >
-                    EXAMPLE 2
+                    {(activePreset === 'Default' || !activePreset) ? "annoying button" : activePreset}
                 </button>
             </Magnetic>
 
