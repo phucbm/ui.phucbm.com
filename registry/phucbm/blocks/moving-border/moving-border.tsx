@@ -10,14 +10,32 @@ import {cn} from "@/lib/utils";
 gsap.registerPlugin(ScrollTrigger, MotionPathPlugin)
 
 export type MovingBorderProps = {
+    /** The content to be displayed inside the border. */
     children: React.ReactNode;
+
+    /** Additional CSS classes for the inner content container. */
     className?: string;
+
+    /** Additional CSS classes for the outer wrapper container. */
     outerClassName?: string;
+
+    /** Width of the border in pixels. @default 1 */
     borderWidth?: number;
+
+    /** Width of the gradient effect in pixels. If not specified, defaults to borderWidth * 10. */
     gradientWidth?: number;
+
+    /** Border radius in pixels. Ignored if isCircle is true. @default 15 */
     radius?: number;
+
+    /** Duration of one complete animation cycle in seconds. @default 3 */
     duration?: number;
+
+    /** Array of color values for the gradient. If multiple colors provided, they will be animated in sequence. @default ["#355bd2"] */
     colors?: string[];
+
+    /** Whether to render as a perfect circle with circular path animation. @default false */
+    isCircle?: boolean;
 };
 
 export function MovingBorder({
@@ -28,9 +46,14 @@ export function MovingBorder({
                                  radius = 15,
                                  gradientWidth,
                                  duration = 3,
-                                 colors = ["#355bd2"]
+                                 colors = ["#355bd2"],
+                                 isCircle = false
                              }: MovingBorderProps) {
     const scope = useRef(null);
+
+    // Use a large radius for perfect circle
+    const effectiveRadius = isCircle ? 9999 : radius;
+
     useGSAP(
         () => {
             const root = scope.current as HTMLElement | null;
@@ -54,18 +77,36 @@ export function MovingBorder({
                 const width = rect.width - borderWidth * 2;
                 const height = rect.height - borderWidth * 2;
 
-                // Calculate the path points accounting for border radius
-                const path = [
-                    {x: radius, y: 0},
-                    {x: width - radius, y: 0},
-                    {x: width, y: radius},
-                    {x: width, y: height - radius},
-                    {x: width - radius, y: height},
-                    {x: radius, y: height},
-                    {x: 0, y: height - radius},
-                    {x: 0, y: radius},
-                    {x: radius, y: 0},
-                ];
+                let path: { x: number; y: number; }[];
+
+                if (isCircle) {
+                    // Create a circular path using 64 coordinate points
+                    const centerX = width / 2;
+                    const centerY = height / 2;
+                    const circleRadius = Math.min(width, height) / 2;
+                    const numPoints = 64;
+
+                    path = Array.from({length: numPoints}, (_, i) => {
+                        const angle = (i / numPoints) * Math.PI * 2;
+                        return {
+                            x: centerX + circleRadius * Math.cos(angle),
+                            y: centerY + circleRadius * Math.sin(angle)
+                        };
+                    });
+                } else {
+                    // Calculate the path points accounting for border radius (rounded rectangle)
+                    path = [
+                        {x: effectiveRadius, y: 0},
+                        {x: width - effectiveRadius, y: 0},
+                        {x: width, y: effectiveRadius},
+                        {x: width, y: height - effectiveRadius},
+                        {x: width - effectiveRadius, y: height},
+                        {x: effectiveRadius, y: height},
+                        {x: 0, y: height - effectiveRadius},
+                        {x: 0, y: effectiveRadius},
+                        {x: effectiveRadius, y: 0},
+                    ];
+                }
 
                 // Create new timeline for path
                 pathTl = gsap.timeline({
@@ -77,7 +118,7 @@ export function MovingBorder({
                     motionPath: {
                         path: path,
                         fromCurrent: false,
-                        curviness: 1.5,
+                        curviness: isCircle ? 1 : 1.5,
                     }
                 });
             };
@@ -124,7 +165,7 @@ export function MovingBorder({
                 resizeObserver.disconnect();
             };
         },
-        {scope, dependencies: [borderWidth, radius, gradientWidth, duration, colors]}
+        {scope, dependencies: [borderWidth, effectiveRadius, gradientWidth, duration, colors, isCircle]}
     );
 
     return (
@@ -133,7 +174,7 @@ export function MovingBorder({
              style={{
                  ['--color' as any]: colors[0],
                  padding: `${borderWidth}px`,
-                 borderRadius: `${radius + borderWidth}px`,
+                 borderRadius: `${effectiveRadius + borderWidth}px`,
              }}>
 
             {/* moving gradient*/}
@@ -150,7 +191,7 @@ export function MovingBorder({
             {/*inner*/}
             <div className={cn(`inner relative z-30 bg-white`, className)}
                  style={{
-                     borderRadius: `${radius}px`,
+                     borderRadius: `${effectiveRadius}px`,
                  }}>
                 {children}
             </div>

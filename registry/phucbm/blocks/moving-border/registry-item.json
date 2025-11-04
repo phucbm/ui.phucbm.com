@@ -3,7 +3,7 @@
   "name": "moving-border",
   "type": "registry:component",
   "title": "Moving Border",
-  "description": "",
+  "description": "Animated gradient border that smoothly travels around any element, from rounded rectangles to perfect circles.",
   "dependencies": [
     "gsap",
     "react",
