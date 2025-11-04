@@ -18,10 +18,11 @@ type Props = {
     registryItem: RegistryItem;
     height?: number;
     editorHeight?: number;
+    exampleFileName?: string;
 };
 
-async function SandpackDemo({registryItem, height = 400, editorHeight = 300}: Props) {
-    const files = await getSandpackFiles({registryItem});
+async function SandpackDemo({registryItem, height = 400, editorHeight = 300, exampleFileName = "example"}: Props) {
+    const files = await getSandpackFiles({registryItem, exampleFileName});
 
     const dependencies = {};
 
@@ -47,7 +48,7 @@ async function SandpackDemo({registryItem, height = 400, editorHeight = 300}: Pr
     // example registry url
     const exampleRegistryUrl = getRegistryUrl({
         name: registryItem.name,
-        fileNamePostfix: '-example'
+        fileNamePostfix: `-${exampleFileName}`
     });
 
     return (

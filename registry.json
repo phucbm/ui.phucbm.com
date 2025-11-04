@@ -68,6 +68,66 @@
     },
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "magnetic",
+      "type": "registry:component",
+      "title": "Magnetic",
+      "description": "Create magnetic wrapper",
+      "dependencies": [
+        "react",
+        "@phucbm/magnetic-button"
+      ],
+      "files": [
+        {
+          "path": "registry/phucbm/blocks/magnetic/magnetic.tsx",
+          "type": "registry:component",
+          "target": "components/phucbm/magnetic.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "magnetic-example",
+      "type": "registry:component",
+      "title": "Magnetic Example",
+      "description": "Create magnetic wrapper",
+      "dependencies": [
+        "react",
+        "@phucbm/magnetic-button"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/magnetic.json"
+      ],
+      "files": [
+        {
+          "path": "registry/phucbm/blocks/magnetic/example.transformed.tsx",
+          "type": "registry:component",
+          "target": "index.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "magnetic-example-02",
+      "type": "registry:component",
+      "title": "Magnetic Example 02",
+      "description": "Create magnetic wrapper",
+      "dependencies": [
+        "react",
+        "@phucbm/magnetic-button"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/magnetic.json"
+      ],
+      "files": [
+        {
+          "path": "registry/phucbm/blocks/magnetic/example-02.transformed.tsx",
+          "type": "registry:component",
+          "target": "index.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
       "name": "spotlight-content",
       "type": "registry:component",
       "title": "Spotlight Content",

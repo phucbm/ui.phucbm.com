@@ -3,15 +3,19 @@ import {getCodeItemFromPath} from "@/lib/getCodeItemFromPath";
 import path from "path";
 import {SandpackFiles} from "@codesandbox/sandpack-react";
 
+type Props = {
+    registryItem: RegistryItem;
+    exampleFileName?: string;
+}
+
 /**
  * Reads all files listed in a registry item (including example.tsx) and returns an object
  * with transformed import paths for Sandpack compatibility.
  */
 export async function getSandpackFiles({
                                            registryItem,
-                                       }: {
-    registryItem: RegistryItem;
-}): Promise<SandpackFiles> {
+                                           exampleFileName = "example",
+                                       }: Props): Promise<SandpackFiles> {
     const componentName = registryItem.name;
 
     // Find the main component file
@@ -32,7 +36,7 @@ export async function getSandpackFiles({
     );
 
     // Step 2: Read example.tsx from the same directory as the main file
-    const examplePath = `${mainFileDir}/example.tsx`;
+    const examplePath = `${mainFileDir}/${exampleFileName}.tsx`;
     const exampleCodeItem = await getCodeItemFromPath({path: examplePath});
 
     // Step 3: Build mapping of registry paths to target paths
