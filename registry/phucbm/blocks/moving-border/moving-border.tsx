@@ -131,13 +131,17 @@ export function MovingBorder({
                     return;
                 }
 
+                // Set initial color
+                root.style.setProperty('--color', colors[0]);
+
                 // Multiple colors - animate through them
                 colorTl = gsap.timeline({
                     repeat: -1,
-                    defaults: {ease: "none", duration: duration / 2}
+                    defaults: {ease: "none", duration: duration / colors.length}
                 });
 
-                colors.forEach((color, index) => {
+                // Animate through all colors and back to first for seamless loop
+                colors.forEach((_, index) => {
                     const nextColor = colors[(index + 1) % colors.length];
                     colorTl!.to(root, {'--color': nextColor});
                 });

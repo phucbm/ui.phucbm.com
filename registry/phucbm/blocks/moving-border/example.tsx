@@ -32,8 +32,8 @@ export default function Example() {
                 <MovingBorder isCircle={true}
                               borderWidth={4}
                               gradientWidth={150}
-                              duration={7}
-                              colors={["#176be8", "#291777", "#cb92ff"]}>
+                              duration={4}
+                              colors={["#84b5ff", "#dad7f8", "#cb92ff"]}>
                     <div
                         className="w-[200px] aspect-square bg-accent rounded-full overflow-hidden flex justify-center items-center">
                         <img
