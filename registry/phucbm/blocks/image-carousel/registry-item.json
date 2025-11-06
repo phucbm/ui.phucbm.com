@@ -7,13 +7,21 @@
   "dependencies": [
     "react",
     "gsap",
-    "@gsap/react"
+    "@gsap/react",
+    "responsive-gsap",
+    "tailwind-merge",
+    "clsx"
   ],
   "files": [
     {
       "path": "registry/phucbm/blocks/image-carousel/image-carousel.tsx",
       "type": "registry:component",
       "target": "components/phucbm/image-carousel.tsx"
+    },
+    {
+      "path": "registry/phucbm/lib/utils.ts",
+      "type": "registry:lib",
+      "target": "lib/utils.ts"
     }
   ]
 }

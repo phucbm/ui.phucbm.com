@@ -51,7 +51,6 @@ const exampleImages = [
     },
 ]
 
-
 export default function Example() {
     return (
         <>
@@ -61,9 +60,11 @@ export default function Example() {
 
             <div className="mt-[50px]">
                 No drag
-                <ImageCarousel direction={1}
-                               drag={false}
-                               images={Array.from(exampleImages.slice(0, 5)).reverse()}/>
+                <ImageCarousel
+                    itemClass="min-w-[20vw] w-[20vw] aspect-video mr-[2vw]"
+                    direction={1}
+                    drag={false}
+                    images={Array.from(exampleImages.slice(0, 5)).reverse()}/>
             </div>
 
             <div className="mt-[50px]">

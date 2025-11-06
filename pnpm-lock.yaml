@@ -104,6 +104,9 @@ importers:
       react-resizable-panels:
         specifier: ^3.0.6
         version: 3.0.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      responsive-gsap:
+        specifier: ^0.0.1
+        version: 0.0.1
       shadcn:
         specifier: ^3.0.0
         version: 3.4.0(@types/node@22.13.10)(typescript@5.9.3)
@@ -4526,6 +4529,10 @@ packages:
   resolve@2.0.0-next.5:
     resolution: {integrity: sha512-U7WjGVG9sH8tvjW5SmGbQuui75FiyjAX72HX15DwBBwF9dNiQZRQAg9nnPhYy+TUnE0+VcrttuvNI8oSxZcocA==}
     hasBin: true
+
+  responsive-gsap@0.0.1:
+    resolution: {integrity: sha512-eY3Ri/SIRsuJvGe9eH7W4LF99I1JXmrOqb6yI7ic5Bd1s8Sik0dY5lnDZDZriGnYAeLw24BlPw/gv8jX75UEiA==}
+    engines: {node: '>=16'}
 
   restore-cursor@5.1.0:
     resolution: {integrity: sha512-oMA2dcrw6u0YfxJQXm342bFKX/E4sG9rbTzO9ptUcR/e8A33cHuvStiYOwH7fszkZlZ1z/ta9AAoPk2F4qIOHA==}
@@ -10354,6 +10361,12 @@ snapshots:
       is-core-module: 2.16.1
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
+
+  responsive-gsap@0.0.1:
+    dependencies:
+      '@gsap/react': 2.1.2(gsap@3.13.0)(react@19.2.0)
+      gsap: 3.13.0
+      react: 19.2.0
 
   restore-cursor@5.1.0:
     dependencies:

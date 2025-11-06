@@ -3,13 +3,17 @@
 import React, {useRef, useState} from "react";
 import gsap from "gsap";
 import {Observer} from "gsap/Observer";
-import {useGSAP} from "@gsap/react";
+import {useResponsiveGSAP} from "responsive-gsap";
+import {cn} from "@/registry/phucbm/lib/utils";
 
 gsap.registerPlugin(Observer);
 
 export type ImageCarouselProps = {
     /** List of image objects to display in the carousel. Each must contain a valid `url` property. @default exampleImages (imported from ./utils/demo-images) */
     images: { url: string, title?: string }[];
+
+    /** Custom class for each item wrapper, useful when you want to tweak the size or gap. @default "" **/
+    itemClass?: string;
 
     /** Duration in seconds for one complete loop of images at normal speed. Lower = faster. @default 20 */
     duration?: number;
@@ -30,6 +34,7 @@ export type ImageCarouselProps = {
 export function ImageCarousel(props: ImageCarouselProps) {
     const {
         duration = 20,
+        itemClass = '',
         hoverDuration = 60,
         images,
         direction = -1,
@@ -41,7 +46,7 @@ export function ImageCarousel(props: ImageCarouselProps) {
     const scope = useRef<HTMLDivElement | null>(null);
 
     // Number of times to duplicate the image set to create seamless infinite scroll
-    const [repeatCount, setRepeatCount] = useState(3);
+    const [repeatCount, setRepeatCount] = useState(2);
 
     // Width of one complete set of images (calculated once, then used for speed calculations)
     const singleSetWidthRef = useRef(0);
@@ -55,12 +60,12 @@ export function ImageCarousel(props: ImageCarouselProps) {
     // GSAP quickTo function for optimized x-position updates with wrapping
     const animateToXPositionRef = useRef<((value: number) => void) | null>(null);
 
-
-    // === Main GSAP animation setup ===
-    useGSAP(
-        () => {
-            const root = scope.current;
+    useResponsiveGSAP({
+        scope,
+        // observeResize: '.images',
+        setup: (root) => {
             if (!root) return;
+            console.log('setup')
 
             // Get the sliding image list container
             const slideContainer = root.querySelector(".images") as HTMLUListElement | null;
@@ -98,10 +103,7 @@ export function ImageCarousel(props: ImageCarouselProps) {
             };
 
             // Calculate the total width of one complete set of images
-            let singleSetWidth = firstImageSet.reduce(
-                (totalWidth, element) => totalWidth + getElementOuterWidth(element),
-                0
-            );
+            let singleSetWidth = firstImageSet.reduce((totalWidth, element) => totalWidth + getElementOuterWidth(element), 0);
 
             // Snap to nearest 0.5px to avoid sub-pixel rendering issues
             const snapToHalfPixel = gsap.utils.snap(0.5);
@@ -157,26 +159,17 @@ export function ImageCarousel(props: ImageCarouselProps) {
 
             // === Cleanup function ===
             // Remove all event listeners and kill animations when component unmounts or dependencies change
-            return () => {
-                gsap.ticker.remove(autoScrollTick);
-                if (dragObserver) dragObserver.kill();
-                if (hoverObserver) hoverObserver.kill();
-                gsap.killTweensOf(slideContainer);
-                animateToXPositionRef.current = null;
-            };
+            return {
+                cleanup: () => {
+                    gsap.ticker.remove(autoScrollTick);
+                    if (dragObserver) dragObserver.kill();
+                    if (hoverObserver) hoverObserver.kill();
+                    gsap.killTweensOf(slideContainer);
+                    animateToXPositionRef.current = null;
+                }
+            }
         },
-        {
-            // Re-run setup when any of these dependencies change
-            dependencies: [
-                duration,
-                hoverDuration,
-                images.length,
-                direction,
-                drag,
-                hover,
-            ],
-        }
-    );
+    })
 
 
     return (
@@ -196,14 +189,13 @@ export function ImageCarousel(props: ImageCarouselProps) {
                             images.map((image, imageIndex) => (
                                 <li
                                     key={`set-${repeatIndex}-img-${imageIndex}`}
-                                    className="slide-item select-none mr-6
-                                    min-w-[10vw] w-[10vw] aspect-square bg-gray-300"
+                                    className={cn("slide-item select-none bg-gray-300 min-w-[10vw] w-[10vw] aspect-square mr-6", itemClass)}
                                 >
                                     <img
                                         src={image.url}
                                         alt={image.title}
                                         className="pointer-events-none h-full w-full object-cover object-center"
-                                        loading="eager"
+                                        loading="lazy"
                                     />
                                 </li>
                             ))
