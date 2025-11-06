@@ -58,21 +58,21 @@ export default function Example() {
                 <ImageCarousel images={exampleImages}/>
             </div>
 
-            <div className="mt-[50px]">
-                No drag
-                <ImageCarousel
-                    itemClass="min-w-[20vw] w-[20vw] aspect-video mr-[2vw]"
-                    direction={1}
-                    drag={false}
-                    images={Array.from(exampleImages.slice(0, 5)).reverse()}/>
-            </div>
+            {/*<div className="mt-[50px]">*/}
+            {/*    No drag*/}
+            {/*    <ImageCarousel*/}
+            {/*        itemClass="min-w-[20vw] w-[20vw] aspect-video mr-[2vw]"*/}
+            {/*        direction={1}*/}
+            {/*        drag={false}*/}
+            {/*        images={Array.from(exampleImages.slice(0, 5)).reverse()}/>*/}
+            {/*</div>*/}
 
-            <div className="mt-[50px]">
-                No hover
-                <ImageCarousel
-                    hover={false}
-                    images={Array.from(exampleImages.slice(0, 5)).reverse()}/>
-            </div>
+            {/*<div className="mt-[50px]">*/}
+            {/*    No hover*/}
+            {/*    <ImageCarousel*/}
+            {/*        hover={false}*/}
+            {/*        images={Array.from(exampleImages.slice(0, 5)).reverse()}/>*/}
+            {/*</div>*/}
         </>
     );
 }

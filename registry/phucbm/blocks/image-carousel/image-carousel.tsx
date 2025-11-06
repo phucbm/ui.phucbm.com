@@ -63,10 +63,9 @@ export function ImageCarousel(props: ImageCarouselProps) {
         setup: (root) => {
             if (!root) return;
             console.log('setup')
-            const slideOuter = root.querySelector(".slide-outer") as HTMLElement | null;
             const slideContainer = root.querySelector(".slide-container") as HTMLUListElement | null;
 
-            if (!slideContainer || !slideOuter) return;
+            if (!slideContainer) return;
 
             // Clean up any existing animations and reset position
             gsap.killTweensOf(slideContainer);
@@ -74,12 +73,7 @@ export function ImageCarousel(props: ImageCarouselProps) {
             totalScrollDistanceRef.current = 0;
 
             const singleSetWidth = getSingleSetWidth(root, images.length);
-
-            // Calculate how many times to duplicate the image set for seamless infinite scroll
-            // We need enough copies to fill the container width plus extra for smooth wrapping
-            const containerWidth = slideOuter.clientWidth;
-            const calculatedRepeatCount = Math.ceil(containerWidth / singleSetWidth) + 2;
-            setRepeatCount(calculatedRepeatCount);
+            setRepeatCount(getRepeatCount(root, singleSetWidth));
 
             // Create a wrapping function that keeps x position within one set width
             // When we scroll past -singleSetWidth, it wraps back to 0 (seamless loop)
@@ -257,4 +251,17 @@ function getSingleSetWidth(root: HTMLElement, originalImageCount: number) {
     singleSetWidth = gsap.utils.snap(0.5, singleSetWidth);
 
     return singleSetWidth;
+}
+
+/**
+ * Calculate how many times to duplicate the image set for seamless infinite scroll
+ * We need enough copies to fill the container width plus extra for smooth wrapping
+ * @param root
+ * @param singleSetWidth
+ */
+function getRepeatCount(root: HTMLElement, singleSetWidth: number): number {
+    const slideOuter = root.querySelector(".slide-outer") as HTMLElement | null;
+
+    const containerWidth = slideOuter.clientWidth;
+    return Math.ceil(containerWidth / singleSetWidth) + 2;
 }
