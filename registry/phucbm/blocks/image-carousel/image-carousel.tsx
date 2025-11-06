@@ -11,11 +11,11 @@ export type ImageCarouselProps = {
     /** List of image objects to display in the carousel. Each must contain a valid `url` property. @default exampleImages (imported from ./utils/demo-images) */
     images: { url: string, title?: string }[];
 
-    /** Base speed factor of the auto-scrolling motion. Higher values make the carousel scroll faster. @default 1 */
-    speed?: number;
+    /** Duration in seconds for one complete loop of images at normal speed. Lower = faster. @default 20 */
+    durationSeconds?: number;
 
-    /** Ratio applied to slow down the carousel when hovering. 0.5 = half speed, 1 = same speed, >1 = faster on hover. @default 0.5 */
-    hoverSlowdownRatio?: number;
+    /** Duration in seconds for one complete loop when hovering. Lower = faster. @default 60 */
+    hoverDurationSeconds?: number;
 
     /** Whether the carousel should automatically slide without user interaction. If false, it stays static until dragged. @default true */
     autoSlide?: boolean;
@@ -26,8 +26,8 @@ export type ImageCarouselProps = {
 
 export function ImageCarousel(props: ImageCarouselProps) {
     const {
-        speed = 0.05,
-        hoverSlowdownRatio = 0.2,
+        durationSeconds = 20,
+        hoverDurationSeconds = 60,
         autoSlide = true,
         images,
         direction = 1,
@@ -37,22 +37,20 @@ export function ImageCarousel(props: ImageCarouselProps) {
     const scope = useRef<HTMLDivElement | null>(null);
 
     // Number of times to duplicate the image set to create seamless infinite scroll
-    const [repeatCount, setRepeatCount] = useState(2);
+    const [repeatCount, setRepeatCount] = useState(3);
 
-    // Current speed multiplier (can be modified by hover interactions)
-    const currentSpeedFactorRef = useRef(0.5);
+    // Width of one complete set of images (calculated once, then used for speed calculations)
+    const singleSetWidthRef = useRef(0);
 
-    // Base speed provided by props (stored in ref to avoid recreation of effects)
-    const baseSpeedRef = useRef(speed);
-
-    // Hover slowdown ratio from props (stored in ref for ticker function access)
-    const hoverSlowdownRatioRef = useRef(hoverSlowdownRatio);
-
-    // Normal operating speed when not hovering
-    const normalSpeedRef = useRef(0.5);
+    // Track whether user is currently hovering over the carousel
+    const isHoveringRef = useRef(false);
 
     // Auto-slide flag from props (stored in ref for ticker function access)
     const autoSlideEnabledRef = useRef(autoSlide);
+
+    // Duration props stored in refs for ticker function access
+    const durationSecondsRef = useRef(durationSeconds);
+    const hoverDurationSecondsRef = useRef(hoverDurationSeconds);
 
     // Accumulated horizontal scroll distance (in pixels)
     const totalScrollDistanceRef = useRef(0);
@@ -61,18 +59,17 @@ export function ImageCarousel(props: ImageCarouselProps) {
     const animateToXPositionRef = useRef<((value: number) => void) | null>(null);
 
     // === Sync props to refs when they change ===
-    // This allows the GSAP ticker and event handlers to access latest prop values
-    useEffect(() => {
-        baseSpeedRef.current = speed;
-    }, [speed]);
-
-    useEffect(() => {
-        hoverSlowdownRatioRef.current = hoverSlowdownRatio;
-    }, [hoverSlowdownRatio]);
-
     useEffect(() => {
         autoSlideEnabledRef.current = autoSlide;
     }, [autoSlide]);
+
+    useEffect(() => {
+        durationSecondsRef.current = durationSeconds;
+    }, [durationSeconds]);
+
+    useEffect(() => {
+        hoverDurationSecondsRef.current = hoverDurationSeconds;
+    }, [hoverDurationSeconds]);
 
     // === Main GSAP animation setup ===
     useGSAP(
@@ -127,6 +124,9 @@ export function ImageCarousel(props: ImageCarouselProps) {
             const snapToHalfPixel = gsap.utils.snap(0.5);
             singleSetWidth = snapToHalfPixel(singleSetWidth);
 
+            // Store the width for speed calculations
+            singleSetWidthRef.current = singleSetWidth;
+
             // Calculate how many times to duplicate the image set for seamless infinite scroll
             // We need enough copies to fill the container width plus extra for smooth wrapping
             const containerWidth = overflowContainer.clientWidth;
@@ -151,11 +151,16 @@ export function ImageCarousel(props: ImageCarouselProps) {
                 // Only auto-scroll if enabled
                 if (!autoSlideEnabledRef.current) return;
 
-                // Calculate movement speed based on base speed and current speed factor
-                const currentMoveSpeed = baseSpeedRef.current * currentSpeedFactorRef.current;
+                // Calculate current speed based on hover state
+                // speed (px/ms) = distance (px) / time (ms)
+                const activeDuration = isHoveringRef.current
+                    ? hoverDurationSecondsRef.current
+                    : durationSecondsRef.current;
+                const currentSpeed = singleSetWidthRef.current / (activeDuration * 1000);
 
-                // Update total scroll distance (deltaTime is in seconds, multiply for smooth movement)
-                totalScrollDistanceRef.current -= deltaTime * currentMoveSpeed * direction;
+                // Update total scroll distance using current speed (pixels per millisecond)
+                // deltaTime is in milliseconds
+                totalScrollDistanceRef.current -= deltaTime * currentSpeed * direction;
 
                 // Apply the new position with wrapping
                 animateToXPositionRef.current?.(totalScrollDistanceRef.current);
@@ -165,15 +170,14 @@ export function ImageCarousel(props: ImageCarouselProps) {
             gsap.ticker.add(autoScrollTick);
 
             // === Hover slowdown behavior ===
-            // Slow down carousel when user hovers over it
+            // Toggle hover state when user hovers over carousel
             const handleMouseEnter = () => {
-                currentSpeedFactorRef.current =
-                    normalSpeedRef.current * hoverSlowdownRatioRef.current;
+                isHoveringRef.current = true;
             };
 
-            // Return to normal speed when mouse leaves
+            // Toggle hover state when mouse leaves
             const handleMouseLeave = () => {
-                currentSpeedFactorRef.current = normalSpeedRef.current;
+                isHoveringRef.current = false;
             };
 
             slideContainer.addEventListener("mouseenter", handleMouseEnter);
@@ -222,8 +226,8 @@ export function ImageCarousel(props: ImageCarouselProps) {
             // Re-run setup when any of these dependencies change
             dependencies: [
                 autoSlide,
-                speed,
-                hoverSlowdownRatio,
+                durationSeconds,
+                hoverDurationSeconds,
                 images.length,
                 direction,
             ],
@@ -262,4 +266,4 @@ export function ImageCarousel(props: ImageCarouselProps) {
             </div>
         </div>
     );
-};
+}
