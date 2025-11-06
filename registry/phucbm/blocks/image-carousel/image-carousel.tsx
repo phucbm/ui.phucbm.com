@@ -62,9 +62,7 @@ export function ImageCarousel(props: ImageCarouselProps) {
         observeResize: '.slide-container',
         setup: (root) => {
             if (!root) return;
-            console.log('setup')
             const slideContainer = root.querySelector(".slide-container") as HTMLUListElement | null;
-
             if (!slideContainer) return;
 
             // Clean up any existing animations and reset position
@@ -176,6 +174,9 @@ function setupHoverBehavior(
     target: HTMLElement,
     isHoveringRef: React.RefObject<boolean>
 ) {
+    // touch only => no hover => disable hover behavior
+    if (Observer.isTouch === 1) return;
+
     // Create an Observer that listens for pointer hover on the element
     return Observer.create({
         target: target,
