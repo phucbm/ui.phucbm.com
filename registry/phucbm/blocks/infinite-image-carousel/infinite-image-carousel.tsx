@@ -9,10 +9,10 @@ import {cn} from "@/registry/phucbm/lib/utils";
 gsap.registerPlugin(Observer);
 
 export type ImageCarouselProps = {
-    /** List of image objects to display in the carousel. Each must contain a valid `url` property. @default exampleImages (imported from ./utils/demo-images) */
+    /** List of image objects to display in the carousel. Each must contain a valid `url` property. */
     images: { url: string, title?: string }[];
 
-    /** Custom class for each item wrapper, useful when you want to tweak the size or gap. @default "" **/
+    /** Custom class for each item wrapper, useful when you want to tweak the size or gap. Example: `xl:[--width:15vw] lg:[--width:260px] [--width:120px]` */
     itemClass?: string;
 
     /** Optional custom class name applied to the image element. */
@@ -27,7 +27,7 @@ export type ImageCarouselProps = {
     /** Duration in seconds for one complete loop when hovering. Lower = faster. @default 60 */
     hoverDuration?: number;
 
-    /** Scroll direction of the carousel. `1` = scrolls right→left, `-1` = scrolls left→right. @default 1 */
+    /** Scroll direction of the carousel. `-1` = scrolls right→left, `1` = scrolls left→right. @default -1 */
     direction?: 1 | -1;
 
     /** Whether to enable drag/swipe interactions. @default true */
@@ -37,7 +37,7 @@ export type ImageCarouselProps = {
     hover?: boolean;
 };
 
-export function ImageCarousel(props: ImageCarouselProps) {
+export function InfiniteImageCarousel(props: ImageCarouselProps) {
     const {
         duration = 20,
         itemClass = '',
@@ -157,7 +157,7 @@ export function ImageCarousel(props: ImageCarouselProps) {
                                     src={image.url}
                                     alt={image.title}
                                     className={cn("pointer-events-none h-full w-full object-cover object-center",
-                                        isLogo ? "max-h-1/2 object-contain" : "",
+                                        isLogo ? "max-h-[50%] object-contain" : "",
                                         imageClass)}
                                     loading="lazy"
                                 />
@@ -200,9 +200,6 @@ function setupHoverBehavior(
         onHoverEnd: () => {
             isHoveringRef.current = false;
         },
-        // Optional: ignore certain children (eg. interactive controls)
-        // ignore: ".no-hover",
-        // Optional: set an id so you can find it later: id: "carousel-hover"
     });
 }
 
