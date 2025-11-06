@@ -12,25 +12,33 @@ export type ImageCarouselProps = {
     images: { url: string, title?: string }[];
 
     /** Duration in seconds for one complete loop of images at normal speed. Lower = faster. @default 20 */
-    durationSeconds?: number;
+    duration?: number;
 
     /** Duration in seconds for one complete loop when hovering. Lower = faster. @default 60 */
-    hoverDurationSeconds?: number;
+    hoverDuration?: number;
 
     /** Whether the carousel should automatically slide without user interaction. If false, it stays static until dragged. @default true */
     autoSlide?: boolean;
 
     /** Scroll direction of the carousel. `1` = scrolls right→left, `-1` = scrolls left→right. @default 1 */
     direction?: 1 | -1;
+
+    /** Whether to enable drag/swipe interactions. @default true */
+    drag?: boolean;
+
+    /** Whether to enable hover slowdown behavior. @default true */
+    hover?: boolean;
 };
 
 export function ImageCarousel(props: ImageCarouselProps) {
     const {
-        durationSeconds = 20,
-        hoverDurationSeconds = 60,
+        duration = 20,
+        hoverDuration = 60,
         autoSlide = true,
         images,
         direction = 1,
+        drag = true,
+        hover = true,
     } = props;
 
     // Reference to the main carousel container element
@@ -49,8 +57,8 @@ export function ImageCarousel(props: ImageCarouselProps) {
     const autoSlideEnabledRef = useRef(autoSlide);
 
     // Duration props stored in refs for ticker function access
-    const durationSecondsRef = useRef(durationSeconds);
-    const hoverDurationSecondsRef = useRef(hoverDurationSeconds);
+    const durationRef = useRef(duration);
+    const hoverDurationRef = useRef(hoverDuration);
 
     // Accumulated horizontal scroll distance (in pixels)
     const totalScrollDistanceRef = useRef(0);
@@ -64,12 +72,12 @@ export function ImageCarousel(props: ImageCarouselProps) {
     }, [autoSlide]);
 
     useEffect(() => {
-        durationSecondsRef.current = durationSeconds;
-    }, [durationSeconds]);
+        durationRef.current = duration;
+    }, [duration]);
 
     useEffect(() => {
-        hoverDurationSecondsRef.current = hoverDurationSeconds;
-    }, [hoverDurationSeconds]);
+        hoverDurationRef.current = hoverDuration;
+    }, [hoverDuration]);
 
     // === Main GSAP animation setup ===
     useGSAP(
@@ -154,8 +162,8 @@ export function ImageCarousel(props: ImageCarouselProps) {
                 // Calculate current speed based on hover state
                 // speed (px/ms) = distance (px) / time (ms)
                 const activeDuration = isHoveringRef.current
-                    ? hoverDurationSecondsRef.current
-                    : durationSecondsRef.current;
+                    ? hoverDurationRef.current
+                    : durationRef.current;
                 const currentSpeed = singleSetWidthRef.current / (activeDuration * 1000);
 
                 // Update total scroll distance using current speed (pixels per millisecond)
@@ -170,54 +178,21 @@ export function ImageCarousel(props: ImageCarouselProps) {
             gsap.ticker.add(autoScrollTick);
 
             // === Hover slowdown behavior ===
-            // Toggle hover state when user hovers over carousel
-            const handleMouseEnter = () => {
-                isHoveringRef.current = true;
-            };
-
-            // Toggle hover state when mouse leaves
-            const handleMouseLeave = () => {
-                isHoveringRef.current = false;
-            };
-
-            slideContainer.addEventListener("mouseenter", handleMouseEnter);
-            slideContainer.addEventListener("mouseleave", handleMouseLeave);
+            const cleanupHover = hover
+                ? setupHoverBehavior(slideContainer, isHoveringRef)
+                : null;
 
             // === Drag/swipe behavior ===
-            // Create a timeline for potential drag animations (currently unused but set up for future)
-            const dragTimeline = gsap.timeline({paused: true});
-
-            // Set up GSAP Observer for drag/swipe interactions
-            const dragObserver = Observer.create({
-                target: slideContainer,
-                type: "pointer,touch", // Handle both mouse and touch events
-                onPress: () => {
-                    // Play timeline when user starts dragging (placeholder for future animations)
-                    dragTimeline.play();
-                },
-                onDrag: (observerInstance) => {
-                    // Update scroll position based on drag delta
-                    totalScrollDistanceRef.current += observerInstance.deltaX;
-                    animateToXPositionRef.current?.(totalScrollDistanceRef.current);
-                },
-                onRelease: () => {
-                    // Reverse timeline when user stops dragging
-                    dragTimeline.reverse();
-                },
-                onStop: () => {
-                    // Reverse timeline if drag is interrupted
-                    dragTimeline.reverse();
-                },
-            });
-
+            const dragObserver = drag
+                ? setupDragBehavior(slideContainer, totalScrollDistanceRef, animateToXPositionRef)
+                : null;
 
             // === Cleanup function ===
             // Remove all event listeners and kill animations when component unmounts or dependencies change
             return () => {
-                slideContainer.removeEventListener("mouseenter", handleMouseEnter);
-                slideContainer.removeEventListener("mouseleave", handleMouseLeave);
+                if (cleanupHover) cleanupHover();
                 gsap.ticker.remove(autoScrollTick);
-                dragObserver.kill();
+                if (dragObserver) dragObserver.kill();
                 gsap.killTweensOf(slideContainer);
                 animateToXPositionRef.current = null;
             };
@@ -226,10 +201,12 @@ export function ImageCarousel(props: ImageCarouselProps) {
             // Re-run setup when any of these dependencies change
             dependencies: [
                 autoSlide,
-                durationSeconds,
-                hoverDurationSeconds,
+                duration,
+                hoverDuration,
                 images.length,
                 direction,
+                drag,
+                hover,
             ],
         }
     );
@@ -240,10 +217,12 @@ export function ImageCarousel(props: ImageCarouselProps) {
             <div className="pin-height ring ring-green-500">
 
                 {/* Overflow container hides slides outside visible area and shows grab cursor */}
-                <div className="overflow-hidden cursor-grab active:cursor-grabbing">
+                <div className={`overflow-hidden ${drag ? 'cursor-grab active:cursor-grabbing' : ''}`}>
 
                     {/* Main sliding container - uses inline-block layout for horizontal alignment */}
-                    <ul className="images flex gap-6 ring">
+                    <ul className="images flex gap-6 relative">
+                        <div className="absolute inset-0 shadow-[inset_0_0_0_4px_blue]"></div>
+
                         {/* Render multiple sets of images for infinite scroll effect */}
                         {Array.from({length: repeatCount}).map((_, repeatIndex) =>
                             images.map((image, imageIndex) => (
@@ -266,4 +245,62 @@ export function ImageCarousel(props: ImageCarouselProps) {
             </div>
         </div>
     );
+}
+
+// ============================================================================
+// Interaction Modifiers
+// ============================================================================
+
+/**
+ * Sets up hover behavior to slow down the carousel
+ * @param slideContainer - The container element to attach hover listeners to
+ * @param isHoveringRef - Ref to track hover state
+ * @returns Cleanup function to remove event listeners
+ */
+function setupHoverBehavior(
+    slideContainer: HTMLElement,
+    isHoveringRef: React.RefObject<boolean>
+) {
+    // Toggle hover state when user hovers over carousel
+    const handleMouseEnter = () => {
+        isHoveringRef.current = true;
+    };
+
+    // Toggle hover state when mouse leaves
+    const handleMouseLeave = () => {
+        isHoveringRef.current = false;
+    };
+
+    slideContainer.addEventListener("mouseenter", handleMouseEnter);
+    slideContainer.addEventListener("mouseleave", handleMouseLeave);
+
+    // Return cleanup function
+    return () => {
+        slideContainer.removeEventListener("mouseenter", handleMouseEnter);
+        slideContainer.removeEventListener("mouseleave", handleMouseLeave);
+    };
+}
+
+/**
+ * Sets up drag/swipe behavior for the carousel
+ * @param slideContainer - The container element to make draggable
+ * @param totalScrollDistanceRef - Ref containing the accumulated scroll distance
+ * @param animateToXPositionRef - Ref containing the quickTo animation function
+ * @returns The Observer instance
+ */
+function setupDragBehavior(
+    slideContainer: HTMLElement,
+    totalScrollDistanceRef: React.RefObject<number>,
+    animateToXPositionRef: React.RefObject<((value: number) => void) | null>
+) {
+    // Set up GSAP Observer for drag/swipe interactions
+    return Observer.create({
+        target: slideContainer,
+        type: "pointer,touch", // Handle both mouse and touch events
+        onDrag: (observerInstance) => {
+            // Update scroll position based on drag delta
+            totalScrollDistanceRef.current += observerInstance.deltaX;
+            animateToXPositionRef.current?.(totalScrollDistanceRef.current);
+        },
+    });
 }

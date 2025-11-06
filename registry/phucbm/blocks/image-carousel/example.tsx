@@ -56,10 +56,21 @@ export default function Example() {
     return (
         <>
             <div className="mt-[50px]">
-                <ImageCarousel direction={-1} images={exampleImages}/>
+                <ImageCarousel images={exampleImages}/>
             </div>
+
             <div className="mt-[50px]">
-                <ImageCarousel direction={1} images={Array.from(exampleImages.slice(0, 5)).reverse()}/>
+                No drag
+                <ImageCarousel direction={1}
+                               drag={false}
+                               images={Array.from(exampleImages.slice(0, 5)).reverse()}/>
+            </div>
+
+            <div className="mt-[50px]">
+                No hover
+                <ImageCarousel direction={-1}
+                               hover={false}
+                               images={Array.from(exampleImages.slice(0, 5)).reverse()}/>
             </div>
         </>
     );
