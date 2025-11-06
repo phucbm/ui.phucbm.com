@@ -178,9 +178,7 @@ export function ImageCarousel(props: ImageCarouselProps) {
             gsap.ticker.add(autoScrollTick);
 
             // === Hover slowdown behavior ===
-            const cleanupHover = hover
-                ? setupHoverBehavior(slideContainer, isHoveringRef)
-                : null;
+            const hoverObserver = hover ? setupHoverBehavior(slideContainer, isHoveringRef) : null;
 
             // === Drag/swipe behavior ===
             const dragObserver = drag
@@ -190,9 +188,9 @@ export function ImageCarousel(props: ImageCarouselProps) {
             // === Cleanup function ===
             // Remove all event listeners and kill animations when component unmounts or dependencies change
             return () => {
-                if (cleanupHover) cleanupHover();
                 gsap.ticker.remove(autoScrollTick);
                 if (dragObserver) dragObserver.kill();
+                if (hoverObserver) hoverObserver.kill();
                 gsap.killTweensOf(slideContainer);
                 animateToXPositionRef.current = null;
             };
@@ -261,24 +259,22 @@ function setupHoverBehavior(
     slideContainer: HTMLElement,
     isHoveringRef: React.RefObject<boolean>
 ) {
-    // Toggle hover state when user hovers over carousel
-    const handleMouseEnter = () => {
-        isHoveringRef.current = true;
-    };
-
-    // Toggle hover state when mouse leaves
-    const handleMouseLeave = () => {
-        isHoveringRef.current = false;
-    };
-
-    slideContainer.addEventListener("mouseenter", handleMouseEnter);
-    slideContainer.addEventListener("mouseleave", handleMouseLeave);
-
-    // Return cleanup function
-    return () => {
-        slideContainer.removeEventListener("mouseenter", handleMouseEnter);
-        slideContainer.removeEventListener("mouseleave", handleMouseLeave);
-    };
+    // Create an Observer that listens for pointer hover on the element
+    return Observer.create({
+        target: slideContainer,
+        type: "pointer", // "pointer" covers mouse & stylus; use "pointer,touch" if you want touch hover behavior too
+        // Called when pointer enters / moves over the target (debounce doesn't apply to onHover)
+        onHover: () => {
+            isHoveringRef.current = true;
+        },
+        // Called when pointer leaves the target
+        onHoverEnd: () => {
+            isHoveringRef.current = false;
+        },
+        // Optional: ignore certain children (eg. interactive controls)
+        // ignore: ".no-hover",
+        // Optional: set an id so you can find it later: id: "carousel-hover"
+    });
 }
 
 /**
