@@ -207,15 +207,43 @@ function setupDragBehavior(
     totalScrollDistanceRef: React.RefObject<number>,
     animateToXPositionRef: React.RefObject<((value: number) => void) | null>
 ) {
-    // Set up GSAP Observer for drag/swipe interactions
+    let inertiaTween = null; // Track the inertia animation
+
     return Observer.create({
         target: target,
-        type: "pointer,touch", // Handle both mouse and touch events
+        type: "pointer,touch",
+
+        // When drag starts - kill any ongoing inertia
+        onPress: () => {
+            if (inertiaTween) inertiaTween.kill();
+        },
+
+        // While dragging - update position
         onDrag: (observerInstance) => {
-            // Update scroll position based on drag delta
             totalScrollDistanceRef.current += observerInstance.deltaX;
             animateToXPositionRef.current?.(totalScrollDistanceRef.current);
         },
+
+        // When drag ends - apply inertia based on velocity
+        onRelease: (observerInstance) => {
+            // Get the velocity from the drag (pixels per second)
+            const velocityX = observerInstance.velocityX;
+
+            // Calculate how far to coast based on velocity
+            // Higher velocity = longer coast distance
+            // 0 = shorter scroll, 1 = longer
+            const inertiaDistance = velocityX * 0.1; // Adjust 0.3 for more/less inertia
+
+            // Animate to the final position with easing
+            inertiaTween = gsap.to(totalScrollDistanceRef, {
+                current: totalScrollDistanceRef.current + inertiaDistance,
+                duration: 0.5, // How long the coast lasts, smaller means stop scroll earlier, bigger means keep scroll longer
+                ease: "power4.out", // Deceleration curve
+                onUpdate: () => {
+                    animateToXPositionRef.current?.(totalScrollDistanceRef.current);
+                }
+            });
+        }
     });
 }
 
