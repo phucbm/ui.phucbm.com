@@ -21,19 +21,19 @@ export default function Example() {
             </div>
 
             <div className="mt-[50px]">
-                No drag
+                Logo
                 <ImageCarousel
-                    itemClass="bg-transparent mr-8"
-                    imageClass="object-contain"
+                    itemClass="lg:mr-8 lg:px-4 px-2"
+                    isLogo={true}
                     direction={1}
-                    drag={false}
                     images={exampleLogoImages()}/>
             </div>
 
             <div className="mt-[50px]">
-                No hover
+                No hover, No drag
                 <ImageCarousel
                     hover={false}
+                    drag={false}
                     images={exampleImages()}/>
             </div>
         </>

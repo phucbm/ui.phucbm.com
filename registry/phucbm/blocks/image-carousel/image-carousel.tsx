@@ -15,8 +15,11 @@ export type ImageCarouselProps = {
     /** Custom class for each item wrapper, useful when you want to tweak the size or gap. @default "" **/
     itemClass?: string;
 
-    /** Custom class for each image **/
+    /** Optional custom class name applied to the image element. */
     imageClass?: string;
+
+    /** Indicates whether the image should be treated and styled as a logo. @default `false` */
+    isLogo?: boolean;
 
     /** Duration in seconds for one complete loop of images at normal speed. Lower = faster. @default 20 */
     duration?: number;
@@ -39,6 +42,7 @@ export function ImageCarousel(props: ImageCarouselProps) {
         duration = 20,
         itemClass = '',
         imageClass = '',
+        isLogo = false,
         hoverDuration = 60,
         images,
         direction = -1,
@@ -142,16 +146,19 @@ export function ImageCarousel(props: ImageCarouselProps) {
                         images.map((image, imageIndex) => (
                             <li
                                 key={`set-${repeatIndex}-img-${imageIndex}`}
-                                className={cn("slide-item select-none bg-gray-300 w-[var(--width)] min-w-[var(--width)]",
+                                className={cn("slide-item flex justify-center items-center select-none bg-gray-300 w-[var(--width)] min-w-[var(--width)]",
                                     "xl:[--width:15vw] lg:[--width:260px] [--width:120px]",
                                     "aspect-square lg:mr-8 mr-4",
+                                    isLogo ? "bg-transparent" : "",
                                     itemClass
                                 )}
                             >
                                 <img
                                     src={image.url}
                                     alt={image.title}
-                                    className={cn("pointer-events-none h-full w-full object-cover object-center",imageClass)}
+                                    className={cn("pointer-events-none h-full w-full object-cover object-center",
+                                        isLogo ? "max-h-1/2 object-contain" : "",
+                                        imageClass)}
                                     loading="lazy"
                                 />
                             </li>
