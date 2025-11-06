@@ -9,7 +9,7 @@ gsap.registerPlugin(Observer);
 
 export type ImageCarouselProps = {
     /** List of image objects to display in the carousel. Each must contain a valid `url` property. @default exampleImages (imported from ./utils/demo-images) */
-    images: { url: string }[];
+    images: { url: string, title?: string }[];
 
     /** Base speed factor of the auto-scrolling motion. Higher values make the carousel scroll faster. @default 1 */
     speed?: number;
@@ -20,29 +20,21 @@ export type ImageCarouselProps = {
     /** Whether the carousel should automatically slide without user interaction. If false, it stays static until dragged. @default true */
     autoSlide?: boolean;
 
-    /** The width of each slide item. Accepts any valid CSS size unit (e.g. `"120px"`, `"10rem"`, `"20%"`). @default "8.3vw" */
-    slideWidth?: string;
-
-    /** The horizontal gap between slides. Accepts any valid CSS size unit. @default "35px" */
-    slideGap?: string;
-
     /** Scroll direction of the carousel. `1` = scrolls right→left, `-1` = scrolls left→right. @default 1 */
     direction?: 1 | -1;
 };
 
 export function ImageCarousel(props: ImageCarouselProps) {
     const {
-        speed = 1,
-        hoverSlowdownRatio = 0.5,
+        speed = 0.05,
+        hoverSlowdownRatio = 0.2,
         autoSlide = true,
         images,
-        slideWidth = "8.3vw",
-        slideGap = "35px",
         direction = 1,
     } = props;
 
     // Reference to the main carousel container element
-    const carouselContainerRef = useRef<HTMLDivElement | null>(null);
+    const scope = useRef<HTMLDivElement | null>(null);
 
     // Number of times to duplicate the image set to create seamless infinite scroll
     const [repeatCount, setRepeatCount] = useState(2);
@@ -85,16 +77,14 @@ export function ImageCarousel(props: ImageCarouselProps) {
     // === Main GSAP animation setup ===
     useGSAP(
         () => {
-            const rootElement = carouselContainerRef.current;
+            const rootElement = scope.current;
             if (!rootElement) return;
 
             // Get the sliding image list container
             const slideContainer = rootElement.querySelector(".images") as HTMLUListElement | null;
 
             // Get the overflow wrapper container
-            const overflowContainer = rootElement.querySelector(
-                ".overflow-hidden"
-            ) as HTMLElement | null;
+            const overflowContainer = rootElement.querySelector(".overflow-hidden") as HTMLElement | null;
 
             if (!slideContainer || !overflowContainer) return;
 
@@ -234,8 +224,6 @@ export function ImageCarousel(props: ImageCarouselProps) {
                 autoSlide,
                 speed,
                 hoverSlowdownRatio,
-                slideGap,
-                slideWidth,
                 images.length,
                 direction,
             ],
@@ -244,35 +232,27 @@ export function ImageCarousel(props: ImageCarouselProps) {
 
 
     return (
-        <section
-            className="slide-carousel"
-            ref={carouselContainerRef}
-            style={
-                {
-                    // CSS custom properties for dynamic slide dimensions
-                    "--slide-w": slideWidth,
-                    "--slide-gap": slideGap,
-                } as React.CSSProperties
-            }
-        >
-            <div className="pin-height">
+        <div className="" ref={scope}>
+            <div className="pin-height ring ring-green-500">
+
                 {/* Overflow container hides slides outside visible area and shows grab cursor */}
                 <div className="overflow-hidden cursor-grab active:cursor-grabbing">
+
                     {/* Main sliding container - uses inline-block layout for horizontal alignment */}
-                    <ul className="images block whitespace-nowrap -mx-[calc(var(--slide-gap)/2)]">
+                    <ul className="images flex gap-6 ring">
                         {/* Render multiple sets of images for infinite scroll effect */}
                         {Array.from({length: repeatCount}).map((_, repeatIndex) =>
                             images.map((image, imageIndex) => (
                                 <li
                                     key={`set-${repeatIndex}-img-${imageIndex}`}
-                                    className="slide-item inline-block select-none w-[var(--slide-w)] mx-[calc(var(--slide-gap)/2)] aspect-square"
+                                    className="slide-item select-none
+                                    min-w-[10vw] w-[10vw] aspect-square ring ring-blue-600 bg-gray-300"
                                 >
                                     <img
                                         src={image.url}
-                                        alt={`slide-${repeatIndex}-${imageIndex}`}
-                                        width={800}
-                                        height={1000}
-                                        className="pointer-events-none h-full w-full object-cover bg-center"
+                                        alt={image.title}
+                                        className="pointer-events-none h-full w-full object-cover object-center"
+                                        loading="eager"
                                     />
                                 </li>
                             ))
@@ -280,6 +260,6 @@ export function ImageCarousel(props: ImageCarouselProps) {
                     </ul>
                 </div>
             </div>
-        </section>
+        </div>
     );
 };
