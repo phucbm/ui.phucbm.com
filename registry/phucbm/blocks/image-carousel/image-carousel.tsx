@@ -48,9 +48,6 @@ export function ImageCarousel(props: ImageCarouselProps) {
     // Number of times to duplicate the image set to create seamless infinite scroll
     const [repeatCount, setRepeatCount] = useState(2);
 
-    // Width of one complete set of images (calculated once, then used for speed calculations)
-    const singleSetWidthRef = useRef(0);
-
     // Track whether user is currently hovering over the carousel
     const isHoveringRef = useRef(false);
 
@@ -62,65 +59,31 @@ export function ImageCarousel(props: ImageCarouselProps) {
 
     useResponsiveGSAP({
         scope,
-        // observeResize: '.images',
+        observeResize: '.slide-container',
         setup: (root) => {
             if (!root) return;
             console.log('setup')
+            const slideOuter = root.querySelector(".slide-outer") as HTMLElement | null;
+            const slideContainer = root.querySelector(".slide-container") as HTMLUListElement | null;
 
-            // Get the sliding image list container
-            const slideContainer = root.querySelector(".images") as HTMLUListElement | null;
-
-            // Get the overflow wrapper container
-            const overflowContainer = root.querySelector(".overflow-hidden") as HTMLElement | null;
-
-            if (!slideContainer || !overflowContainer) return;
+            if (!slideContainer || !slideOuter) return;
 
             // Clean up any existing animations and reset position
             gsap.killTweensOf(slideContainer);
             gsap.set(slideContainer, {x: 0});
             totalScrollDistanceRef.current = 0;
 
-            // === Measure dimensions for infinite scroll setup ===
-            const slideItems = Array.from(root.querySelectorAll<HTMLElement>(".slide-item"));
-            if (!slideItems.length) return;
-
-            // Number of original images (before duplication)
-            const originalImageCount = images.length;
-
-            // Get the first set of slides (one complete loop of images)
-            const firstImageSet = slideItems.slice(0, originalImageCount);
-
-            /**
-             * Calculate the outer width of an element including margins
-             * This is needed because getBoundingClientRect doesn't include margins
-             */
-            const getElementOuterWidth = (element: HTMLElement) => {
-                const boundingWidth = element.getBoundingClientRect().width;
-                const computedStyle = getComputedStyle(element);
-                const marginLeft = parseFloat(computedStyle.marginLeft) || 0;
-                const marginRight = parseFloat(computedStyle.marginRight) || 0;
-                return boundingWidth + marginLeft + marginRight;
-            };
-
-            // Calculate the total width of one complete set of images
-            let singleSetWidth = firstImageSet.reduce((totalWidth, element) => totalWidth + getElementOuterWidth(element), 0);
-
-            // Snap to nearest 0.5px to avoid sub-pixel rendering issues
-            const snapToHalfPixel = gsap.utils.snap(0.5);
-            singleSetWidth = snapToHalfPixel(singleSetWidth);
-
-            // Store the width for speed calculations
-            singleSetWidthRef.current = singleSetWidth;
+            const singleSetWidth = getSingleSetWidth(root, images.length);
 
             // Calculate how many times to duplicate the image set for seamless infinite scroll
             // We need enough copies to fill the container width plus extra for smooth wrapping
-            const containerWidth = overflowContainer.clientWidth;
+            const containerWidth = slideOuter.clientWidth;
             const calculatedRepeatCount = Math.ceil(containerWidth / singleSetWidth) + 2;
             setRepeatCount(calculatedRepeatCount);
 
             // Create a wrapping function that keeps x position within one set width
             // When we scroll past -singleSetWidth, it wraps back to 0 (seamless loop)
-            const wrapXPosition = gsap.utils.wrap(-singleSetWidth, 0);
+            const wrapXPosition = gsap.utils.wrap(0.5, -singleSetWidth);
 
             // Create an optimized animation function using GSAP's quickTo
             // This provides smooth, performant updates with wrapping behavior
@@ -136,7 +99,7 @@ export function ImageCarousel(props: ImageCarouselProps) {
                 // Calculate current speed based on hover state
                 // speed (px/ms) = distance (px) / time (ms)
                 const activeDuration = isHoveringRef.current ? hoverDuration : duration;
-                const currentSpeed = singleSetWidthRef.current / (activeDuration * 1000);
+                const currentSpeed = singleSetWidth / (activeDuration * 1000);
 
                 // Update total scroll distance using current speed (pixels per millisecond)
                 // deltaTime is in milliseconds
@@ -171,18 +134,15 @@ export function ImageCarousel(props: ImageCarouselProps) {
         },
     })
 
-
     return (
         <div className="" ref={scope}>
             <div className="pin-height">
 
                 {/* Overflow container hides slides outside visible area and shows grab cursor */}
-                <div className={`overflow-hidden ${drag ? 'cursor-grab active:cursor-grabbing' : ''}`}>
+                <div className={`slide-outer overflow-hidden ${drag ? 'cursor-grab active:cursor-grabbing' : ''}`}>
 
-                    {/* Main sliding container - uses inline-block layout for horizontal alignment */}
-                    <ul className="images flex relative">
-
-                        <div className="absolute inset-0 shadow-[inset_0_0_0_4px_blue]"></div>
+                    {/* Main sliding container */}
+                    <ul className="slide-container flex relative">
 
                         {/* Render multiple sets of images for infinite scroll effect */}
                         {Array.from({length: repeatCount}).map((_, repeatIndex) =>
@@ -261,4 +221,40 @@ function setupDragBehavior(
             animateToXPositionRef.current?.(totalScrollDistanceRef.current);
         },
     });
+}
+
+
+/**
+ * Calculate the outer width of an element including margins
+ * This is needed because getBoundingClientRect doesn't include margins
+ */
+function getElementOuterWidth(element: HTMLElement) {
+    const boundingWidth = element.getBoundingClientRect().width;
+    const computedStyle = getComputedStyle(element);
+    const marginLeft = parseFloat(computedStyle.marginLeft) || 0;
+    const marginRight = parseFloat(computedStyle.marginRight) || 0;
+    return boundingWidth + marginLeft + marginRight;
+}
+
+
+/**
+ * Measure dimensions for infinite scroll setup
+ * @param root
+ * @param originalImageCount
+ */
+function getSingleSetWidth(root: HTMLElement, originalImageCount: number) {
+    // === Measure dimensions for infinite scroll setup ===
+    const slideItems = Array.from(root.querySelectorAll<HTMLElement>(".slide-item"));
+    if (!slideItems.length) return;
+
+    // Get the first set of slides (one complete loop of images)
+    const firstImageSet = slideItems.slice(0, originalImageCount);
+
+    // Calculate the total width of one complete set of images
+    let singleSetWidth = firstImageSet.reduce((totalWidth, element) => totalWidth + getElementOuterWidth(element), 0);
+
+    // Snap to nearest 0.5px to avoid sub-pixel rendering issues
+    singleSetWidth = gsap.utils.snap(0.5, singleSetWidth);
+
+    return singleSetWidth;
 }
