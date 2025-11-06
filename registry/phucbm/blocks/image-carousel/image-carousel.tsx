@@ -181,13 +181,14 @@ export function ImageCarousel(props: ImageCarouselProps) {
 
     return (
         <div className="" ref={scope}>
-            <div className="pin-height ring ring-green-500">
+            <div className="pin-height">
 
                 {/* Overflow container hides slides outside visible area and shows grab cursor */}
                 <div className={`overflow-hidden ${drag ? 'cursor-grab active:cursor-grabbing' : ''}`}>
 
                     {/* Main sliding container - uses inline-block layout for horizontal alignment */}
-                    <ul className="images flex gap-6 relative">
+                    <ul className="images flex relative">
+
                         <div className="absolute inset-0 shadow-[inset_0_0_0_4px_blue]"></div>
 
                         {/* Render multiple sets of images for infinite scroll effect */}
@@ -195,8 +196,8 @@ export function ImageCarousel(props: ImageCarouselProps) {
                             images.map((image, imageIndex) => (
                                 <li
                                     key={`set-${repeatIndex}-img-${imageIndex}`}
-                                    className="slide-item select-none
-                                    min-w-[10vw] w-[10vw] aspect-square ring ring-blue-600 bg-gray-300"
+                                    className="slide-item select-none mr-6
+                                    min-w-[10vw] w-[10vw] aspect-square bg-gray-300"
                                 >
                                     <img
                                         src={image.url}
