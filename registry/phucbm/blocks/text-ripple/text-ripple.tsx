@@ -11,15 +11,15 @@ gsap.registerPlugin(Observer);
 
 export type TextRippleProps = {
     /** Top line text (split into characters). @default "technical.architect" */
-    line1: string;
+    line1?: string;
     /** Bottom line text (split into characters). @default "creative.developer" */
-    line2: string;
+    line2?: string;
     /** Optional extra classes applied to the wrapper */
     className?: string;
 };
 
 export function TextRipple({line1 = "technical.architect", line2 = "creative.developer", className}: TextRippleProps) {
-    const scope = useRef<HTMLElement | null>(null);
+    const scope = useRef<HTMLDivElement | null>(null);
 
     useGSAP(
         () => {
@@ -61,38 +61,33 @@ export function TextRipple({line1 = "technical.architect", line2 = "creative.dev
     );
 
     return (
-        <section
+        <div
             ref={scope}
-            className={`flex flex-col items-center justify-center
-        w-full overflow-hidden
-        font-bold leading-[0.7em] uppercase
+            className={`flex flex-col items-center justify-center w-full overflow-hidden
+            font-bold leading-[0.7em] uppercase
          
-         h-[300px]
-         text-[30px] md:text-[60px] xl:text-[100px]
-         gap-2 xl:gap-4
+            h-[300px]
+            text-[30px] md:text-[60px] xl:text-[100px]
+            gap-2 md:gap-4
          
           ${className}
          `}
         >
             <div className="flex">
-                {line1.split("").map((ch, i) => (
-                    <div key={`t-${i}`}
-                         className="hero-heading is-top text-[#06f] origin-bottom"
-                    >
-                        {ch}
+                {line1.split("").map((char, i) => (
+                    <div key={`t-${i}`} className="hero-heading is-top text-[#06f] origin-bottom">
+                        {char}
                     </div>
                 ))}
             </div>
 
             <div className="flex">
-                {line2.split("").map((ch, i) => (
-                    <div key={`c-${i}`}
-                         className="hero-heading is-bottom text-[#0f8] origin-top"
-                    >
-                        {ch}
+                {line2.split("").map((char, i) => (
+                    <div key={`c-${i}`} className="hero-heading is-bottom text-[#0f8] origin-top">
+                        {char}
                     </div>
                 ))}
             </div>
-        </section>
+        </div>
     );
 }
