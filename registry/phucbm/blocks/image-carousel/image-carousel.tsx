@@ -15,6 +15,9 @@ export type ImageCarouselProps = {
     /** Custom class for each item wrapper, useful when you want to tweak the size or gap. @default "" **/
     itemClass?: string;
 
+    /** Custom class for each image **/
+    imageClass?: string;
+
     /** Duration in seconds for one complete loop of images at normal speed. Lower = faster. @default 20 */
     duration?: number;
 
@@ -35,6 +38,7 @@ export function ImageCarousel(props: ImageCarouselProps) {
     const {
         duration = 20,
         itemClass = '',
+        imageClass = '',
         hoverDuration = 60,
         images,
         direction = -1,
@@ -147,7 +151,7 @@ export function ImageCarousel(props: ImageCarouselProps) {
                                 <img
                                     src={image.url}
                                     alt={image.title}
-                                    className="pointer-events-none h-full w-full object-cover object-center"
+                                    className={cn("pointer-events-none h-full w-full object-cover object-center",imageClass)}
                                     loading="lazy"
                                 />
                             </li>
