@@ -129,33 +129,34 @@ export function ImageCarousel(props: ImageCarouselProps) {
     })
 
     return (
-        <div className="" ref={scope}>
-            <div className="pin-height">
+        <div ref={scope}>
+            {/*Overflow container hides slides outside visible area and shows grab cursor*/}
+            <div className={`slide-outer overflow-hidden ${drag ? 'cursor-grab active:cursor-grabbing' : ''}`}>
 
-                {/* Overflow container hides slides outside visible area and shows grab cursor */}
-                <div className={`slide-outer overflow-hidden ${drag ? 'cursor-grab active:cursor-grabbing' : ''}`}>
+                {/* Main sliding container */}
+                <ul className="slide-container flex relative">
+                    {/* Render multiple sets of images for infinite scroll effect */}
+                    {Array.from({length: repeatCount}).map((_, repeatIndex) =>
+                        images.map((image, imageIndex) => (
+                            <li
+                                key={`set-${repeatIndex}-img-${imageIndex}`}
+                                className={cn("slide-item select-none bg-gray-300 w-[var(--width)] min-w-[var(--width)]",
+                                    "xl:[--width:15vw] lg:[--width:260px] [--width:120px]",
+                                    "aspect-square lg:mr-8 mr-4",
+                                    itemClass
+                                )}
+                            >
+                                <img
+                                    src={image.url}
+                                    alt={image.title}
+                                    className="pointer-events-none h-full w-full object-cover object-center"
+                                    loading="lazy"
+                                />
+                            </li>
+                        ))
+                    )}
+                </ul>
 
-                    {/* Main sliding container */}
-                    <ul className="slide-container flex relative">
-
-                        {/* Render multiple sets of images for infinite scroll effect */}
-                        {Array.from({length: repeatCount}).map((_, repeatIndex) =>
-                            images.map((image, imageIndex) => (
-                                <li
-                                    key={`set-${repeatIndex}-img-${imageIndex}`}
-                                    className={cn("slide-item select-none bg-gray-300 min-w-[10vw] w-[10vw] aspect-square mr-6", itemClass)}
-                                >
-                                    <img
-                                        src={image.url}
-                                        alt={image.title}
-                                        className="pointer-events-none h-full w-full object-cover object-center"
-                                        loading="lazy"
-                                    />
-                                </li>
-                            ))
-                        )}
-                    </ul>
-                </div>
             </div>
         </div>
     );
