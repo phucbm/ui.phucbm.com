@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useEffect, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import gsap from "gsap";
 import {Observer} from "gsap/Observer";
 import {useGSAP} from "@gsap/react";
@@ -49,24 +49,12 @@ export function ImageCarousel(props: ImageCarouselProps) {
     // Track whether user is currently hovering over the carousel
     const isHoveringRef = useRef(false);
 
-    // Duration props stored in refs for ticker function access
-    const durationRef = useRef(duration);
-    const hoverDurationRef = useRef(hoverDuration);
-
     // Accumulated horizontal scroll distance (in pixels)
     const totalScrollDistanceRef = useRef(0);
 
     // GSAP quickTo function for optimized x-position updates with wrapping
     const animateToXPositionRef = useRef<((value: number) => void) | null>(null);
 
-    // === Sync props to refs when they change ===
-    useEffect(() => {
-        durationRef.current = duration;
-    }, [duration]);
-
-    useEffect(() => {
-        hoverDurationRef.current = hoverDuration;
-    }, [hoverDuration]);
 
     // === Main GSAP animation setup ===
     useGSAP(
@@ -147,9 +135,7 @@ export function ImageCarousel(props: ImageCarouselProps) {
             const autoScrollTick = (_time: number, deltaTime: number) => {
                 // Calculate current speed based on hover state
                 // speed (px/ms) = distance (px) / time (ms)
-                const activeDuration = isHoveringRef.current
-                    ? hoverDurationRef.current
-                    : durationRef.current;
+                const activeDuration = isHoveringRef.current ? hoverDuration : duration;
                 const currentSpeed = singleSetWidthRef.current / (activeDuration * 1000);
 
                 // Update total scroll distance using current speed (pixels per millisecond)
