@@ -17,9 +17,6 @@ export type ImageCarouselProps = {
     /** Duration in seconds for one complete loop when hovering. Lower = faster. @default 60 */
     hoverDuration?: number;
 
-    /** Whether the carousel should automatically slide without user interaction. If false, it stays static until dragged. @default true */
-    autoSlide?: boolean;
-
     /** Scroll direction of the carousel. `1` = scrolls right→left, `-1` = scrolls left→right. @default 1 */
     direction?: 1 | -1;
 
@@ -34,7 +31,6 @@ export function ImageCarousel(props: ImageCarouselProps) {
     const {
         duration = 20,
         hoverDuration = 60,
-        autoSlide = true,
         images,
         direction = 1,
         drag = true,
@@ -53,9 +49,6 @@ export function ImageCarousel(props: ImageCarouselProps) {
     // Track whether user is currently hovering over the carousel
     const isHoveringRef = useRef(false);
 
-    // Auto-slide flag from props (stored in ref for ticker function access)
-    const autoSlideEnabledRef = useRef(autoSlide);
-
     // Duration props stored in refs for ticker function access
     const durationRef = useRef(duration);
     const hoverDurationRef = useRef(hoverDuration);
@@ -67,10 +60,6 @@ export function ImageCarousel(props: ImageCarouselProps) {
     const animateToXPositionRef = useRef<((value: number) => void) | null>(null);
 
     // === Sync props to refs when they change ===
-    useEffect(() => {
-        autoSlideEnabledRef.current = autoSlide;
-    }, [autoSlide]);
-
     useEffect(() => {
         durationRef.current = duration;
     }, [duration]);
@@ -156,9 +145,6 @@ export function ImageCarousel(props: ImageCarouselProps) {
             // === Auto-scroll ticker function ===
             // This runs on every frame to create the continuous scroll effect
             const autoScrollTick = (_time: number, deltaTime: number) => {
-                // Only auto-scroll if enabled
-                if (!autoSlideEnabledRef.current) return;
-
                 // Calculate current speed based on hover state
                 // speed (px/ms) = distance (px) / time (ms)
                 const activeDuration = isHoveringRef.current
@@ -198,7 +184,6 @@ export function ImageCarousel(props: ImageCarouselProps) {
         {
             // Re-run setup when any of these dependencies change
             dependencies: [
-                autoSlide,
                 duration,
                 hoverDuration,
                 images.length,
