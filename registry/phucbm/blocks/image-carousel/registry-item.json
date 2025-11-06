@@ -9,9 +9,6 @@
     "gsap",
     "@gsap/react"
   ],
-  "registryDependencies": [
-    "https://ui.phucbm.com/r/demo-images.json"
-  ],
   "files": [
     {
       "path": "registry/phucbm/blocks/image-carousel/image-carousel.tsx",
