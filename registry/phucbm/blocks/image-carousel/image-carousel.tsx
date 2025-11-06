@@ -32,7 +32,7 @@ export function ImageCarousel(props: ImageCarouselProps) {
         duration = 20,
         hoverDuration = 60,
         images,
-        direction = 1,
+        direction = -1,
         drag = true,
         hover = true,
     } = props;
@@ -138,7 +138,7 @@ export function ImageCarousel(props: ImageCarouselProps) {
 
                 // Update total scroll distance using current speed (pixels per millisecond)
                 // deltaTime is in milliseconds
-                totalScrollDistanceRef.current -= deltaTime * currentSpeed * direction;
+                totalScrollDistanceRef.current += deltaTime * currentSpeed * direction;
 
                 // Apply the new position with wrapping
                 animateToXPositionRef.current?.(totalScrollDistanceRef.current);

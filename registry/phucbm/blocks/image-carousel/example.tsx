@@ -68,9 +68,9 @@ export default function Example() {
 
             <div className="mt-[50px]">
                 No hover
-                <ImageCarousel direction={-1}
-                               hover={false}
-                               images={Array.from(exampleImages.slice(0, 5)).reverse()}/>
+                <ImageCarousel
+                    hover={false}
+                    images={Array.from(exampleImages.slice(0, 5)).reverse()}/>
             </div>
         </>
     );
