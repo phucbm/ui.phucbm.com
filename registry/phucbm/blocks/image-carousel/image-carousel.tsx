@@ -237,6 +237,12 @@ function setupDragBehavior(
 
         // When drag ends - apply inertia based on velocity
         onRelease: (observerInstance) => {
+            // Only apply inertia if there was actual dragging movement
+            if (Math.abs(observerInstance.deltaX) < 2) {
+                // Just a click, not a drag - don't apply inertia
+                return;
+            }
+
             // Get the velocity from the drag (pixels per second)
             const velocityX = observerInstance.velocityX;
 
