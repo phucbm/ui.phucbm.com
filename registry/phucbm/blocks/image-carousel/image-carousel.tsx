@@ -59,14 +59,14 @@ export function ImageCarousel(props: ImageCarouselProps) {
     // === Main GSAP animation setup ===
     useGSAP(
         () => {
-            const rootElement = scope.current;
-            if (!rootElement) return;
+            const root = scope.current;
+            if (!root) return;
 
             // Get the sliding image list container
-            const slideContainer = rootElement.querySelector(".images") as HTMLUListElement | null;
+            const slideContainer = root.querySelector(".images") as HTMLUListElement | null;
 
             // Get the overflow wrapper container
-            const overflowContainer = rootElement.querySelector(".overflow-hidden") as HTMLElement | null;
+            const overflowContainer = root.querySelector(".overflow-hidden") as HTMLElement | null;
 
             if (!slideContainer || !overflowContainer) return;
 
@@ -76,9 +76,7 @@ export function ImageCarousel(props: ImageCarouselProps) {
             totalScrollDistanceRef.current = 0;
 
             // === Measure dimensions for infinite scroll setup ===
-            const slideItems = Array.from(
-                slideContainer.querySelectorAll<HTMLElement>(".slide-item")
-            );
+            const slideItems = Array.from(root.querySelectorAll<HTMLElement>(".slide-item"));
             if (!slideItems.length) return;
 
             // Number of original images (before duplication)
@@ -222,17 +220,17 @@ export function ImageCarousel(props: ImageCarouselProps) {
 
 /**
  * Sets up hover behavior to slow down the carousel
- * @param slideContainer - The container element to attach hover listeners to
+ * @param target - The container element to attach hover listeners to
  * @param isHoveringRef - Ref to track hover state
  * @returns Cleanup function to remove event listeners
  */
 function setupHoverBehavior(
-    slideContainer: HTMLElement,
+    target: HTMLElement,
     isHoveringRef: React.RefObject<boolean>
 ) {
     // Create an Observer that listens for pointer hover on the element
     return Observer.create({
-        target: slideContainer,
+        target: target,
         type: "pointer", // "pointer" covers mouse & stylus; use "pointer,touch" if you want touch hover behavior too
         // Called when pointer enters / moves over the target (debounce doesn't apply to onHover)
         onHover: () => {
@@ -250,19 +248,19 @@ function setupHoverBehavior(
 
 /**
  * Sets up drag/swipe behavior for the carousel
- * @param slideContainer - The container element to make draggable
+ * @param target - The container element to make draggable
  * @param totalScrollDistanceRef - Ref containing the accumulated scroll distance
  * @param animateToXPositionRef - Ref containing the quickTo animation function
  * @returns The Observer instance
  */
 function setupDragBehavior(
-    slideContainer: HTMLElement,
+    target: HTMLElement,
     totalScrollDistanceRef: React.RefObject<number>,
     animateToXPositionRef: React.RefObject<((value: number) => void) | null>
 ) {
     // Set up GSAP Observer for drag/swipe interactions
     return Observer.create({
-        target: slideContainer,
+        target: target,
         type: "pointer,touch", // Handle both mouse and touch events
         onDrag: (observerInstance) => {
             // Update scroll position based on drag delta
