@@ -236,7 +236,7 @@ function setupDragBehavior(
     totalScrollDistanceRef: React.RefObject<number>,
     animateToXPositionRef: React.RefObject<((value: number) => void) | null>
 ) {
-    let inertiaTween = null; // Track the inertia animation
+    let inertiaTween: gsap.core.Tween | null = null; // Track the inertia animation
 
     return Observer.create({
         target: target,
@@ -366,7 +366,7 @@ function getElementOuterWidth(element: HTMLElement) {
 function getSingleSetWidth(root: HTMLElement, originalImageCount: number) {
     // === Measure dimensions for infinite scroll setup ===
     const slideItems = Array.from(root.querySelectorAll<HTMLElement>(".slide-item"));
-    if (!slideItems.length) return;
+    if (!slideItems.length) return 0;
 
     // Get the first set of slides (one complete loop of images)
     const firstImageSet = slideItems.slice(0, originalImageCount);
@@ -387,7 +387,7 @@ function getSingleSetWidth(root: HTMLElement, originalImageCount: number) {
  * @param singleSetWidth
  */
 function getRepeatCount(root: HTMLElement, singleSetWidth: number): number {
-    const slideOuter = root.querySelector(".slide-outer") as HTMLElement | null;
+    const slideOuter = root.querySelector(".slide-outer") as HTMLElement;
 
     const containerWidth = slideOuter.clientWidth;
     return Math.ceil(containerWidth / singleSetWidth) + 2;
