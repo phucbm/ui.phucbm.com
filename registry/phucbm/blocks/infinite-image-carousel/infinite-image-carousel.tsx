@@ -3,10 +3,11 @@
 import React, {useRef, useState} from "react";
 import gsap from "gsap";
 import {Observer} from "gsap/Observer";
+import {ScrollTrigger} from "gsap/ScrollTrigger";
 import {useResponsiveGSAP} from "responsive-gsap";
 import {cn} from "@/registry/phucbm/lib/utils";
 
-gsap.registerPlugin(Observer);
+gsap.registerPlugin(Observer, ScrollTrigger);
 
 export type ImageCarouselProps = {
     /** List of image objects to display in the carousel. Each must contain a valid `url` property. */
@@ -35,6 +36,12 @@ export type ImageCarouselProps = {
 
     /** Whether to enable hover slowdown behavior. @default true */
     hover?: boolean;
+
+    /** Whether to enable scroll-based speed control. @default false */
+    scroll?: boolean;
+
+    /** Adjust this value to control sensitivity (lower = more sensitive). @default 200 */
+    scrollSensitivity?: number;
 };
 
 export function InfiniteImageCarousel(props: ImageCarouselProps) {
@@ -48,6 +55,8 @@ export function InfiniteImageCarousel(props: ImageCarouselProps) {
         direction = -1,
         drag = true,
         hover = true,
+        scroll = false,
+        scrollSensitivity = 200,
     } = props;
 
     // Reference to the main carousel container element
@@ -58,6 +67,9 @@ export function InfiniteImageCarousel(props: ImageCarouselProps) {
 
     // Track whether user is currently hovering over the carousel
     const isHoveringRef = useRef(false);
+
+    // Scroll speed multiplier: 1 = normal, >1 = faster, <1 = slower/reverse
+    const scrollSpeedMultiplierRef = useRef(1);
 
     // Accumulated horizontal scroll distance (in pixels)
     const totalScrollDistanceRef = useRef(0);
@@ -99,7 +111,10 @@ export function InfiniteImageCarousel(props: ImageCarouselProps) {
                 // Calculate current speed based on hover state
                 // speed (px/ms) = distance (px) / time (ms)
                 const activeDuration = isHoveringRef.current ? hoverDuration : duration;
-                const currentSpeed = singleSetWidth / (activeDuration * 1000);
+                let currentSpeed = singleSetWidth / (activeDuration * 1000);
+
+                // scroll
+                if (scroll) currentSpeed = currentSpeed * scrollSpeedMultiplierRef.current;
 
                 // Update total scroll distance using current speed (pixels per millisecond)
                 // deltaTime is in milliseconds
@@ -120,6 +135,11 @@ export function InfiniteImageCarousel(props: ImageCarouselProps) {
                 ? setupDragBehavior(slideContainer, totalScrollDistanceRef, animateToXPositionRef)
                 : null;
 
+            // === Scroll speed behavior ===
+            const scrollTrigger = scroll
+                ? setupScrollBehavior(slideContainer, scrollSpeedMultiplierRef, scrollSensitivity)
+                : null;
+
             // === Cleanup function ===
             // Remove all event listeners and kill animations when component unmounts or dependencies change
             return {
@@ -127,6 +147,7 @@ export function InfiniteImageCarousel(props: ImageCarouselProps) {
                     gsap.ticker.remove(autoScrollTick);
                     if (dragObserver) dragObserver.kill();
                     if (hoverObserver) hoverObserver.kill();
+                    if (scrollTrigger) scrollTrigger.kill();
                     gsap.killTweensOf(slideContainer);
                     animateToXPositionRef.current = null;
                 }
@@ -146,10 +167,10 @@ export function InfiniteImageCarousel(props: ImageCarouselProps) {
                         images.map((image, imageIndex) => (
                             <li
                                 key={`set-${repeatIndex}-img-${imageIndex}`}
-                                className={cn("slide-item flex justify-center items-center select-none bg-gray-300 w-[var(--width)] min-w-[var(--width)]",
-                                    "xl:[--width:15vw] lg:[--width:260px] [--width:120px]",
-                                    "aspect-square lg:mr-8 mr-4",
-                                    isLogo ? "bg-transparent" : "",
+                                className={cn("slide-item flex justify-center items-center select-none bg-gray-300",
+                                    "[--width:120px] w-[var(--width)] min-w-[var(--width)]",
+                                    "aspect-square mr-4",
+                                    isLogo ? "bg-transparent aspect-video px-2" : "",
                                     itemClass
                                 )}
                             >
@@ -260,6 +281,68 @@ function setupDragBehavior(
         }
     });
 }
+
+/**
+ * Sets up scroll behavior to control carousel speed
+ * @param target - The container element to track scroll on
+ * @param scrollSpeedMultiplierRef - Ref to store the speed multiplier
+ * @param scrollSensitivity - Adjust this value to control sensitivity (lower = more sensitive)
+ * @returns ScrollTrigger instance
+ */
+function setupScrollBehavior(
+    target: HTMLElement,
+    scrollSpeedMultiplierRef: React.RefObject<number>,
+    scrollSensitivity: number = 200
+) {
+    let resetTimeout: NodeJS.Timeout | null = null;
+    let resetTween: gsap.core.Tween | null = null;
+
+    return ScrollTrigger.create({
+        trigger: target,
+        start: "top bottom",
+        end: "bottom top",
+        onUpdate: (self) => {
+            // Clear any pending reset
+            if (resetTimeout) {
+                clearTimeout(resetTimeout);
+            }
+
+            // Kill any ongoing reset animation
+            if (resetTween) {
+                resetTween.kill();
+            }
+
+            // self.direction: 1 = scrolling down, -1 = scrolling up
+            // self.getVelocity(): scroll speed in pixels per second
+            const scrollVelocity = Math.abs(self.getVelocity()); // abs to remove direction as we already control direction
+
+            // Normalize velocity
+            const velocityMultiplier = scrollVelocity / scrollSensitivity;
+
+            if (self.direction === 1) {
+                // Scrolling down - increase speed based on velocity (1 to 2x)
+                scrollSpeedMultiplierRef.current = 1 + velocityMultiplier;
+            } else {
+                // Scrolling up - decrease/reverse speed based on velocity (1 to 0x)
+                scrollSpeedMultiplierRef.current = 1 - velocityMultiplier;
+            }
+
+            // Smoothly reset multiplier to 1 after scrolling stops
+            resetTimeout = setTimeout(() => {
+                resetTween = gsap.to(scrollSpeedMultiplierRef, {
+                    current: 1,
+                    duration: 0.8,
+                    ease: "power2.out"
+                });
+            }, 150);
+        }
+    });
+}
+
+
+// ============================================================================
+// Helpers
+// ============================================================================
 
 
 /**

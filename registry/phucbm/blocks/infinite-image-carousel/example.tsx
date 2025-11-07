@@ -5,14 +5,16 @@ export default function Example() {
         <div className="h-screen flex flex-col justify-around py-[10vh]">
             {/*logos*/}
             <InfiniteImageCarousel
-                itemClass="lg:mr-8 lg:px-4 px-2 xl:[--width:12vw] lg:[--width:150px] [--width:100px]"
+                itemClass="lg:mr-8 lg:px-4 xl:[--width:12vw] md:[--width:150px] [--width:100px]"
                 isLogo={true}
                 direction={1}
                 images={exampleLogos()}
             />
 
             {/*photos*/}
-            <InfiniteImageCarousel images={examplePhotos()}/>
+            <InfiniteImageCarousel
+                itemClass="xl:[--width:15vw] lg:[--width:260px] [--width:120px]"
+                images={examplePhotos()}/>
         </div>
     );
 }

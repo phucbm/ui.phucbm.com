@@ -12,3 +12,15 @@ mathematically precise looping (even with 2 images), hover slowdown, drag with i
 ## Props
 
 <RegistryPropsTable name="infinite-image-carousel"/>
+
+## Examples
+
+### Sync with your scroll speed
+
+Set a slower base duration so the scroll speed changes are more noticeable.
+
+```tsx
+<InfiniteImageCarousel scroll={true} scrollSensitivity={200} duration={40} hoverDuration={70}/>
+```
+
+<RegistryDemo name="infinite-image-carousel" exampleFileName="example-02"/>
