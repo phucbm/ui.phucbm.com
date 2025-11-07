@@ -4,7 +4,7 @@ export default function InfiniteImageCarousel_ScrollExample() {
     return (
         <div className="flex flex-col justify-between py-[15vh]">
 
-            <p className="container mx-auto px-6 max-w-xl text-xl font-medium font-mono mb-[15vh]">
+            <p className="container mx-auto px-6 max-w-xl md:text-xl font-medium font-mono mb-[15vh]">
                 Two rows of logos that can be dragged, they scroll faster when you scroll (in either direction) and
                 slow down on hover.
             </p>
@@ -41,7 +41,7 @@ export default function InfiniteImageCarousel_ScrollExample() {
                 />
             </div>
 
-            <p className="container mx-auto px-6 max-w-xl mt-[15vh] text-xl font-medium font-mono">
+            <p className="container mx-auto px-6 max-w-xl mt-[15vh] md:text-xl font-medium font-mono">
                 Lorem ipsum dolor sit amet dis nec mollis maximus fames. Sapien pede proin amet ut dictum. Cras
                 habitasse
                 a volutpat id non felis parturient orci elementum accumsan praesent. Potenti sem augue primis fusce

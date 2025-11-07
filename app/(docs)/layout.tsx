@@ -3,6 +3,7 @@ import {getPageMap} from 'nextra/page-map'
 // import 'nextra-theme-docs/style.css'
 import 'app/globals.css'
 import {Metadata} from "next";
+import {IconBrandDiscord} from "@tabler/icons-react";
 
 export const metadata: Metadata = {
     title: {
@@ -32,8 +33,10 @@ export default async function RootLayout({children}) {
             footer={footer}
             editLink={null}
             feedback={{
-                content: "Questions? Drop me a message",
-                link: "https://phucbm.com/connect"
+                content: <div className="flex items-center gap-1">
+                    Got questions? Join my <IconBrandDiscord className="w-5"/>
+                </div>,
+                link: "https://discord.gg/HnWtpWQRTt"
             }}
         >
             <div className="p-docs-container">
