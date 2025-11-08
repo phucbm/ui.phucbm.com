@@ -4,36 +4,30 @@ import {DocsCopyPage} from "../../../components/docs-copy-page";
 import {getDocsUrl} from "../../../lib/getDocsUrl";
 import {generatePageMetadata} from "@phucbm/next-og-image";
 import {_metadata} from "../../../lib/seo";
+import {getRegistryItem} from "../../../lib/getRegistryItem";
 
 export const generateStaticParams = generateStaticParamsFor('mdxPath')
-
-// export async function generateMetadata(props) {
-//     const params = await props.params
-//     const { metadata } = await importPage(params.mdxPath)
-//     console.log('metadata', metadata)
-//     return metadata
-// }
-
-// export const generateMetadata = generatePageMetadata({
-//     ...metadata,
-//     canonicalPath: "/",
-//     // imageUrl: "/images/perxel.webp"
-// });
 
 export const generateMetadata = generatePageMetadata(async(props) => {
     const params = await props.params
     const {metadata} = await importPage(params.mdxPath)
-    console.log('metadata', params.mdxPath.join('/'))
+
+    let registry = {};
+    if(params.mdxPath){
+        const name = Array.from(metadata.filePath.split('/')).pop().split('.')[0];
+        registry = await getRegistryItem(name);
+    }
 
     return {
         ..._metadata,
-        title: metadata.title,
-        canonicalPath: `/${params.mdxPath.join('/')}`,
-        // description: getMccIntroText(mcc).full,
-        // socialImage: {
-        //     title: `MCC: ${mcc.title}`,
-        //     description: getMccIntroText(mcc).short,
-        // },
+        title: `${metadata.title} - ${_metadata.siteName}`,
+        canonicalPath: params.mdxPath ? `/${params.mdxPath.join('/')}` : '/',
+        description: metadata.description ?? registry.description ?? _metadata.description,
+        socialImage: {
+            title: metadata.title,
+            // description: ',
+        },
+        // imageUrl: "/images/perxel.webp"
     };
 });
 
