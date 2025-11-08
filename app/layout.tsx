@@ -1,10 +1,10 @@
 import {Head} from 'nextra/components'
 import 'app/globals.css'
 import {generatePageMetadata} from "@phucbm/next-og-image";
-import {metadata} from "@/lib/seo";
+import {_metadata} from "@/lib/seo";
 
 export const generateMetadata = generatePageMetadata({
-    ...metadata,
+    ..._metadata,
     canonicalPath: "/",
     // imageUrl: "/images/perxel.webp"
 });

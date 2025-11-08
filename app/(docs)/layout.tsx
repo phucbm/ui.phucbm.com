@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 const navbar = (
     <Navbar
         logo={<div className="flex items-center justify-start gap-2">
-            <img src="/images/general/icon.svg" alt="Logo" width={30} height={30} className="h-[30px] aspect-square"/>
+            <img src="/images/icon.svg" alt="Logo" width={30} height={30} className="h-[30px] aspect-square"/>
             <span className="font-bold">ui/phucbm</span>
         </div>}
         // ... Your additional navbar options
