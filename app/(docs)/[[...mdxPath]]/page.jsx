@@ -18,11 +18,25 @@ export const generateMetadata = generatePageMetadata(async(props) => {
         registry = await getRegistryItem(name);
     }
 
+    const canonicalPath = params.mdxPath ? `/${params.mdxPath.join('/')}` : '/';
+
+    const description = metadata.description ?? registry.description ?? _metadata.description;
+
+    let title = `${metadata.title} - ${_metadata.siteName}`;
+    if(metadata.description || registry.description){
+        title = `${metadata.title}: ${metadata.description || registry.description}`;
+    }
+
+    if(canonicalPath === '/'){
+        // homepage
+        title = `${_metadata.siteName}: ${_metadata.description}`
+    }
+
     return {
         ..._metadata,
-        title: `${metadata.title} - ${_metadata.siteName}`,
-        canonicalPath: params.mdxPath ? `/${params.mdxPath.join('/')}` : '/',
-        description: metadata.description ?? registry.description ?? _metadata.description,
+        title,
+        canonicalPath,
+        description,
         socialImage: {
             title: metadata.title,
             // description: ',
