@@ -19,6 +19,10 @@ export type MagneticProps = {
     attraction?: number;
     /** Controls the speed of the magnetic movement (0 = slow, 1 = instant). @default 0.1 */
     speed?: number;
+    /** Maximum horizontal movement in pixels (optional constraint) */
+    maxX?: number;
+    /** Maximum vertical movement in pixels (optional constraint) */
+    maxY?: number;
     /** Callback fired when mouse enters the magnetic area */
     onEnter?: (data: MagneticData) => void;
     /** Callback fired when mouse exits the magnetic area */
@@ -34,6 +38,8 @@ export function Magnetic({
                              distance = 50,
                              attraction = 0.25,
                              speed = 0.1,
+                             maxX,
+                             maxY,
                              onEnter,
                              onExit,
                              activeClass,
@@ -63,6 +69,8 @@ export function Magnetic({
             distance,
             attraction,
             speed,
+            maxX,
+            maxY,
             activeClass,
             onEnter: handleEnter,
             onExit: handleExit,
@@ -81,7 +89,7 @@ export function Magnetic({
                 magneticInstance.destroy();
             }
         };
-    }, [distance, attraction, speed, activeClass, onEnter, onExit, dev]);
+    }, [distance, attraction, speed, maxX, maxY, activeClass, onEnter, onExit, dev]);
 
     return (
         <span ref={scope} className="inline-block relative">

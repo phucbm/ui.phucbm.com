@@ -8,18 +8,22 @@ interface MagneticPreset {
     distance: number;
     attraction: number;
     speed: number;
+    maxX: number;
+    maxY: number;
 }
 
 const PRESETS: MagneticPreset[] = [
-    {name: 'Default', distance: 50, attraction: 0.3, speed: 0.1},
-    {name: 'Strong Attraction', distance: 120, attraction: 0.2, speed: 0.15},
-    {name: 'Quick & Subtle', distance: 80, attraction: 0.5, speed: 0.5},
+    {name: 'Default', distance: 50, attraction: 0.3, speed: 0.1, maxX: 0, maxY: 0},
+    {name: 'Strong Attraction', distance: 120, attraction: 0.2, speed: 0.15, maxX: 0, maxY: 0},
+    {name: 'Quick & Subtle', distance: 80, attraction: 0.5, speed: 0.5, maxX: 0, maxY: 0},
 ];
 
 export default function MagneticExample_02() {
     const [distance, setDistance] = useState(50);
     const [attraction, setAttraction] = useState(0.5);
     const [speed, setSpeed] = useState(0.1);
+    const [maxX, setMaxX] = useState(0);
+    const [maxY, setMaxY] = useState(0);
     const [activePreset, setActivePreset] = useState<string>('Default');
 
     const handlePresetClick = (preset: MagneticPreset) => {
@@ -27,6 +31,8 @@ export default function MagneticExample_02() {
         setDistance(preset.distance);
         setAttraction(preset.attraction);
         setSpeed(preset.speed);
+        setMaxX(preset.maxX);
+        setMaxY(preset.maxY);
     };
 
     return (
@@ -36,6 +42,8 @@ export default function MagneticExample_02() {
                     distance={distance}
                     attraction={attraction}
                     speed={speed}
+                    maxX={maxX === 0 ? undefined : maxX}
+                    maxY={maxY === 0 ? undefined : maxY}
                     dev={true}
                 >
                     <button
@@ -150,52 +158,98 @@ export default function MagneticExample_02() {
                                 Speed (0=slow, 1=instant)
                             </p>
                         </div>
+
+                        {/* Max X Control */}
+                        <div className="mb-2">
+                            <label className="flex justify-between text-[0.7rem] text-gray-900 mb-1 font-medium">
+                                <span>Max X</span>
+                                <span className="font-semibold text-blue-500">{maxX === 0 ? '∞' : `${maxX}px`}</span>
+                            </label>
+                            <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                step="1"
+                                value={maxX}
+                                onChange={(e) => {
+                                    setMaxX(Number(e.target.value));
+                                    setActivePreset('');
+                                }}
+                                className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                            />
+                            <p className="text-[0.65rem] text-gray-400 mt-1.5 leading-tight">
+                                Max horizontal movement (0=unlimited)
+                            </p>
+                        </div>
+
+                        {/* Max Y Control */}
+                        <div className="mb-2">
+                            <label className="flex justify-between text-[0.7rem] text-gray-900 mb-1 font-medium">
+                                <span>Max Y</span>
+                                <span className="font-semibold text-blue-500">{maxY === 0 ? '∞' : `${maxY}px`}</span>
+                            </label>
+                            <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                step="1"
+                                value={maxY}
+                                onChange={(e) => {
+                                    setMaxY(Number(e.target.value));
+                                    setActivePreset('');
+                                }}
+                                className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                            />
+                            <p className="text-[0.65rem] text-gray-400 mt-1.5 leading-tight">
+                                Max vertical movement (0=unlimited)
+                            </p>
+                        </div>
                     </div>
                 </div>
 
                 <style jsx>{`
-                .slider::-webkit-slider-thumb {
-                    -webkit-appearance:none;
-                    appearance:none;
-                    width:12px;
-                    height:12px;
-                    border-radius:50%;
-                    background:#3b82f6;
-                    cursor:pointer;
-                    box-shadow:0 1px 3px rgba(0, 0, 0, 0.15);
-                }
-                .slider::-moz-range-thumb {
-                    width:12px;
-                    height:12px;
-                    border-radius:50%;
-                    background:#3b82f6;
-                    cursor:pointer;
-                    border:none;
-                    box-shadow:0 1px 3px rgba(0, 0, 0, 0.15);
-                }
-                /* Scrollbar */
-                .custom-scrollbar::-webkit-scrollbar {
-                    width:5px;
-                    height:8px; /* Height for horizontal scrollbar */
-                }
-                .custom-scrollbar::-webkit-scrollbar-track {
-                    background:#f1f5f9; /* Light gray track */
-                    border-radius:4px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background:#10b981; /* Emerald green thumb */
-                    border-radius:4px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background:#059669; /* Darker emerald on hover */
-                }
+                    .slider::-webkit-slider-thumb {
+                        -webkit-appearance:none;
+                        appearance:none;
+                        width:12px;
+                        height:12px;
+                        border-radius:50%;
+                        background:#3b82f6;
+                        cursor:pointer;
+                        box-shadow:0 1px 3px rgba(0, 0, 0, 0.15);
+                    }
+                    .slider::-moz-range-thumb {
+                        width:12px;
+                        height:12px;
+                        border-radius:50%;
+                        background:#3b82f6;
+                        cursor:pointer;
+                        border:none;
+                        box-shadow:0 1px 3px rgba(0, 0, 0, 0.15);
+                    }
+                    /* Scrollbar */
+                    .custom-scrollbar::-webkit-scrollbar {
+                        width:5px;
+                        height:8px; /* Height for horizontal scrollbar */
+                    }
+                    .custom-scrollbar::-webkit-scrollbar-track {
+                        background:#f1f5f9; /* Light gray track */
+                        border-radius:4px;
+                    }
+                    .custom-scrollbar::-webkit-scrollbar-thumb {
+                        background:#10b981; /* Emerald green thumb */
+                        border-radius:4px;
+                    }
+                    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                        background:#059669; /* Darker emerald on hover */
+                    }
 
-                /* Firefox */
-                .custom-scrollbar {
-                    scrollbar-width:thin;
-                    scrollbar-color:#10b981 #f1f5f9;
-                }
-            `}</style>
+                    /* Firefox */
+                    .custom-scrollbar {
+                        scrollbar-width:thin;
+                        scrollbar-color:#10b981 #f1f5f9;
+                    }
+                `}</style>
             </div>
         </div>
     );

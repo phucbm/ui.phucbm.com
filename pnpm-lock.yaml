@@ -21,8 +21,8 @@ importers:
         specifier: ^13.8.0
         version: 13.8.0(react@19.2.0)
       '@phucbm/magnetic-button':
-        specifier: ^1.0.1
-        version: 1.0.1
+        specifier: ^1.1.0
+        version: 1.1.0
       '@phucbm/next-og-image':
         specifier: ^1.0.1
         version: 1.0.1(next@15.5.4(@babel/core@7.28.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -1094,8 +1094,8 @@ packages:
     resolution: {integrity: sha512-sVROm5chgbHAI8/Hv/coMMEuHKsRUOR8PEgj+W0u2cDWDqB4HCVMdzzQ5s+0nm8nO1cdntnUmKzaVtqbR58WNw==}
     engines: {node: '>=16'}
 
-  '@phucbm/magnetic-button@1.0.1':
-    resolution: {integrity: sha512-BiV5/pqXSI68cGOVdLWSVB6TqztmLGxLXHe9aJZ3advjTm0h33ciPxPT68Ny3pK6hqWBxQFPkAthC2wpANzDvg==}
+  '@phucbm/magnetic-button@1.1.0':
+    resolution: {integrity: sha512-irUvI0xdypRw9S8aBN6A5qJw8YvttHhA41kF6ZFyoeMhLmVRZ1VkLX5bDlWd8r86OTlaQiCXWXi5VswvciMLJQ==}
     engines: {node: '>=16'}
 
   '@phucbm/next-og-image@1.0.1':
@@ -6183,7 +6183,7 @@ snapshots:
 
   '@phucbm/lerp@1.0.1': {}
 
-  '@phucbm/magnetic-button@1.0.1':
+  '@phucbm/magnetic-button@1.1.0':
     dependencies:
       '@phucbm/lerp': 1.0.1
 
