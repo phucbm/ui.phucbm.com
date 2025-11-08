@@ -1,8 +1,8 @@
-export const metadata = {
-    baseUrl: 'https://ui.perxel.com',
+export const _metadata = {
+    baseUrl: 'https://ui.phucbm.com',
     siteName: "ui/phucbm",
     title: "ui/phucbm",
-    description: "A refined library of accessible Tailwind + GSAP components.",
+    description: "A collection of production-ready React UI components built with GSAP animations and Tailwind CSS. Fully reusable, responsive, and easy to integrate into any project.",
     locale: "en_US",
 
     // viewport
