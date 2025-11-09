@@ -78,13 +78,13 @@ export function DrawSVG({
 
             // draw paths
             paths.forEach((path) => {
-                tl.set(path, {opacity: 1});
+                tl.set(path, {opacity: 1}, atOnce ? 0 : undefined);
                 tl.fromTo(
                     path,
                     {drawSVG: reverse ? "100% 100%" : "0 0"},
                     {
                         drawSVG: reverse ? "100% 0" : "0 100%",
-                        duration: getPathProportionalDuration(duration, paths, path, atOnce)
+                        duration: atOnce ? duration : getPathProportionalDuration(duration, paths, path)
                     },
                     atOnce ? 0 : undefined
                 );
@@ -105,10 +105,10 @@ export function DrawSVG({
     return <div ref={scope} className={className} style={{opacity: 0}}>{children}</div>;
 }
 
-function getPathProportionalDuration(duration: number, paths: SVGPathElement[] | NodeListOf<SVGPathElement>, path: SVGPathElement, atOnce: boolean) {
+function getPathProportionalDuration(duration: number, paths: SVGPathElement[] | NodeListOf<SVGPathElement>, path: SVGPathElement) {
     const maxLength = Math.max(...Array.from(paths).map(p => p.getTotalLength()));
-    const durationPerPath = atOnce ? duration : duration / paths.length;
+    const durationPerPath = duration / paths.length;
 
     const pathLength = path.getTotalLength();
-    return atOnce ? duration : (pathLength / maxLength) * durationPerPath;
+    return (pathLength / maxLength) * durationPerPath;
 }
