@@ -8,13 +8,16 @@ type Props = {
     height?: number;
     editorHeight?: number;
     exampleFileName?: string;
+    codeEditor?: boolean;
 };
 
-export async function RegistryDemo({name, height, editorHeight, exampleFileName}: Props) {
+export async function RegistryDemo({name, height, editorHeight, exampleFileName, codeEditor = true}: Props) {
     const registryItem = await getRegistryItem(name);
 
     return <SandpackDemo registryItem={registryItem}
                          height={height}
                          editorHeight={editorHeight}
-                         exampleFileName={exampleFileName}/>;
+                         exampleFileName={exampleFileName}
+                         codeEditor={codeEditor}
+    />;
 }
