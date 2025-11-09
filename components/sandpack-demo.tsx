@@ -20,6 +20,7 @@ type Props = {
     editorHeight?: number;
     exampleFileName?: string;
     codeEditor?: boolean;
+    resizable?: boolean;
 };
 
 async function SandpackDemo({
@@ -27,7 +28,8 @@ async function SandpackDemo({
                                 height = 400,
                                 editorHeight = 300,
                                 exampleFileName = "example",
-                                codeEditor = true
+                                codeEditor = true,
+                                resizable = true
                             }: Props) {
     const files = await getSandpackFiles({registryItem, exampleFileName});
 
@@ -63,7 +65,9 @@ async function SandpackDemo({
 
             <SandpackProvider key={registryItem.name} template="react-ts" {...sandpackProps}>
 
-                <RegistryPreview children={<SandpackPreview showOpenInCodeSandbox={false}/>} height={height}/>
+                <RegistryPreview children={<SandpackPreview showOpenInCodeSandbox={false}/>}
+                                 height={height}
+                                 resizable={resizable}/>
 
                 {!codeEditor && (
                     <>

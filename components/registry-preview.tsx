@@ -8,9 +8,10 @@ import {Badge} from "@/components/ui/badge";
 type Props = {
     children: React.ReactNode;
     height?: number;
+    resizable?: boolean;
 };
 
-export function RegistryPreview({children, height = 450}: Props) {
+export function RegistryPreview({children, height = 450, resizable = true}: Props) {
     const containerRef = useRef<HTMLDivElement>(null);
     const panelRef = useRef<HTMLDivElement>(null);
 
@@ -36,7 +37,6 @@ export function RegistryPreview({children, height = 450}: Props) {
         roPanel.observe(panelEl);
         roGroup.observe(groupEl);
 
-        // Initial measurement (once refs are mounted)
         update();
 
         return () => {
@@ -45,7 +45,6 @@ export function RegistryPreview({children, height = 450}: Props) {
         };
     }, []);
 
-    // Convert 375px to percentage, clamp between 1–100
     const minSizePct = useMemo(() => {
         if (!containerWidth) return undefined;
         const pct = (375 / containerWidth) * 100;
@@ -56,49 +55,64 @@ export function RegistryPreview({children, height = 450}: Props) {
         containerWidth > 0 && Math.abs(panelWidth - containerWidth) <= 5;
 
     return (
-        <div data-component="demo-registry-client"
-             ref={containerRef}
-             className="group relative bg-accent rounded-md overflow-hidden"
+        <div
+            data-component="demo-registry-client"
+            ref={containerRef}
+            className="group relative bg-accent rounded-md overflow-hidden"
         >
-            <ResizablePanelGroup direction="horizontal" className="px-bg-pattern-transparent px-border">
-
-                {/*main panel*/}
-                <ResizablePanel defaultSize={100} minSize={minSizePct}>
-                    <div ref={panelRef} className="relative h-full">
-                        {!atFullWidth && (
+            {resizable ? (
+                <ResizablePanelGroup
+                    direction="horizontal"
+                    className="px-bg-pattern-transparent px-border"
+                >
+                    {/* main panel */}
+                    <ResizablePanel defaultSize={100} minSize={minSizePct}>
+                        <div ref={panelRef} className="relative h-full">
+                            {!atFullWidth && (
+                                <div
+                                    className={cn(
+                                        "absolute top-1 left-1/2 -translate-x-1/2 z-10 opacity-0",
+                                        "transition duration-200 scale-75 opacity-0",
+                                        "group-hover:opacity-100 group-hover:scale-100"
+                                    )}
+                                >
+                                    <Badge variant="secondary">
+                                        {Math.round(panelWidth)}px
+                                    </Badge>
+                                </div>
+                            )}
                             <div
-                                className={cn(
-                                    "absolute top-1 left-1/2 -translate-x-1/2 z-10 opacity-0",
-                                    "transition duration-200 scale-75 opacity-0",
-                                    "group-hover:opacity-100 group-hover:scale-100"
-                                )}
+                                className="[&>*]:min-h-full"
+                                style={{height: `${height}px`}}
                             >
-                                <Badge variant="secondary">{Math.round(panelWidth)}px</Badge>
+                                {children}
                             </div>
-                        )}
-                        <div className="[&>*]:min-h-full" style={{height: `${height}px`}}>
-                            {children}
                         </div>
-                    </div>
-                </ResizablePanel>
+                    </ResizablePanel>
 
-                {/*handle*/}
-                <ResizableHandle
-                    withHandle
-                    className={cn(
-                        "!border-dashed w-0 border-l !bg-transparent",
-                        atFullWidth ? "border-transparent" : "border-border"
-                    )}
-                />
+                    {/* handle */}
+                    <ResizableHandle
+                        withHandle
+                        className={cn(
+                            "!border-dashed w-0 border-l !bg-transparent",
+                            atFullWidth ? "border-transparent" : "border-border"
+                        )}
+                    />
 
-                {/*resize panel*/}
-                <ResizablePanel
-                    defaultSize={0}
-                    className="px-bg-diagonal"
-                />
-            </ResizablePanelGroup>
+                    {/* resize panel */}
+                    <ResizablePanel defaultSize={0} className="px-bg-diagonal"/>
+                </ResizablePanelGroup>
+            ) : (
+                <div
+                    ref={panelRef}
+                    className="relative h-full px-bg-pattern-transparent px-border [&>*]:min-h-full"
+                    style={{height: `${height}px`}}
+                >
+                    {children}
+                </div>
+            )}
 
-            {/*border*/}
+            {/* border */}
             <div className="z-20 absolute inset-0 px-border pointer-events-none"/>
         </div>
     );
