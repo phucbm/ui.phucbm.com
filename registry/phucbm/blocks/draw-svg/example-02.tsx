@@ -2,6 +2,13 @@
 import {DrawSVG} from "@/registry/phucbm/blocks/draw-svg/draw-svg";
 import {useRef, useState} from "react";
 
+type SavedSvg = {
+    id: string;
+    name: string;
+    size: number;
+    content: string;
+};
+
 export default function DrawSVG_UploadSVG() {
     const [svgContent, setSvgContent] = useState<string>("");
     const [isDragging, setIsDragging] = useState(false);
@@ -17,6 +24,19 @@ export default function DrawSVG_UploadSVG() {
     const [loop, setLoop] = useState<boolean>(true);
     const [atOnce, setAtOnce] = useState<boolean>(false);
 
+    // saved svgs list (max 6)
+    const [savedSvgs, setSavedSvgs] = useState<SavedSvg[]>([]);
+
+    const addSavedSvg = (content: string, name = "unnamed.svg", size = 0) => {
+        const id = `${Date.now()}-${Math.random().toString(36).slice(2,6)}`;
+        setSavedSvgs(prev => {
+            const next = [...prev, {id, name, size, content}];
+            // FIFO max 6
+            if (next.length > 6) next.shift();
+            return next;
+        });
+    };
+
     const handleFile = (file: File) => {
         if (file) {
             const reader = new FileReader();
@@ -25,6 +45,8 @@ export default function DrawSVG_UploadSVG() {
                 setSvgContent(content);
                 setFileName(file.name);
                 setFileSize(file.size);
+                // store to saved list
+                addSavedSvg(content, file.name, file.size);
             };
             reader.readAsText(file);
         }
@@ -64,14 +86,14 @@ export default function DrawSVG_UploadSVG() {
 
     const handlePasteApply = () => {
         if (pasteValue.trim()) {
-            setSvgContent(pasteValue.trim());
-            // Update file info based on whether we're editing existing or pasting new
-            if (!svgContent) {
-                setFileName("pasted.svg");
-            } else {
-                setFileName(fileName || "edited.svg");
-            }
-            setFileSize(new Blob([pasteValue.trim()]).size);
+            const trimmed = pasteValue.trim();
+            setSvgContent(trimmed);
+            // if there's an existing fileName keep it; otherwise assign pasted.svg
+            const newName = fileName || "pasted.svg";
+            setFileName(newName);
+            setFileSize(new Blob([trimmed]).size);
+            // store as new saved entry
+            addSavedSvg(trimmed, newName, new Blob([trimmed]).size);
             setIsPasteDialogOpen(false);
             setPasteValue("");
         }
@@ -87,6 +109,25 @@ export default function DrawSVG_UploadSVG() {
         if (bytes < 1024) return `${bytes} B`;
         if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
         return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    };
+
+    const activateSaved = (id: string) => {
+        const item = savedSvgs.find(s => s.id === id);
+        if (!item) return;
+        setSvgContent(item.content);
+        setFileName(item.name);
+        setFileSize(item.size);
+    };
+
+    const removeSaved = (id: string) => {
+        setSavedSvgs(prev => prev.filter(s => s.id !== id));
+        // if removing the active one, clear active view (or keep - here we clear)
+        const current = savedSvgs.find(s => s.id === id);
+        if (current && svgContent === current.content) {
+            setSvgContent("");
+            setFileName("");
+            setFileSize(0);
+        }
     };
 
     return (
@@ -301,6 +342,44 @@ export default function DrawSVG_UploadSVG() {
                                 </button>
                             </div>
                         </div>
+                    </div>
+
+                    {/* Saved SVGs grid */}
+                    <div className="mt-2 pt-2 border-t border-gray-100">
+                        <div className="text-[10px] text-gray-600 mb-1">Saved</div>
+                        {savedSvgs.length === 0 ? (
+                            <div className="text-[10px] text-gray-400">No saved SVGs</div>
+                        ) : (
+                            <div className="grid grid-cols-3 gap-2">
+                                {savedSvgs.map(item => (
+                                    <div key={item.id} className="relative group">
+                                        <button
+                                            onClick={() => activateSaved(item.id)}
+                                            title={item.name}
+                                            className="w-full h-10 cursor-pointer rounded border border-gray-200 overflow-hidden flex items-center justify-center bg-white"
+                                        >
+                                            <div
+                                                className="w-full h-full flex items-center justify-center p-1"
+                                                // small thumbnail - allow inner svg to scale
+                                                dangerouslySetInnerHTML={{__html: item.content}}
+                                            />
+                                        </button>
+
+                                        {/* remove button */}
+                                        <button
+                                            onClick={() => removeSaved(item.id)}
+                                            className="
+                                            opacity-0 group-hover:opacity-100 cursor-pointer
+                                            absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center text-xs shadow-md hover:bg-red-600 transition-colors"
+                                            title="Remove"
+                                            aria-label={`Remove ${item.name}`}
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
