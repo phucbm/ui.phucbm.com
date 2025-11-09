@@ -4,7 +4,7 @@ export default function Example() {
     return (
         <div className="min-h-screen bg-red-50 flex flex-col items-center justify-center
         gap-10 px-10 py-10 xl:gap-40 xl:py-40
-        xl:[&_svg]:w-40 [&_svg]:w-20 [&_svg]:text-blue-500
+        xl:[&_svg]:w-40 [&_svg]:w-32 xl:[&_svg]:h-40 [&_svg]:h-32 [&_svg]:text-blue-500
         ">
 
             <div className="grid grid-cols-2 gap-10 xl:gap-40">
@@ -37,7 +37,7 @@ export default function Example() {
                         <path d="M10 21v-2"/>
                     </svg>
                 </DrawSVG>
-                <DrawSVG duration={3}>
+                <DrawSVG duration={2} atOnce={true}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                          className="icon icon-tabler icons-tabler-outline icon-tabler-aperture">
@@ -50,7 +50,7 @@ export default function Example() {
                     </svg>
                 </DrawSVG>
 
-                <DrawSVG duration={2}>
+                <DrawSVG duration={2} atOnce={true}>
                     <svg xmlns="http://www.w3.org/2000/svg"
                          viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

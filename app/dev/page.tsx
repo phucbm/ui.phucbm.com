@@ -1,9 +1,9 @@
-import Example from "@/registry/phucbm/blocks/draw-svg/example";
+import DrawSVG_UploadSVG from "@/registry/phucbm/blocks/draw-svg/example-02";
 
 export default function Page() {
     return (
        <>
-           <Example/>
+           <DrawSVG_UploadSVG/>
        </>
     );
 }
