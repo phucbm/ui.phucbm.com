@@ -5,6 +5,7 @@ const pages = {
     'Image': ['infinite-grid', 'infinite-image-carousel'],
     'Mouse Interaction': ['magnetic'],
     'Border': ['moving-border'],
+    'SVG': ['draw-svg'],
 };
 const COMPONENTS: MetaRecord = getPagesList(pages, {sortCategories: true, sortPages: true});
 

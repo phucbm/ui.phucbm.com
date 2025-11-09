@@ -1,9 +1,9 @@
-import InfiniteImageCarousel_ScrollExample from "@/registry/phucbm/blocks/infinite-image-carousel/example-02";
+import Example from "@/registry/phucbm/blocks/draw-svg/example";
 
 export default function Page() {
     return (
        <>
-           <InfiniteImageCarousel_ScrollExample/>
+           <Example/>
        </>
     );
 }
