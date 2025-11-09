@@ -3,7 +3,7 @@
   "name": "draw-svg",
   "type": "registry:component",
   "title": "Draw SVG",
-  "description": "A GSAP-powered component that animates SVG path drawing with ScrollTrigger support, customizable timing, and loop options.",
+  "description": "Animate SVG path drawing with GSAP's DrawSVGPlugin support.",
   "dependencies": [
     "react",
     "gsap",
