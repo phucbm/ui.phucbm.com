@@ -4,6 +4,7 @@ import {RegistryDemo} from "@/components/registry-demo"
 import {RegistryPropsTable} from "@/components/registry-props-table";
 import {RegistryExample} from "@/components/registry-example";
 import {OpenInV0Button} from "@/components/OpenInV0Button";
+import {Callout} from "nextra/components";
 
 // Get the default MDX components
 const themeComponents = getThemeComponents()
@@ -13,6 +14,7 @@ export function useMDXComponents(components: any) {
     return {
         ...themeComponents,
         ...components,
+        Callout: Callout,
         RegistryInstall: RegistryInstall,
         RegistryDemo: RegistryDemo,
         RegistryPropsTable: RegistryPropsTable,

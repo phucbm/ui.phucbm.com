@@ -17,6 +17,8 @@ export default function DrawSVG_UploadSVG() {
     const [fileName, setFileName] = useState<string>("");
     const [fileSize, setFileSize] = useState<number>(0);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isCodeDialogOpen, setIsCodeDialogOpen] = useState(false);
+    const [copied, setCopied] = useState(false);
 
     // DrawSVG props
     const [duration, setDuration] = useState<number>(1.5);
@@ -99,12 +101,6 @@ export default function DrawSVG_UploadSVG() {
         }
     };
 
-    const handleClear = () => {
-        setSvgContent("");
-        setFileName("");
-        setFileSize(0);
-    };
-
     const formatFileSize = (bytes: number): string => {
         if (bytes < 1024) return `${bytes} B`;
         if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -127,6 +123,38 @@ export default function DrawSVG_UploadSVG() {
             setSvgContent("");
             setFileName("");
             setFileSize(0);
+        }
+    };
+
+    const generateCode = () => {
+        if (!svgContent) return "";
+
+        // Build props string
+        const props = [];
+        if (duration !== 1.5) props.push(`duration={${duration}}`);
+        if (reverse) props.push('reverse');
+        if (loop) props.push('loop');
+        if (atOnce) props.push('atOnce');
+
+        const propsString = props.length > 0 ? ' ' + props.join(' ') : '';
+
+        // Format SVG content with proper indentation
+        const indentedSvg = svgContent
+            .split('\n')
+            .map(line => line.trim() ? `    ${line}` : line)
+            .join('\n');
+
+        return `<DrawSVG${propsString}>\n${indentedSvg}\n</DrawSVG>`;
+    };
+
+    const handleCopyCode = async () => {
+        const code = generateCode();
+        try {
+            await navigator.clipboard.writeText(code);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+            console.error('Failed to copy:', err);
         }
     };
 
@@ -210,15 +238,15 @@ export default function DrawSVG_UploadSVG() {
                             </button>
                             {svgContent && (
                                 <button
-                                    onClick={handleClear}
-                                    className="w-7 h-7 bg-red-500 text-white rounded hover:bg-red-600 transition-colors flex items-center justify-center flex-shrink-0"
-                                    aria-label="Clear SVG"
-                                    title="Clear SVG"
+                                    onClick={() => setIsCodeDialogOpen(true)}
+                                    className="flex-1 px-2 py-1.5 bg-green-500 text-white rounded text-[10px] font-medium hover:bg-green-600 transition-colors flex items-center justify-center gap-1"
+                                    title="Copy code with current settings"
                                 >
-                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                                              d="M6 18L18 6M6 6l12 12"/>
+                                              d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
                                     </svg>
+                                    Copy Code
                                 </button>
                             )}
                         </div>
@@ -431,6 +459,70 @@ export default function DrawSVG_UploadSVG() {
                                 className="px-3 py-1.5 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
                             >
                                 {svgContent ? 'Update' : 'Apply'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {isCodeDialogOpen && (
+                <div
+                    className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+                    onClick={() => {
+                        setIsCodeDialogOpen(false);
+                        setCopied(false);
+                    }}
+                >
+                    <div
+                        className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[80vh] flex flex-col p-4"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex items-center justify-between mb-3">
+                            <h3 className="text-base font-semibold text-gray-900">
+                                Component Code
+                            </h3>
+                            <button
+                                onClick={() => {
+                                    setIsCodeDialogOpen(false);
+                                    setCopied(false);
+                                }}
+                                className="text-gray-400 hover:text-gray-600 transition-colors"
+                            >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                          d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div className="flex-1 overflow-auto mb-3">
+                            <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg text-sm font-mono overflow-x-auto">
+                                <code>{generateCode()}</code>
+                            </pre>
+                        </div>
+
+                        <div className="flex justify-end">
+                            <button
+                                onClick={handleCopyCode}
+                                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+                            >
+                                {copied ? (
+                                    <>
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                                  d="M5 13l4 4L19 7"/>
+                                        </svg>
+                                        Copied!
+                                    </>
+                                ) : (
+                                    <>
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                        </svg>
+                                        Copy Code
+                                    </>
+                                )}
                             </button>
                         </div>
                     </div>
