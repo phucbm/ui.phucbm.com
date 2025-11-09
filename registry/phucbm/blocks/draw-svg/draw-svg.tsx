@@ -45,11 +45,19 @@ export function DrawSVG({
             const root = scope.current;
             if (!root) return;
 
-            const paths = root.querySelectorAll<SVGPathElement>("svg path");
+            let paths = Array.from(root.querySelectorAll<SVGPathElement>("svg path"));
             if (paths.length === 0) return;
 
             // hide paths
             gsap.set(paths, {opacity: 0});
+
+            // filter hidden path
+            paths = paths.filter(path => {
+                const stroke = path.getAttribute("stroke");
+                const fill = path.getAttribute("fill");
+                return !(stroke === "none" && fill === "none");
+            });
+
 
             const defaultTimelineConfig: TimelineVars = {
                 scrollTrigger: {
