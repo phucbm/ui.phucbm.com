@@ -14,7 +14,12 @@ export type DrawSVGProps = {
     children: ReactNode;
     /** Additional CSS classes to apply to the wrapper div */
     className?: string;
-    /** GSAP Timeline configuration. Overrides defaults when provided. */
+    /** GSAP Timeline configuration. Overrides defaults when provided. @default
+     *   { scrollTrigger: {
+     *   start: "top 80%",
+     *   end: "top 50%",
+     *   toggleActions: "play none none reverse"
+     *  }}*/
     timelineConfig?: TimelineVars;
     /** Total duration of the animation in seconds. @default 1.5 */
     duration?: number;
