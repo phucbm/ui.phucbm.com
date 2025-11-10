@@ -5,23 +5,64 @@
   "items": [
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
-      "name": "image-carousel",
+      "name": "draw-svg",
       "type": "registry:component",
-      "title": "Image Carousel",
-      "description": "A GSAP-powered infinite image carousel with draggable interaction and hover slowdown effects.",
+      "title": "Draw SVG",
+      "description": "Animate SVG path drawing with GSAP's DrawSVGPlugin support.",
+      "dependencies": [
+        "react",
+        "gsap",
+        "@gsap/react"
+      ],
+      "files": [
+        {
+          "path": "registry/phucbm/blocks/draw-svg/draw-svg.tsx",
+          "type": "registry:component",
+          "target": "components/phucbm/draw-svg.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "draw-svg-example",
+      "type": "registry:component",
+      "title": "Draw SVG Example",
+      "description": "Animate SVG path drawing with GSAP's DrawSVGPlugin support.",
       "dependencies": [
         "react",
         "gsap",
         "@gsap/react"
       ],
       "registryDependencies": [
-        "https://ui.phucbm.com/r/demo-images.json"
+        "http://localhost:3000/r/draw-svg.json"
       ],
       "files": [
         {
-          "path": "registry/phucbm/blocks/image-carousel/image-carousel.tsx",
+          "path": "registry/phucbm/blocks/draw-svg/example.transformed.tsx",
           "type": "registry:component",
-          "target": "components/phucbm/image-carousel.tsx"
+          "target": "index.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "draw-svg-example-02",
+      "type": "registry:component",
+      "title": "Draw SVG Example 02",
+      "description": "Animate SVG path drawing with GSAP's DrawSVGPlugin support.",
+      "dependencies": [
+        "react",
+        "gsap",
+        "@gsap/react"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/draw-svg.json"
+      ],
+      "files": [
+        {
+          "path": "registry/phucbm/blocks/draw-svg/example-02.transformed.tsx",
+          "type": "registry:component",
+          "target": "index.tsx"
         }
       ]
     },
@@ -68,10 +109,87 @@
     },
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "infinite-image-carousel",
+      "type": "registry:component",
+      "title": "Image Carousel",
+      "description": "A GSAP-powered infinite image carousel with draggable interaction and hover slowdown effects.",
+      "dependencies": [
+        "react",
+        "gsap",
+        "@gsap/react",
+        "responsive-gsap",
+        "tailwind-merge",
+        "clsx"
+      ],
+      "files": [
+        {
+          "path": "registry/phucbm/blocks/infinite-image-carousel/infinite-image-carousel.tsx",
+          "type": "registry:component",
+          "target": "components/phucbm/infinite-image-carousel.tsx"
+        },
+        {
+          "path": "registry/phucbm/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "lib/utils.ts"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "infinite-image-carousel-example",
+      "type": "registry:component",
+      "title": "Image Carousel Example",
+      "description": "A GSAP-powered infinite image carousel with draggable interaction and hover slowdown effects.",
+      "dependencies": [
+        "react",
+        "gsap",
+        "@gsap/react",
+        "responsive-gsap",
+        "tailwind-merge",
+        "clsx"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/infinite-image-carousel.json"
+      ],
+      "files": [
+        {
+          "path": "registry/phucbm/blocks/infinite-image-carousel/example.transformed.tsx",
+          "type": "registry:component",
+          "target": "index.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "infinite-image-carousel-example-02",
+      "type": "registry:component",
+      "title": "Image Carousel Example 02",
+      "description": "A GSAP-powered infinite image carousel with draggable interaction and hover slowdown effects.",
+      "dependencies": [
+        "react",
+        "gsap",
+        "@gsap/react",
+        "responsive-gsap",
+        "tailwind-merge",
+        "clsx"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/infinite-image-carousel.json"
+      ],
+      "files": [
+        {
+          "path": "registry/phucbm/blocks/infinite-image-carousel/example-02.transformed.tsx",
+          "type": "registry:component",
+          "target": "index.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
       "name": "magnetic",
       "type": "registry:component",
       "title": "Magnetic",
-      "description": "Create magnetic wrapper",
+      "description": "Add smooth magnetic attraction effects for HTML elements.",
       "dependencies": [
         "react",
         "@phucbm/magnetic-button"
@@ -89,7 +207,7 @@
       "name": "magnetic-example",
       "type": "registry:component",
       "title": "Magnetic Example",
-      "description": "Create magnetic wrapper",
+      "description": "Add smooth magnetic attraction effects for HTML elements.",
       "dependencies": [
         "react",
         "@phucbm/magnetic-button"
@@ -110,7 +228,7 @@
       "name": "magnetic-example-02",
       "type": "registry:component",
       "title": "Magnetic Example 02",
-      "description": "Create magnetic wrapper",
+      "description": "Add smooth magnetic attraction effects for HTML elements.",
       "dependencies": [
         "react",
         "@phucbm/magnetic-button"
@@ -121,6 +239,113 @@
       "files": [
         {
           "path": "registry/phucbm/blocks/magnetic/example-02.transformed.tsx",
+          "type": "registry:component",
+          "target": "index.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "moving-border",
+      "type": "registry:component",
+      "title": "Moving Border",
+      "description": "Animated gradient border that smoothly travels around any element, from rounded rectangles to perfect circles.",
+      "dependencies": [
+        "gsap",
+        "react",
+        "@gsap/react",
+        "tailwind-merge",
+        "clsx"
+      ],
+      "files": [
+        {
+          "path": "registry/phucbm/blocks/moving-border/moving-border.tsx",
+          "type": "registry:component",
+          "target": "components/phucbm/moving-border.tsx"
+        },
+        {
+          "path": "registry/phucbm/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "lib/utils.ts"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "moving-border-example",
+      "type": "registry:component",
+      "title": "Moving Border Example",
+      "description": "Animated gradient border that smoothly travels around any element, from rounded rectangles to perfect circles.",
+      "dependencies": [
+        "gsap",
+        "react",
+        "@gsap/react",
+        "tailwind-merge",
+        "clsx"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/moving-border.json"
+      ],
+      "files": [
+        {
+          "path": "registry/phucbm/blocks/moving-border/example.transformed.tsx",
+          "type": "registry:component",
+          "target": "index.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "moving-border-example-02",
+      "type": "registry:component",
+      "title": "Moving Border Example 02",
+      "description": "Animated gradient border that smoothly travels around any element, from rounded rectangles to perfect circles.",
+      "dependencies": [
+        "gsap",
+        "react",
+        "@gsap/react",
+        "tailwind-merge",
+        "clsx"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/moving-border.json"
+      ],
+      "files": [
+        {
+          "path": "registry/phucbm/blocks/moving-border/example-02.transformed.tsx",
+          "type": "registry:component",
+          "target": "index.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "shimmer-layer",
+      "type": "registry:component",
+      "title": "Shimmer Layer",
+      "description": "Pure CSS to add an animated shimmer effect that activates on hover.",
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/phucbm/blocks/shimmer-layer/shimmer-layer.tsx",
+          "type": "registry:component",
+          "target": "components/phucbm/shimmer-layer.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "shimmer-layer-example",
+      "type": "registry:component",
+      "title": "Shimmer Layer Example",
+      "description": "Pure CSS to add an animated shimmer effect that activates on hover.",
+      "dependencies": [],
+      "registryDependencies": [
+        "http://localhost:3000/r/shimmer-layer.json"
+      ],
+      "files": [
+        {
+          "path": "registry/phucbm/blocks/shimmer-layer/example.transformed.tsx",
           "type": "registry:component",
           "target": "index.tsx"
         }

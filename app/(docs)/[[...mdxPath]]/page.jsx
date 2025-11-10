@@ -10,7 +10,7 @@ export const generateStaticParams = generateStaticParamsFor('mdxPath')
 
 export const generateMetadata = generatePageMetadata(async(props) => {
     const params = await props.params;
-    if(!params.mdxPath) return;
+    if(!params.mdxPath) return {};
     const {metadata} = await importPage(params.mdxPath)
 
     let registry = {};
