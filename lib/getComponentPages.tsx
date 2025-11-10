@@ -4,6 +4,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
 import {getRegistryItem} from "@/lib/getRegistryItem";
+import {IconDeviceGamepad} from "@tabler/icons-react";
 
 interface PageFrontMatter {
     category?: string;
@@ -94,10 +95,14 @@ export async function getComponentPages(componentsDir: string): Promise<MetaReco
  */
 async function customPageTitle(pageName: string, frontMatter: PageFrontMatter): Promise<React.ReactElement> {
     const registry = await getRegistryItem(pageName);
+    const isPlayground = frontMatter['tags'] && Array.from(frontMatter['tags']).includes('playground');
 
     return (
-        <div className="flex flex-col gap-2">
+        <div className="flex justify-between gap-2 [aside_&]:pr-[40px] relative w-full">
             <div>{frontMatter.title || registry.title}</div>
+            <div className="hidden [aside_&]:flex absolute top-0 right-0 bottom-0 w-[40px] items-center justify-end">
+                {isPlayground && <IconDeviceGamepad className="w-5 text-brand"/>}
+            </div>
         </div>
     );
 }

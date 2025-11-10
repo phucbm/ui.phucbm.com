@@ -10,6 +10,8 @@
     --radius-lg:var(--radius);
     --radius-xl:calc(var(--radius) + 4px);
 
+    --color-brand:var(--brand);
+    --color-brand-foreground:var(--brand-foreground);
     --color-background:var(--background);
     --color-foreground:var(--foreground);
     --color-card:var(--card);
@@ -45,6 +47,9 @@
 
 :root {
     --radius:0.625rem;
+
+    --brand:#179cf9;
+    --brand-foreground:#fff;
 
     --background:#fff;
     --foreground:#252525;
