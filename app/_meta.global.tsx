@@ -3,7 +3,7 @@ import {MetaRecord} from "nextra";
 const pages = {
     'Text': ['text-ripple', 'text-flower'],
     'Image': ['infinite-grid', 'infinite-image-carousel'],
-    'Mouse Interaction': ['magnetic'],
+    'Mouse Interaction': ['magnetic', 'shining-layer'],
     'Border': ['moving-border'],
     'SVG': ['draw-svg'],
 };
