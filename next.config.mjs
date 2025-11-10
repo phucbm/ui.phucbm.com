@@ -15,16 +15,9 @@ const withNextra = nextra({
 });
 
 export default withNextra({
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-      },
-      {
-        protocol: "https",
-        hostname: "cdn.pixabay.com", // add any others you use
-      },
-    ],
-  },
+    turbopack: {
+        resolveAlias: {
+            'next-mdx-import-source-file': './mdx-components.tsx'
+        }
+    }
 });
