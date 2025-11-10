@@ -1,4 +1,4 @@
-import {ShiningLayer} from "@/registry/phucbm/blocks/shining-layer/shining-layer";
+import {ShimmerLayer} from "@/registry/phucbm/blocks/shimmer-layer/shimmer-layer";
 
 export default function Example() {
     return (
@@ -6,7 +6,7 @@ export default function Example() {
             {/*button*/}
             <a
                 href="#"
-                className="group/shining overflow-hidden relative
+                className="group/shimmer overflow-hidden relative
                 px-5 py-3 bg-blue-600 text-white rounded-lg text-sm
                 border-t-[2px] border-x-[2px] border-b-[4px] border-black/15
                 transition-all duration-300 ease-in-out
@@ -14,16 +14,17 @@ export default function Example() {
                 "
             >
                 HOVER ON ME
-                <ShiningLayer/>
+                <ShimmerLayer/>
             </a>
 
 
             {/*image*/}
-            <div className="w-56 aspect-square rounded-full group/shining relative overflow-hidden ring-1 ring-slate-300">
+            <div
+                className="w-56 aspect-square rounded-full group/shimmer relative overflow-hidden ring-1 ring-slate-300">
                 <img src={`https://picsum.photos/400/400?random=${Math.random()}`}
                      alt="Image demo"
                      className="object-cover w-full h-full"/>
-                <ShiningLayer skew={-20} duration={1000} width={15}/>
+                <ShimmerLayer skew={-20} duration={1000} width={15}/>
             </div>
 
         </div>

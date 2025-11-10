@@ -1,0 +1,30 @@
+# Shimmer Layer
+
+Pure CSS to add an animated shimmer effect that activates on hover.
+
+<RegistryDemo name="shimmer-layer"/>
+
+## Installation
+
+<RegistryInstall name="shimmer-layer"/>
+
+## Usage
+
+The component uses CSS animations and gradient backgrounds to create a shimmer effect. It must be used inside an element with the `group/shimmer` class and `overflow-hidden relative` positioning.
+
+```text
+group/shimmer overflow-hidden relative
+```
+
+```tsx
+<a href="#"
+   className="group/shimmer overflow-hidden relative inline-flex items-center justify-center"
+>
+  <span>Hover me</span>
+  <ShiningLayer />
+</a>
+```
+
+## Props
+
+<RegistryPropsTable name="shimmer-layer"/>

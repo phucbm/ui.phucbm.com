@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "shimmer-layer",
+  "type": "registry:component",
+  "title": "Shimmer Layer",
+  "description": "Pure CSS to add an animated shimmer effect that activates on hover.",
+  "dependencies": [],
+  "files": [
+    {
+      "path": "registry/phucbm/blocks/shimmer-layer/shimmer-layer.tsx",
+      "type": "registry:component",
+      "target": "components/phucbm/shimmer-layer.tsx"
+    }
+  ]
+}

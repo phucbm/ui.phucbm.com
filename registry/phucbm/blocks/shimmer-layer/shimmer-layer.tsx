@@ -1,4 +1,4 @@
-export interface ShiningLayerProps {
+export interface ShimmerLayerProps {
     /** Width of each shine stripe in pixels. @default 10 */
     width?: number;
     /** Skew angle of the shine effect in degrees. @default -12 */
@@ -9,12 +9,12 @@ export interface ShiningLayerProps {
     color?: string;
 }
 
-export function ShiningLayer({
+export function ShimmerLayer({
                                  width = 10,
                                  skew = -12,
                                  duration = 650,
                                  color = '#fff'
-                             }: ShiningLayerProps) {
+                             }: ShimmerLayerProps) {
     return (
         <>
             <style>{`
@@ -32,7 +32,7 @@ export function ShiningLayer({
             `}</style>
 
             <i className="absolute top-1/2 right-full h-[150%] z-20 pointer-events-none opacity-0 blur-lg
-            group-hover/shining:[animation:shine_600ms_ease-in-out]
+            group-hover/shimmer:[animation:shine_600ms_ease-in-out]
             "
                style={{
                    width: `${width * 4}px`,
