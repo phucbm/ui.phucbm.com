@@ -4,7 +4,7 @@ import React, {useRef, useState} from "react";
 import gsap from "gsap";
 import {Observer} from "gsap/Observer";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
-import {useResponsiveGSAP} from "responsive-gsap";
+import {useGSAPResponsive} from "responsive-gsap";
 import {cn} from "@/registry/phucbm/lib/utils";
 
 gsap.registerPlugin(Observer, ScrollTrigger);
@@ -77,10 +77,8 @@ export function InfiniteImageCarousel(props: ImageCarouselProps) {
     // GSAP quickTo function for optimized x-position updates with wrapping
     const animateToXPositionRef = useRef<((value: number) => void) | null>(null);
 
-    useResponsiveGSAP({
-        scope,
-        observeResize: '.slide-container',
-        setup: (root) => {
+    useGSAPResponsive(
+        (root) => {
             if (!root) return;
             const slideContainer = root.querySelector(".slide-container") as HTMLUListElement | null;
             if (!slideContainer) return;
@@ -153,7 +151,11 @@ export function InfiniteImageCarousel(props: ImageCarouselProps) {
                 }
             }
         },
-    })
+        {
+            scope,
+            observeResize: '.slide-container'
+        }
+    )
 
     return (
         <div ref={scope}>

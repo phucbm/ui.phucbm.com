@@ -108,8 +108,8 @@ importers:
         specifier: ^3.0.6
         version: 3.0.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       responsive-gsap:
-        specifier: ^0.0.1
-        version: 0.0.1
+        specifier: ^1.0.0
+        version: 1.0.0
       shadcn:
         specifier: ^3.0.0
         version: 3.4.0(@types/node@22.13.10)(typescript@5.9.3)
@@ -4556,8 +4556,8 @@ packages:
     resolution: {integrity: sha512-U7WjGVG9sH8tvjW5SmGbQuui75FiyjAX72HX15DwBBwF9dNiQZRQAg9nnPhYy+TUnE0+VcrttuvNI8oSxZcocA==}
     hasBin: true
 
-  responsive-gsap@0.0.1:
-    resolution: {integrity: sha512-eY3Ri/SIRsuJvGe9eH7W4LF99I1JXmrOqb6yI7ic5Bd1s8Sik0dY5lnDZDZriGnYAeLw24BlPw/gv8jX75UEiA==}
+  responsive-gsap@1.0.0:
+    resolution: {integrity: sha512-qN+4b7/xI+41PFDEps1IXKoXyAZAcU2rd6w6TOI+7XMzxKnC7AiSL/cR7Ms8RNmCq4AT4D7KLKwC4mKslzT9RQ==}
     engines: {node: '>=16'}
 
   restore-cursor@5.1.0:
@@ -10423,7 +10423,7 @@ snapshots:
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
-  responsive-gsap@0.0.1:
+  responsive-gsap@1.0.0:
     dependencies:
       '@gsap/react': 2.1.2(gsap@3.13.0)(react@19.2.0)
       gsap: 3.13.0
