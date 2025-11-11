@@ -6,6 +6,7 @@ import {addBasePath} from 'next/dist/client/add-base-path';
 import {SearchIcon} from "lucide-react";
 import {Command as CommandPrimitive} from "cmdk";
 import {cn} from "@/lib/utils";
+import Link from "next/link";
 
 type Props = {
     placeholder?: string;
@@ -142,7 +143,7 @@ export function MySearch({placeholder = "Search components..."}: Props) {
     if (!canRender) return null;
 
     const handleResultClick = (url: string) => {
-        window.location.href = url;
+        // window.location.href = url;
         setOpen(false);
     };
 
@@ -152,7 +153,7 @@ export function MySearch({placeholder = "Search components..."}: Props) {
         if (error) return <SearchError message={error}/>;
         if (loading) return <SearchLoading/>;
         if (!results || results.length === 0) return <SearchNoResults/>;
-        return <SearchResults results={results} onResultClick={handleResultClick}/>;
+        return <SearchResults results={results} query={query} onResultClick={handleResultClick}/>;
     }
     return (
         <>
@@ -253,27 +254,34 @@ function SearchWelcome() {
     );
 }
 
-function SearchResultItem({subResult, parentTitle, onSelect}: {
+function SearchResultItem({subResult, parentTitle, query, onSelect}: {
     subResult: PagefindResult['sub_results'][0];
     parentTitle: string;
+    query: string;
     onSelect: () => void
 }) {
+    const cleanExcerpt = subResult.excerpt.replace(/<[^>]*>/g, '').substring(0, 100);
+
     return (
         <CommandItem
             value={`${parentTitle} ${subResult.title}`}
             onSelect={onSelect}
         >
-            <div className="flex flex-col gap-1 w-full">
-                <div className="font-semibold">{subResult.title}</div>
+            <Link href={subResult.url} className="flex flex-col gap-1 w-full">
+                <div className="font-semibold">{highlightQuery(subResult.title, query)}</div>
                 <div className="text-xs text-gray-600">
-                    {subResult.excerpt.replace(/<[^>]*>/g, '').substring(0, 100)}...
+                    {highlightQuery(cleanExcerpt, query)}...
                 </div>
-            </div>
+            </Link>
         </CommandItem>
     );
 }
 
-function SearchResults({results, onResultClick}: { results: PagefindResult[]; onResultClick: (url: string) => void }) {
+function SearchResults({results, query, onResultClick}: {
+    results: PagefindResult[];
+    query: string;
+    onResultClick: (url: string) => void
+}) {
     return (
         <>
             {results.map((result) => (
@@ -286,11 +294,23 @@ function SearchResults({results, onResultClick}: { results: PagefindResult[]; on
                             key={subResult.url}
                             subResult={subResult}
                             parentTitle={result.meta.title}
+                            query={query}
                             onSelect={() => onResultClick(subResult.url)}
                         />
                     ))}
                 </CommandGroup>
             ))}
         </>
+    );
+}
+
+function highlightQuery(text: string, query: string) {
+    if (!query) return text;
+
+    const regex = new RegExp(`(${query})`, 'gi');
+    const parts = text.split(regex);
+
+    return parts.map((part, index) =>
+        regex.test(part) ? <mark key={index} className="bg-brand text-brand-foreground font-medium">{part}</mark> : part
     );
 }
