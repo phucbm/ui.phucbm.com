@@ -4,7 +4,7 @@ import 'app/globals.css'
 import {Metadata} from "next";
 import {IconBrandDiscord} from "@tabler/icons-react";
 import {MyFooter} from "@/components/footer";
-import {Search} from "nextra/components";
+import {MySearch} from "@/components/search";
 
 export const metadata: Metadata = {
     title: {
@@ -38,7 +38,7 @@ export default async function RootLayout({children}) {
                 </div>,
                 link: "https://discord.gg/HnWtpWQRTt"
             }}
-            search={<Search placeholder="Search components..."/>}
+            search={<MySearch/>}
         >
             <div className="p-docs-container">
                 {children}
