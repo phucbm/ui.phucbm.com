@@ -1,9 +1,10 @@
-import {Footer, Layout, Navbar} from 'nextra-theme-docs'
+import {Layout, Navbar} from 'nextra-theme-docs'
 import {getPageMap} from 'nextra/page-map'
-// import 'nextra-theme-docs/style.css'
 import 'app/globals.css'
 import {Metadata} from "next";
 import {IconBrandDiscord} from "@tabler/icons-react";
+import {MyFooter} from "@/components/footer";
+import {Search} from "nextra/components";
 
 export const metadata: Metadata = {
     title: {
@@ -22,7 +23,6 @@ const navbar = (
         // ... Your additional navbar options
     />
 )
-const footer = <Footer>MIT {new Date().getFullYear()} © ui/phucbm</Footer>
 
 export default async function RootLayout({children}) {
     return (
@@ -30,7 +30,7 @@ export default async function RootLayout({children}) {
             // banner={banner}
             navbar={navbar}
             pageMap={await getPageMap()}
-            footer={footer}
+            footer={<MyFooter/>}
             editLink={null}
             feedback={{
                 content: <div className="flex items-center gap-1">
@@ -38,6 +38,7 @@ export default async function RootLayout({children}) {
                 </div>,
                 link: "https://discord.gg/HnWtpWQRTt"
             }}
+            search={<Search placeholder="Search components..."/>}
         >
             <div className="p-docs-container">
                 {children}

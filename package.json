@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Nextra docs starter with search included.",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "postbuild": "pnpm build:pagefind && pnpm build:registry",

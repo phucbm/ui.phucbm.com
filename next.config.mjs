@@ -2,16 +2,17 @@
 import nextra from "nextra";
 
 const withNextra = nextra({
-  search: true,
-  defaultShowCopyCode: true,
-  mdxOptions: {
-    rehypePrettyCodeOptions: {
-      theme: {
-        light: "github-light-default",
-        dark: "github-dark-default",
-      },
+    search: true,
+    // placeholder: 'Search components...',
+    defaultShowCopyCode: true,
+    mdxOptions: {
+        rehypePrettyCodeOptions: {
+            theme: {
+                light: "github-light-default",
+                dark: "github-dark-default",
+            },
+        },
     },
-  },
 });
 
 export default withNextra({
