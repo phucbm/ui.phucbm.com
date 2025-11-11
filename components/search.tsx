@@ -134,8 +134,6 @@ export function MySearch({placeholder = "Search components..."}: Props) {
                 setError("Search failed.");
                 setLoading(false);
             }
-
-            // console.log('processedResults',results)
         };
 
         handleSearch(query);
@@ -148,6 +146,14 @@ export function MySearch({placeholder = "Search components..."}: Props) {
         setOpen(false);
     };
 
+
+    function SearchContent() {
+        if (!query) return <SearchWelcome/>;
+        if (error) return <SearchError message={error}/>;
+        if (loading) return <SearchLoading/>;
+        if (!results || results.length === 0) return <SearchNoResults/>;
+        return <SearchResults results={results} onResultClick={handleResultClick}/>;
+    }
     return (
         <>
             <SearchTrigger placeholder={placeholder} onClick={() => setOpen(true)}/>
@@ -162,14 +168,8 @@ export function MySearch({placeholder = "Search components..."}: Props) {
                     onQueryChange={setQuery}
                 />
 
-                <CommandList className="h-96 flex items-center justify-center [&>*]:w-full">
-                    {error && <SearchError message={error}/>}
-                    {loading && !error && <SearchLoading/>}
-                    {!loading && !error && query && (!results.length || results.length === 0) && <SearchEmpty/>}
-                    {!loading && !error && results.length > 0 && (
-                        <SearchResults results={results} onResultClick={handleResultClick}/>
-                    )}
-                    {!loading && !error && <SearchEmptyState/>}
+                <CommandList className="h-96">
+                    <SearchContent/>
                 </CommandList>
 
             </CommandDialog>
@@ -241,11 +241,11 @@ function SearchError({message}: { message: string }) {
     );
 }
 
-function SearchEmpty() {
+function SearchNoResults() {
     return <CommandEmpty>No results found.</CommandEmpty>;
 }
 
-function SearchEmptyState() {
+function SearchWelcome() {
     return (
         <div className="py-6 px-4 text-center text-sm text-gray-500">
             Featured pages will appear here
