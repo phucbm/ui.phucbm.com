@@ -1,15 +1,11 @@
 'use client'
 
 import * as React from "react";
-import {
-    CommandDialog,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command";
+import {CommandDialog, CommandEmpty, CommandGroup, CommandItem, CommandList,} from "@/components/ui/command";
 import {addBasePath} from 'next/dist/client/add-base-path';
+import {SearchIcon} from "lucide-react";
+import {Command as CommandPrimitive} from "cmdk";
+import {cn} from "@/lib/utils";
 
 type Props = {
     placeholder?: string;
@@ -53,7 +49,7 @@ type PagefindResult = {
 };
 const activeSearchInstances = new Set<string>();
 
-export function MySearch({placeholder = "Search..."}: Props) {
+export function MySearch({placeholder = "Search components..."}: Props) {
     const [open, setOpen] = React.useState(false);
     const [query, setQuery] = React.useState("");
     const [results, setResults] = React.useState<PagefindResult[]>([]);
@@ -138,6 +134,8 @@ export function MySearch({placeholder = "Search..."}: Props) {
                 setError("Search failed.");
                 setLoading(false);
             }
+
+            // console.log('processedResults',results)
         };
 
         handleSearch(query);
@@ -154,24 +152,57 @@ export function MySearch({placeholder = "Search..."}: Props) {
         <>
             <SearchTrigger placeholder={placeholder} onClick={() => setOpen(true)}/>
 
-            <CommandDialog open={open} onOpenChange={setOpen}>
-                <CommandInput
+            <CommandDialog open={open} onOpenChange={setOpen}
+                           showCloseButton={false}
+                           className="search-dialog border-4 border-slate-200 rounded-2xl overflow-hidden !max-w-[800px] bg-white">
+
+                <SearchInput
                     placeholder={placeholder}
-                    value={query}
-                    onValueChange={setQuery}
+                    query={query}
+                    onQueryChange={setQuery}
                 />
-                <CommandList className="max-h-96">
+
+                <CommandList className="h-96 flex items-center justify-center [&>*]:w-full">
                     {error && <SearchError message={error}/>}
                     {loading && !error && <SearchLoading/>}
-                    {!loading && !error && query && results.length === 0 && <SearchEmpty/>}
+                    {!loading && !error && query && (!results.length || results.length === 0) && <SearchEmpty/>}
                     {!loading && !error && results.length > 0 && (
                         <SearchResults results={results} onResultClick={handleResultClick}/>
                     )}
-                    {!loading && !error && !query && <SearchEmptyState/>}
+                    {!loading && !error && <SearchEmptyState/>}
                 </CommandList>
+
             </CommandDialog>
         </>
     );
+}
+
+
+function SearchInput({
+                         placeholder,
+                         query,
+                         onQueryChange,
+                     }: {
+    placeholder: string;
+    query: string;
+    onQueryChange: (value: string) => void;
+}) {
+    return (
+        <div className="p-2">
+            <div className="bg-input h-10 w-full flex items-center gap-2 rounded-lg px-3">
+                <SearchIcon className="size-4 shrink-0 opacity-50"/>
+                <CommandPrimitive.Input
+                    data-slot="command-input"
+                    className={cn(
+                        "placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50",
+                    )}
+                    placeholder={placeholder}
+                    value={query}
+                    onValueChange={onQueryChange}
+                />
+            </div>
+        </div>
+    )
 }
 
 
@@ -179,22 +210,11 @@ function SearchTrigger({placeholder, onClick}: { placeholder: string; onClick: (
     return (
         <button
             onClick={onClick}
-            className="inline-flex items-center gap-2 px-3 py-2 text-sm text-gray-500 border border-gray-200 rounded-md hover:border-gray-300 hover:bg-gray-50 transition-colors"
+            className="inline-flex items-center gap-2 px-3 py-2 text-sm
+            bg-input text-foreground cursor-pointer
+            border border-gray-200 rounded-md hover:border-gray-300 hover:bg-gray-50 transition-colors"
         >
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            >
-                <circle cx="11" cy="11" r="8"/>
-                <path d="m21 21-4.3-4.3"/>
-            </svg>
+            <SearchIcon className="size-4"/>
             <span>{placeholder}</span>
             <kbd
                 className="hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border border-gray-200 bg-gray-100 px-1.5 font-mono text-xs text-gray-600">
