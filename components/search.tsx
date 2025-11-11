@@ -51,6 +51,7 @@ type PagefindResult = {
     }[];
     url: string;
 };
+const activeSearchInstances = new Set<string>();
 
 export function MySearch({placeholder = "Search..."}: Props) {
     const [open, setOpen] = React.useState(false);
@@ -58,6 +59,20 @@ export function MySearch({placeholder = "Search..."}: Props) {
     const [results, setResults] = React.useState<PagefindResult[]>([]);
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState("");
+    const instanceId = React.useRef(Math.random().toString()).current;
+    const [canRender, setCanRender] = React.useState(false);
+
+    React.useEffect(() => {
+        if (activeSearchInstances.size > 0) {
+            return; // Another instance exists, don't render
+        }
+        activeSearchInstances.add(instanceId);
+        setCanRender(true);
+
+        return () => {
+            activeSearchInstances.delete(instanceId);
+        };
+    }, [instanceId]);
 
     React.useEffect(() => {
         const down = (e: KeyboardEvent) => {
@@ -127,6 +142,8 @@ export function MySearch({placeholder = "Search..."}: Props) {
 
         handleSearch(query);
     }, [query]);
+
+    if (!canRender) return null;
 
     const handleResultClick = (url: string) => {
         window.location.href = url;
