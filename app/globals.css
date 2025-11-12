@@ -206,6 +206,9 @@
     @apply bg-transparent;
 }
 
+.nextra-navbar {
+    z-index:9999;
+}
 article {
     @apply relative max-w-[1100px] mx-auto;
 }

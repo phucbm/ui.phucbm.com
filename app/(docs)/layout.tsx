@@ -42,7 +42,7 @@ export default async function RootLayout({children}) {
             }}
             search={<MySearch components={components}/>}
         >
-            <div className="p-docs-container">
+            <div className="p-docs-container relative z-[1]">
                 {children}
             </div>
         </Layout>
