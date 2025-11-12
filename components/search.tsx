@@ -273,21 +273,23 @@ function SearchResultItem({subResult, parentTitle, query, onSelect}: {
 
     return (
         <SearchItem url={subResult.url}
-                    title={`${highlightQuery(subResult.title, query)}`}
-                    description={`${highlightQuery(cleanExcerpt, query)}...`}
+                    title={highlightQuery(subResult.title, query)}
+                    description={<>{highlightQuery(cleanExcerpt, query)}...</>}
                     onSelect={onSelect}
+                    value={`${parentTitle} ${subResult.title}`}
         />
     );
 }
 
-function SearchItem({url, title, description, onSelect}: {
+function SearchItem({url, title, description, onSelect, value}: {
     url: string;
-    title: string;
-    description: string;
-    onSelect?: () => void
+    title: any | string;
+    description: any | string;
+    onSelect?: () => void;
+    value?: string;
 }) {
     return (
-        <CommandItem onSelect={onSelect}>
+        <CommandItem onSelect={onSelect} value={value}>
             <Link href={url} className="flex flex-col gap-1 w-full">
                 <div className="font-semibold">{title}</div>
                 <div className="text-xs text-gray-600">
