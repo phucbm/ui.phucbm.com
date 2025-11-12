@@ -5,6 +5,7 @@ import {Metadata} from "next";
 import {IconBrandDiscord} from "@tabler/icons-react";
 import {MyFooter} from "@/components/footer";
 import {MySearch} from "@/components/search";
+import {getComponents} from "@/lib/getComponents";
 
 export const metadata: Metadata = {
     title: {
@@ -25,6 +26,7 @@ const navbar = (
 )
 
 export default async function RootLayout({children}) {
+    const components = await getComponents();
     return (
         <Layout
             // banner={banner}
@@ -38,7 +40,7 @@ export default async function RootLayout({children}) {
                 </div>,
                 link: "https://discord.gg/HnWtpWQRTt"
             }}
-            search={<MySearch/>}
+            search={<MySearch components={components}/>}
         >
             <div className="p-docs-container">
                 {children}

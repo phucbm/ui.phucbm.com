@@ -7,9 +7,11 @@ import {SearchIcon} from "lucide-react";
 import {Command as CommandPrimitive} from "cmdk";
 import {cn} from "@/lib/utils";
 import Link from "next/link";
+import {Component} from "@/lib/getComponents";
 
 type Props = {
     placeholder?: string;
+    components: Component[]
 };
 
 declare global {
@@ -50,7 +52,7 @@ type PagefindResult = {
 };
 const activeSearchInstances = new Set<string>();
 
-export function MySearch({placeholder = "Search components..."}: Props) {
+export function MySearch({placeholder = "Search components...", components}: Props) {
     const [open, setOpen] = React.useState(false);
     const [query, setQuery] = React.useState("");
     const [results, setResults] = React.useState<PagefindResult[]>([]);
@@ -149,7 +151,7 @@ export function MySearch({placeholder = "Search components..."}: Props) {
 
 
     function SearchContent() {
-        if (!query) return <SearchWelcome/>;
+        if (!query) return <SearchWelcome components={components}/>;
         if (error) return <SearchError message={error}/>;
         if (loading) return <SearchLoading/>;
         if (!results || results.length === 0) return <SearchNoResults/>;
@@ -246,11 +248,18 @@ function SearchNoResults() {
     return <CommandEmpty>No results found.</CommandEmpty>;
 }
 
-function SearchWelcome() {
+function SearchWelcome({components}: { components: Component[] }) {
     return (
-        <div className="py-6 px-4 text-center text-sm text-gray-500">
-            Featured pages will appear here
-        </div>
+        <CommandGroup heading={`Components`}>
+            {components.map(component => (
+                <SearchItem
+                    key={component.name}
+                    url={component.url}
+                    title={component.title}
+                    description={component.description}
+                />
+            ))}
+        </CommandGroup>
     );
 }
 
@@ -263,18 +272,30 @@ function SearchResultItem({subResult, parentTitle, query, onSelect}: {
     const cleanExcerpt = subResult.excerpt.replace(/<[^>]*>/g, '').substring(0, 100);
 
     return (
-        <CommandItem
-            value={`${parentTitle} ${subResult.title}`}
-            onSelect={onSelect}
-        >
-            <Link href={subResult.url} className="flex flex-col gap-1 w-full">
-                <div className="font-semibold">{highlightQuery(subResult.title, query)}</div>
+        <SearchItem url={subResult.url}
+                    title={`${highlightQuery(subResult.title, query)}`}
+                    description={`${highlightQuery(cleanExcerpt, query)}...`}
+                    onSelect={onSelect}
+        />
+    );
+}
+
+function SearchItem({url, title, description, onSelect}: {
+    url: string;
+    title: string;
+    description: string;
+    onSelect?: () => void
+}) {
+    return (
+        <CommandItem onSelect={onSelect}>
+            <Link href={url} className="flex flex-col gap-1 w-full">
+                <div className="font-semibold">{title}</div>
                 <div className="text-xs text-gray-600">
-                    {highlightQuery(cleanExcerpt, query)}...
+                    {description}
                 </div>
             </Link>
         </CommandItem>
-    );
+    )
 }
 
 function SearchResults({results, query, onResultClick}: {
