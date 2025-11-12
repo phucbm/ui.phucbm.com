@@ -22,6 +22,7 @@ export interface PageFrontMatter {
 export interface MdxData {
     name: string;
     filePath: string;
+    dir: string;
     content: string;
     frontMatter: PageFrontMatter;
     /** last updated time */
@@ -113,6 +114,7 @@ export async function getMdxData(fileDir: string): Promise<MdxData | null> {
         return {
             name: file.name,
             filePath: file.filePath,
+            dir: file.dir,
             content,
             frontMatter: data as PageFrontMatter,
             timestamp: time,

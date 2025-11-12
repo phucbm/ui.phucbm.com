@@ -6,9 +6,10 @@ export interface Component {
     title: string;
     name: string;
     description: string;
+    isNew: boolean;
+    url: string;
     mdx: MdxData;
     registry: RegistryItem | null;
-    isNew: boolean;
 }
 
 export async function getComponents(componentsDir: string = "content/components"): Promise<Component[]> {
@@ -33,10 +34,11 @@ export async function getComponents(componentsDir: string = "content/components"
             return {
                 title,
                 name: file.name,
+                isNew,
+                url: mdxData.dir.replace('content', ''),
                 description,
                 mdx: mdxData,
                 registry: registry ?? null,
-                isNew
             } as Component;
         })
     );
