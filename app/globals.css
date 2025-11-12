@@ -202,6 +202,9 @@
 .nextra-code pre {
     @apply border border-dashed border-border rounded-md ring-0;
 }
+.nextra-sidebar .x\:not-first\:mt-5 {
+    @apply !mt-2 !mb-[0];
+}
 .nextra-sidebar-footer {
     @apply bg-transparent;
 }
