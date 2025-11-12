@@ -2,7 +2,7 @@ import {MetaRecord} from "nextra";
 import * as React from "react";
 import {getRegistryItem} from "@/lib/getRegistryItem";
 import {IconDeviceGamepad} from "@tabler/icons-react";
-import {getComponentMdxFiles} from "@/lib/getComponentMdxFiles";
+import {getComponents} from "@/lib/getComponents";
 
 interface PageFrontMatter {
     category?: string;
@@ -28,22 +28,22 @@ export async function getComponentPages(componentsDir: string = 'content/compone
     const result: MetaRecord = {};
 
     // Get raw MDX data
-    const mdxData = await getComponentMdxFiles(componentsDir);
+    const components = await getComponents(componentsDir);
 
     // Group pages by category
     const grouped: GroupedPages = {};
 
-    for (const {name: pageName, frontMatter} of mdxData) {
-        const category = frontMatter.category || 'Other';
+    for (const {mdx, name} of components) {
+        const category = mdx.frontMatter.category || 'Other';
 
         if (!grouped[category]) {
             grouped[category] = [];
         }
 
         grouped[category].push({
-            name: pageName,
-            frontMatter,
-            order: frontMatter.order ?? 999
+            name: name,
+            frontMatter: mdx.frontMatter,
+            order: mdx.frontMatter.order ?? 999
         });
     }
 
