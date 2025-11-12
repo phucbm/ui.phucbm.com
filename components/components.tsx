@@ -13,9 +13,11 @@ export async function Components(props: Props): Promise<React.ReactElement> {
     ).sort();
 
     return (
-        <ComponentsClient
-            components={components}
-            availableTags={allTags}
-        />
+        <div className="mt-8">
+            <ComponentsClient
+                components={components}
+                availableTags={allTags}
+            />
+        </div>
     );
 }
