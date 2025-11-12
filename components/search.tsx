@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from "react";
+import {useEffect, useRef, useState} from "react";
 import {CommandDialog, CommandEmpty, CommandGroup, CommandItem, CommandList,} from "@/components/ui/command";
 import {addBasePath} from 'next/dist/client/add-base-path';
 import {SearchIcon} from "lucide-react";
@@ -8,60 +9,24 @@ import {Command as CommandPrimitive} from "cmdk";
 import {cn} from "@/lib/utils";
 import Link from "next/link";
 import {Component} from "@/lib/getComponents";
+import {useRouter} from "next/navigation";
 
 type Props = {
     placeholder?: string;
     components: Component[]
 };
 
-declare global {
-    interface Window {
-        pagefind?: {
-            debouncedSearch: <T>(query: string, options?: any) => Promise<{
-                results: Array<{
-                    data: () => Promise<T>;
-                }>;
-            } | null>;
-            options: (options: { baseUrl: string }) => Promise<void>;
-        };
-    }
-}
-
-async function importPagefind() {
-    if (window.pagefind) return;
-    window.pagefind = await import(
-        /* webpackIgnore: true */ addBasePath('/_pagefind/pagefind.js')
-        );
-    await window.pagefind.options({
-        baseUrl: '/'
-    });
-}
-
-type PagefindResult = {
-    excerpt: string;
-    meta: {
-        title: string;
-    };
-    raw_url: string;
-    sub_results: {
-        excerpt: string;
-        title: string;
-        url: string;
-    }[];
-    url: string;
-};
-const activeSearchInstances = new Set<string>();
-
 export function MySearch({placeholder = "Search components...", components}: Props) {
-    const [open, setOpen] = React.useState(false);
-    const [query, setQuery] = React.useState("");
-    const [results, setResults] = React.useState<PagefindResult[]>([]);
-    const [loading, setLoading] = React.useState(false);
-    const [error, setError] = React.useState("");
-    const instanceId = React.useRef(Math.random().toString()).current;
-    const [canRender, setCanRender] = React.useState(false);
+    const router = useRouter();
+    const [open, setOpen] = useState(false);
+    const [query, setQuery] = useState("");
+    const [results, setResults] = useState<PagefindResult[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    const instanceId = useRef(Math.random().toString()).current;
+    const [canRender, setCanRender] = useState(false);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (activeSearchInstances.size > 0) {
             return; // Another instance exists, don't render
         }
@@ -73,7 +38,7 @@ export function MySearch({placeholder = "Search components...", components}: Pro
         };
     }, [instanceId]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const down = (e: KeyboardEvent) => {
             if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
                 e.preventDefault();
@@ -88,7 +53,7 @@ export function MySearch({placeholder = "Search components...", components}: Pro
         return () => document.removeEventListener("keydown", down);
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (!open) {
             setQuery("");
             setResults([]);
@@ -96,7 +61,7 @@ export function MySearch({placeholder = "Search components...", components}: Pro
         }
     }, [open]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const handleSearch = async (value: string) => {
             if (!value) {
                 setResults([]);
@@ -145,13 +110,13 @@ export function MySearch({placeholder = "Search components...", components}: Pro
     if (!canRender) return null;
 
     const handleResultClick = (url: string) => {
-        // window.location.href = url;
+        router.push(url);
         setOpen(false);
     };
 
 
     function SearchContent() {
-        if (!query) return <SearchWelcome components={components}/>;
+        if (!query) return <SearchWelcome components={components} onSelect={handleResultClick}/>;
         if (error) return <SearchError message={error}/>;
         if (loading) return <SearchLoading/>;
         if (!results || results.length === 0) return <SearchNoResults/>;
@@ -248,7 +213,7 @@ function SearchNoResults() {
     return <CommandEmpty>No results found.</CommandEmpty>;
 }
 
-function SearchWelcome({components}: { components: Component[] }) {
+function SearchWelcome({components, onSelect}: { components: Component[], onSelect: (url: string) => void }) {
     return (
         <CommandGroup heading={`Components`}>
             {components.map(component => (
@@ -257,6 +222,7 @@ function SearchWelcome({components}: { components: Component[] }) {
                     url={component.url}
                     title={component.title}
                     description={component.description}
+                    onSelect={() => onSelect(component.url)}
                 />
             ))}
         </CommandGroup>
@@ -337,3 +303,42 @@ function highlightQuery(text: string, query: string) {
         regex.test(part) ? <mark key={index} className="bg-brand text-brand-foreground font-medium">{part}</mark> : part
     );
 }
+
+
+declare global {
+    interface Window {
+        pagefind?: {
+            debouncedSearch: <T>(query: string, options?: any) => Promise<{
+                results: Array<{
+                    data: () => Promise<T>;
+                }>;
+            } | null>;
+            options: (options: { baseUrl: string }) => Promise<void>;
+        };
+    }
+}
+
+async function importPagefind() {
+    if (window.pagefind) return;
+    window.pagefind = await import(
+        /* webpackIgnore: true */ addBasePath('/_pagefind/pagefind.js')
+        );
+    await window.pagefind.options({
+        baseUrl: '/'
+    });
+}
+
+type PagefindResult = {
+    excerpt: string;
+    meta: {
+        title: string;
+    };
+    raw_url: string;
+    sub_results: {
+        excerpt: string;
+        title: string;
+        url: string;
+    }[];
+    url: string;
+};
+const activeSearchInstances = new Set<string>();
