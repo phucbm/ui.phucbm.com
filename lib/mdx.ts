@@ -1,6 +1,8 @@
 import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
+import {getLastCommitTime} from "@/lib/getLastCommitTime";
+import {formatDate} from "@/lib/formatDate";
 
 export interface MdxFile {
     name: string;
@@ -20,6 +22,8 @@ export interface MdxData {
     filePath: string;
     content: string;
     frontMatter: PageFrontMatter;
+    timestamp: number;
+    lastUpdatedTime: string;
 }
 
 /**
@@ -93,11 +97,17 @@ export async function getMdxData(fileDir: string): Promise<MdxData | null> {
         const raw = await fs.readFile(file.filePath, 'utf-8');
         const {data, content} = matter(raw);
 
+
+        // Example usage:
+        const time = getLastCommitTime(file.filePath);
+
         return {
             name: file.name,
             filePath: file.filePath,
             content,
             frontMatter: data as PageFrontMatter,
+            timestamp: time,
+            lastUpdatedTime: formatDate(time)
         };
     } catch (error) {
         console.error(`Error reading MDX from ${fileDir}:`, error);
