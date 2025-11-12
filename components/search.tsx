@@ -128,17 +128,19 @@ export function MySearch({placeholder = "Search components...", components}: Pro
 
             <CommandDialog open={open} onOpenChange={setOpen}
                            showCloseButton={false}
-                           className="search-dialog border-4 border-slate-200 rounded-2xl overflow-hidden !max-w-[800px] bg-white">
+                           className="search-dialog !max-w-[800px] overflow-hidden !bg-transparent px-2 border-none [&_.bg-popover]:bg-transparent">
 
-                <SearchInput
-                    placeholder={placeholder}
-                    query={query}
-                    onQueryChange={setQuery}
-                />
+                <div className="border-4 border-slate-200 rounded-2xl bg-white">
+                    <SearchInput
+                        placeholder={placeholder}
+                        query={query}
+                        onQueryChange={setQuery}
+                    />
 
-                <CommandList className="h-96">
-                    <SearchContent/>
-                </CommandList>
+                    <CommandList className="h-96">
+                        <SearchContent/>
+                    </CommandList>
+                </div>
 
             </CommandDialog>
         </>

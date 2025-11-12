@@ -210,7 +210,7 @@
 }
 
 .nextra-navbar {
-    z-index:9999;
+    z-index:49;
 }
 article {
     @apply relative max-w-[1100px] mx-auto;
