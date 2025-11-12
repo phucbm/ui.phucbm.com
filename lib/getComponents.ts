@@ -8,6 +8,7 @@ export interface Component {
     description: string;
     mdx: MdxData;
     registry: RegistryItem | null;
+    isNew: boolean;
 }
 
 export async function getComponents(componentsDir: string = "content/components"): Promise<Component[]> {
@@ -26,12 +27,16 @@ export async function getComponents(componentsDir: string = "content/components"
             const title = mdxData.frontMatter.title || registry?.title || file.name;
             const description = mdxData.frontMatter.description || registry?.description || "";
 
+            const NEW_DAYS_MS = (day = 3) => day * 24 * 60 * 60 * 1000; // 259200000
+            const isNew = Date.now() - mdxData.createdTimestamp < NEW_DAYS_MS(7); // created in <= 3 days
+
             return {
                 title,
                 name: file.name,
                 description,
                 mdx: mdxData,
                 registry: registry ?? null,
+                isNew
             } as Component;
         })
     );

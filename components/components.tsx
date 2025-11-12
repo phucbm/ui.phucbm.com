@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {Cards} from "nextra/components";
 import {getComponents} from "@/lib/getComponents";
 
 type Props = {};
@@ -8,14 +7,15 @@ export async function Components(props: Props): Promise<React.ReactElement> {
     const components = await getComponents();
 
     return (
-        <Cards>
+        <div className="grid grid-cols-3 gap-5">
             {components.map(component => (
-                <Cards.Card
-                    key={component.name}
-                    title={component.title}
-                    href=""
-                />
+                <div className="px-border p-2 bg-accent">
+                    <div>{component.title}</div>
+                    <div>{component.mdx.createdTime}</div>
+                    <div>{component.mdx.lastUpdatedTime}</div>
+                    <div>{component.isNew ? "NEW" : ""}</div>
+                </div>
             ))}
-        </Cards>
+        </div>
     );
 }

@@ -3,6 +3,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import {getLastCommitTime} from "@/lib/getLastCommitTime";
 import {formatDate} from "@/lib/formatDate";
+import {getCreatedTime} from "@/lib/getFileCreatedTime";
 
 export interface MdxFile {
     name: string;
@@ -23,8 +24,12 @@ export interface MdxData {
     filePath: string;
     content: string;
     frontMatter: PageFrontMatter;
+    /** last updated time */
     timestamp: number;
     lastUpdatedTime: string;
+    /** created time */
+    createdTimestamp: number;
+    createdTime: string;
 }
 
 /**
@@ -103,6 +108,7 @@ export async function getMdxData(fileDir: string): Promise<MdxData | null> {
 
         // Example usage:
         const time = getLastCommitTime(file.filePath);
+        const createdTime = getCreatedTime(file.filePath);
 
         return {
             name: file.name,
@@ -110,7 +116,9 @@ export async function getMdxData(fileDir: string): Promise<MdxData | null> {
             content,
             frontMatter: data as PageFrontMatter,
             timestamp: time,
-            lastUpdatedTime: formatDate(time)
+            lastUpdatedTime: formatDate(time),
+            createdTimestamp: createdTime,
+            createdTime: formatDate(createdTime)
         };
     } catch (error) {
         console.error(`Error reading MDX from ${fileDir}:`, error);
