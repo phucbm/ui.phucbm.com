@@ -8,6 +8,8 @@ export interface Component {
     description: string;
     isNew: boolean | string;
     url: string;
+    category?: string;
+    tags?: string[];
     mdx: MdxData;
     registry: RegistryItem | null;
 }
@@ -37,6 +39,8 @@ export async function getComponents(componentsDir: string = "content/components"
                 isNew: isNew ? `${daysAgo}d ago` : false,
                 url: mdxData.dir.replace('content', ''),
                 description,
+                category: mdxData.frontMatter.category || '',
+                tags: mdxData.frontMatter.tags,
                 mdx: mdxData,
                 registry: registry ?? null,
             } as Component;
