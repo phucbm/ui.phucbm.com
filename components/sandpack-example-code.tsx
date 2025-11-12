@@ -1,4 +1,4 @@
-import {RegistryItem} from "@/lib/getRegistryItem";
+import {RegistryItem} from "shadcn/schema";
 import {SandpackCodeEditor, SandpackLayout, SandpackProvider, SandpackProviderProps} from "@codesandbox/sandpack-react";
 import {getSandpackFiles} from "@/lib/getSandpackFiles";
 import {aquaBlue} from "@codesandbox/sandpack-themes";

@@ -1,4 +1,4 @@
-import {RegistryItem} from "@/lib/getRegistryItem";
+import {RegistryItem} from "shadcn/schema";
 import {
     SandpackCodeEditor,
     SandpackFileExplorer,

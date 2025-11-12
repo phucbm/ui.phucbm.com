@@ -1,5 +1,5 @@
 import {CodeItem} from "@/components/code-block-view";
-import {RegistryItem} from "@/lib/getRegistryItem";
+import {RegistryItem} from "shadcn/schema";
 import {getCodeItemFromPath} from "@/lib/getCodeItemFromPath";
 
 /**

@@ -1,4 +1,4 @@
-import {RegistryItem} from "@/lib/getRegistryItem";
+import {RegistryItem} from "shadcn/schema";
 import {getCodeItemFromPath} from "@/lib/getCodeItemFromPath";
 import path from "path";
 import {SandpackFiles} from "@codesandbox/sandpack-react";
