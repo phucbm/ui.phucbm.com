@@ -10,7 +10,7 @@ export async function Components(props: Props): Promise<React.ReactElement> {
     return (
         <div className="grid grid-cols-3 gap-5">
             {components.map(component => (
-                <div className="px-border p-2 bg-accent">
+                <div key={component.name} className="px-border p-2 bg-accent">
                     <Link href={component.url}>
                         <div>{component.title}</div>
                         <div>{component.mdx.createdTime}</div>

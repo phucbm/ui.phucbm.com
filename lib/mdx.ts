@@ -106,8 +106,7 @@ export async function getMdxData(fileDir: string): Promise<MdxData | null> {
         const raw = await fs.readFile(file.filePath, 'utf-8');
         const {data, content} = matter(raw);
 
-
-        // Example usage:
+        // time
         const time = getLastCommitTime(file.filePath);
         const createdTime = getCreatedTime(file.filePath);
 

@@ -6,7 +6,7 @@ export interface Component {
     title: string;
     name: string;
     description: string;
-    isNew: boolean;
+    isNew: boolean | string;
     url: string;
     mdx: MdxData;
     registry: RegistryItem | null;
@@ -28,13 +28,13 @@ export async function getComponents(componentsDir: string = "content/components"
             const title = mdxData.frontMatter.title || registry?.title || file.name;
             const description = mdxData.frontMatter.description || registry?.description || "";
 
-            const NEW_DAYS_MS = (day = 3) => day * 24 * 60 * 60 * 1000; // 259200000
-            const isNew = Date.now() - mdxData.createdTimestamp < NEW_DAYS_MS(7); // created in <= 3 days
+            const daysAgo = Math.round((Date.now() - mdxData.createdTimestamp) / (1000 * 60 * 60 * 24));
+            const isNew = daysAgo <= 7; // new is created in <= 7 days
 
             return {
                 title,
                 name: file.name,
-                isNew,
+                isNew: isNew ? `${daysAgo}d ago` : false,
                 url: mdxData.dir.replace('content', ''),
                 description,
                 mdx: mdxData,
