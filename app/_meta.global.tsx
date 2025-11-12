@@ -7,7 +7,10 @@ export default {
     components: {
         type: 'doc',
         title: 'Components',
-        items: COMPONENTS
+        items: {
+            'index': 'Components',
+            ...COMPONENTS
+        }
     },
     dev: {
         type: 'page',
