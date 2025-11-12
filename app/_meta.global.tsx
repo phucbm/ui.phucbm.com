@@ -8,7 +8,9 @@ export default {
         type: 'doc',
         title: 'Components',
         items: {
-            'index': 'Components',
+            'index': {
+                display: 'hidden'
+            },
             ...COMPONENTS
         }
     },
