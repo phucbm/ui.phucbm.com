@@ -21,11 +21,11 @@ export const generateMetadata = generatePageMetadata(async(props) => {
 
     const canonicalPath = params.mdxPath ? `/${params.mdxPath.join('/')}` : '/';
 
-    const description = metadata.description ?? registry.description ?? _metadata.description;
+    const description = metadata.description ?? registry?.description ?? _metadata.description;
 
     let title = `${metadata.title} - ${_metadata.siteName}`;
-    if(metadata.description || registry.description){
-        title = `${metadata.title}: ${metadata.description || registry.description}`;
+    if(metadata.description || registry?.description){
+        title = `${metadata.title}: ${metadata.description || registry?.description}`;
     }
 
     if(canonicalPath === '/'){
