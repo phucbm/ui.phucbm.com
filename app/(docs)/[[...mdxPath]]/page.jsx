@@ -16,7 +16,9 @@ export const generateMetadata = generatePageMetadata(async(props) => {
     let registry = {};
     if(params.mdxPath){
         const name = Array.from(metadata.filePath.split('/')).pop().split('.')[0];
-        registry = await getRegistryItem(name);
+        if(name !== 'index'){
+            registry = await getRegistryItem(name);
+        }
     }
 
     const canonicalPath = params.mdxPath ? `/${params.mdxPath.join('/')}` : '/';

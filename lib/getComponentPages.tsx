@@ -1,15 +1,8 @@
 import {MetaRecord} from "nextra";
 import * as React from "react";
-import {getRegistryItem} from "@/lib/getRegistryItem";
 import {IconDeviceGamepad} from "@tabler/icons-react";
-import {getComponents} from "@/lib/getComponents";
-
-interface PageFrontMatter {
-    category?: string;
-    description?: string;
-    title?: string;
-    order?: number;
-}
+import {Component, getComponents} from "@/lib/getComponents";
+import {PageFrontMatter} from "@/lib/mdx";
 
 interface GroupedPages {
     [category: string]: Array<{
@@ -68,7 +61,10 @@ export async function getComponentPages(componentsDir: string = 'content/compone
 
         // Add pages
         for (const page of sortedPages) {
-            result[page.name] = await customPageTitle(page.name, page.frontMatter);
+            const component = components.find(c => c.name === page.name);
+            if (component) {
+                result[page.name] = CustomPageTitle(component);
+            }
         }
     }
 
@@ -78,13 +74,12 @@ export async function getComponentPages(componentsDir: string = 'content/compone
 /**
  * Custom page title renderer with description
  */
-async function customPageTitle(pageName: string, frontMatter: PageFrontMatter): Promise<React.ReactElement> {
-    const registry = await getRegistryItem(pageName);
-    const isPlayground = frontMatter['tags'] && Array.from(frontMatter['tags']).includes('playground');
+function CustomPageTitle(component: Component): React.ReactElement {
+    const isPlayground = component.mdx.frontMatter?.tags && Array.from(component.mdx.frontMatter.tags).includes('playground');
 
     return (
         <div className="flex justify-between gap-2 [aside_&]:pr-[40px] relative w-full">
-            <div>{frontMatter.title || registry.title}</div>
+            <div>{component.title}</div>
             <div className="hidden [aside_&]:flex absolute top-0 right-0 bottom-0 w-[40px] items-center justify-end">
                 {isPlayground && <IconDeviceGamepad className="w-5 text-brand"/>}
             </div>

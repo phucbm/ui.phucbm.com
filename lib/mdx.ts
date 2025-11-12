@@ -12,6 +12,7 @@ export interface MdxFile {
 
 export interface PageFrontMatter {
     category?: string;
+    tags?: string[];
     description?: string;
     title?: string;
     order?: number;
@@ -79,6 +80,8 @@ export async function getMdxFiles(dir: string = 'content/components'): Promise<M
         if (!match) continue;
 
         const basename = match[1]; // e.g. 'text-ripple'
+        if (basename === 'index') continue; // skip index.mdx
+
         const resolved = await getMdxFile(path.join(dir, basename));
         if (resolved) results.push(resolved);
     }
