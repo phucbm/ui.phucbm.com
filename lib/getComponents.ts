@@ -31,7 +31,7 @@ export async function getComponents(componentsDir: string = "content/components"
             const description = mdxData.frontMatter.description || registry?.description || "";
 
             const daysAgo = Math.round((Date.now() - mdxData.createdTimestamp) / (1000 * 60 * 60 * 24));
-            const isNew = daysAgo <= 7; // new is created in <= 7 days
+            const isNew = daysAgo <= 1; // new is created in <= 7 days
 
             return {
                 title,
