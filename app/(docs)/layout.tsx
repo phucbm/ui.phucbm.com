@@ -5,7 +5,7 @@ import {Metadata} from "next";
 import {IconBrandDiscord} from "@tabler/icons-react";
 import {MyFooter} from "@/components/footer";
 import {MySearch} from "@/components/search";
-import {getComponents} from "@/lib/getComponents";
+import {getPagesFromPageMap} from "@/lib/getPagesFromPageMap";
 
 export const metadata: Metadata = {
     title: {
@@ -26,12 +26,13 @@ const navbar = (
 )
 
 export default async function RootLayout({children}) {
-    const components = await getComponents();
+    const pageMap = await getPageMap();
+
     return (
         <Layout
             // banner={banner}
             navbar={navbar}
-            pageMap={await getPageMap()}
+            pageMap={pageMap}
             footer={<MyFooter/>}
             editLink={null}
             feedback={{
@@ -40,7 +41,7 @@ export default async function RootLayout({children}) {
                 </div>,
                 link: "https://discord.gg/HnWtpWQRTt"
             }}
-            search={<MySearch components={components}/>}
+            search={<MySearch pages={getPagesFromPageMap(pageMap)}/>}
         >
             <div className="p-docs-container relative z-[1]">
                 {children}

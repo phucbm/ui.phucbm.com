@@ -8,15 +8,20 @@ import {SearchIcon} from "lucide-react";
 import {Command as CommandPrimitive} from "cmdk";
 import {cn} from "@/lib/utils";
 import Link from "next/link";
-import {Component} from "@/lib/getComponents";
 import {useRouter} from "next/navigation";
+import {SearchWelcomePages} from "@/components/search-welcome-pages";
+
+interface PageItem {
+    title: string;
+    url: string;
+}
 
 type Props = {
     placeholder?: string;
-    components: Component[]
+    pages?: PageItem[];
 };
 
-export function MySearch({placeholder = "Search components...", components}: Props) {
+export function MySearch({placeholder = "Search components...", pages = []}: Props) {
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState("");
@@ -116,7 +121,7 @@ export function MySearch({placeholder = "Search components...", components}: Pro
 
 
     function SearchContent() {
-        if (!query) return <SearchWelcome components={components} onSelect={handleResultClick}/>;
+        if (!query) return <SearchWelcomePages pages={pages} onSelect={handleResultClick}/>;
         if (error) return <SearchError message={error}/>;
         if (loading) return <SearchLoading/>;
         if (!results || results.length === 0) return <SearchNoResults/>;
@@ -213,22 +218,6 @@ function SearchError({message}: { message: string }) {
 
 function SearchNoResults() {
     return <CommandEmpty>No results found.</CommandEmpty>;
-}
-
-function SearchWelcome({components, onSelect}: { components: Component[], onSelect: (url: string) => void }) {
-    return (
-        <CommandGroup heading={`Components`}>
-            {components.map(component => (
-                <SearchItem
-                    key={component.name}
-                    url={component.url}
-                    title={component.title}
-                    description={component.description}
-                    onSelect={() => onSelect(component.url)}
-                />
-            ))}
-        </CommandGroup>
-    );
 }
 
 function SearchResultItem({subResult, parentTitle, query, onSelect}: {
