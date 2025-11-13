@@ -1,37 +1,52 @@
-export function getPagesFromPageMap(pageMapArray: any[], parentTitle?: string): any[] {
-    // Extract metadata from the first item
+export interface PageItem {
+    title: string;
+    url: string;
+    name?: string;
+    parent?: string;
+    description?: string;
+}
+
+export async function getPagesFromPageMap({
+                                              pageMapArray,
+                                              parentTitle,
+                                              filterItem,
+                                          }: {
+    pageMapArray: any[];
+    parentTitle?: string;
+    filterItem?: (item: PageItem) => PageItem | Promise<PageItem>;
+}): Promise<PageItem[]> {
     const metaData = pageMapArray[0]?.data || {};
+    const results: PageItem[] = [];
 
-    // Process all items except the first one (which is metadata)
-    return pageMapArray
-        .slice(1) // Skip the first item (metadata)
-        .filter((item: any) => {
-            // Skip items without route
-            if (!item.route) return false;
+    for (const item of pageMapArray.slice(1)) {
+        if (!item.route) continue;
+        const itemMeta = metaData[item.name];
+        if (itemMeta?.display === 'hidden') continue;
+        if (item.display === 'hidden') continue;
 
-            // Check if this item is marked as hidden in metadata
-            const itemMeta = metaData[item.name];
-            if (itemMeta?.display === 'hidden') return false;
+        let itemValue: PageItem = {
+            title: item.title,
+            url: item.route,
+            name: item.name,
+            description: item.description,
+            parent: parentTitle,
+        };
 
-            // Skip display:hidden from item itself
-            return item.display !== 'hidden';
-        })
-        .flatMap((item: any) => {
-            const result = [];
+        if (filterItem) {
+            itemValue = await filterItem(itemValue);
+        }
 
-            // Add the page itself
-            result.push({
-                title: item.title,
-                url: item.route,
-                parent: parentTitle
+        results.push(itemValue);
+
+        if (item.children && Array.isArray(item.children)) {
+            const childPages = await getPagesFromPageMap({
+                pageMapArray: item.children,
+                parentTitle: itemValue.title,
+                filterItem,
             });
+            results.push(...childPages);
+        }
+    }
 
-            // If item has children, recursively process them
-            if (item.children && Array.isArray(item.children)) {
-                const childPages = getPagesFromPageMap(item.children, item.title);
-                result.push(...childPages);
-            }
-
-            return result;
-        });
+    return results;
 }

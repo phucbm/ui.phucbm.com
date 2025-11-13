@@ -5,7 +5,8 @@ import {Metadata} from "next";
 import {IconBrandDiscord} from "@tabler/icons-react";
 import {MyFooter} from "@/components/footer";
 import {MySearch} from "@/components/search";
-import {getPagesFromPageMap} from "@/lib/getPagesFromPageMap";
+import {getPagesFromPageMap, PageItem} from "@/lib/getPagesFromPageMap";
+import {getRegistryItem} from "@/lib/getRegistryItem";
 
 export const metadata: Metadata = {
     title: {
@@ -28,6 +29,19 @@ const navbar = (
 export default async function RootLayout({children}) {
     const pageMap = await getPageMap();
 
+    const pages = await getPagesFromPageMap({
+        pageMapArray: pageMap,
+        filterItem: async (item) => {
+            const registry = await getRegistryItem(item.name);
+
+            return {
+                ...item,
+                description: registry?.description || item.description
+            } as PageItem;
+        }
+    });
+
+
     return (
         <Layout
             // banner={banner}
@@ -41,7 +55,7 @@ export default async function RootLayout({children}) {
                 </div>,
                 link: "https://discord.gg/HnWtpWQRTt"
             }}
-            search={<MySearch pages={getPagesFromPageMap(pageMap)}/>}
+            search={<MySearch pages={pages}/>}
         >
             <div className="p-docs-container relative z-[1]">
                 {children}

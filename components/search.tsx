@@ -7,19 +7,14 @@ import {addBasePath} from 'next/dist/client/add-base-path';
 import {SearchIcon} from "lucide-react";
 import {Command as CommandPrimitive} from "cmdk";
 import {cn} from "@/lib/utils";
-import Link from "next/link";
 import {useRouter} from "next/navigation";
-
-interface PageItem {
-    title: string;
-    url: string;
-    parent?: string;
-}
+import {PageItem} from "@/lib/getPagesFromPageMap";
 
 type Props = {
     placeholder?: string;
     pages?: PageItem[];
 };
+type OnSelect = (url: string) => void;
 
 export function MySearch({placeholder = "Search components...", pages = []}: Props) {
     const router = useRouter();
@@ -67,10 +62,13 @@ export function MySearch({placeholder = "Search components...", pages = []}: Pro
     }, [open]);
 
     useEffect(() => {
+        let active = true;
         const handleSearch = async (value: string) => {
             if (!value) {
+                if (!active) return;
                 setResults([]);
                 setError("");
+                setLoading(false);
                 return;
             }
 
@@ -80,6 +78,7 @@ export function MySearch({placeholder = "Search components...", pages = []}: Pro
                 try {
                     await importPagefind();
                 } catch (err) {
+                    if (!active) return;
                     setError("Failed to load search index.");
                     setLoading(false);
                     return;
@@ -87,14 +86,19 @@ export function MySearch({placeholder = "Search components...", pages = []}: Pro
             }
 
             try {
-                const response = await window.pagefind.debouncedSearch<PagefindResult>(value);
-                if (!response) return;
+                const response = await window.pagefind!.debouncedSearch<PagefindResult>(value);
+                if (!active) return;
+                if (!response) {
+                    setResults([]);
+                    setLoading(false);
+                    return;
+                }
 
                 const data = await Promise.all(response.results.map(o => o.data()));
 
                 const processedResults = data.map(newData => ({
                     ...newData,
-                    sub_results: newData.sub_results.map(r => {
+                    sub_results: (newData.sub_results || []).map(r => {
                         const url = r.url.replace(/\.html$/, '').replace(/\.html#/, '#');
                         return {...r, url};
                     })
@@ -104,19 +108,23 @@ export function MySearch({placeholder = "Search components...", pages = []}: Pro
                 setLoading(false);
                 setError("");
             } catch (err) {
+                if (!active) return;
                 setError("Search failed.");
                 setLoading(false);
             }
         };
 
         handleSearch(query);
+        return () => {
+            active = false;
+        };
     }, [query]);
 
     if (!canRender) return null;
 
     const handleResultClick = (url: string) => {
-        router.push(url);
         setOpen(false);
+        router.push(url);
     };
 
 
@@ -125,8 +133,9 @@ export function MySearch({placeholder = "Search components...", pages = []}: Pro
         if (error) return <SearchError message={error}/>;
         if (loading) return <SearchLoading/>;
         if (!results || results.length === 0) return <SearchNoResults/>;
-        return <SearchResults results={results} query={query} onResultClick={handleResultClick}/>;
+        return <SearchResults results={results} query={query} onSelect={handleResultClick}/>;
     }
+
     return (
         <>
             <SearchTrigger placeholder={placeholder} onClick={() => setOpen(true)}/>
@@ -142,7 +151,7 @@ export function MySearch({placeholder = "Search components...", pages = []}: Pro
                         onQueryChange={setQuery}
                     />
 
-                    <CommandList className="h-96">
+                    <CommandList className="h-96" aria-label="Search results list">
                         <SearchContent/>
                     </CommandList>
                 </div>
@@ -156,7 +165,7 @@ function SearchWelcomePages(
     {pages = [], onSelect}:
     {
         pages: PageItem[],
-        onSelect?: (url: string) => void
+        onSelect?: OnSelect
     }) {
     if (pages.length === 0) {
         return null;
@@ -164,29 +173,22 @@ function SearchWelcomePages(
 
     return (
         <CommandGroup heading="Pages">
-            {pages.map(({title, url, parent}) => (
-                <CommandItem onSelect={onSelect} value={title}>
-                    {parent && (
-                        <>
-                            <div className="parent-page text-muted-foreground text-xs">{parent}</div>
-                            <div className="text-muted-foreground text-xs">/</div>
-                        </>
-                    )}
-                    <div>
-                        <Link href={url} className="flex flex-col gap-1 w-full">
-                            <div className="font-semibold">{title}</div>
-                        </Link>
-                    </div>
-                </CommandItem>
+            {pages.map(({title, url, parent, description}) => (
+                <SearchItem
+                    key={url}
+                    value={title}
+                    title={title}
+                    parent={parent}
+                    onSelect={onSelect}
+                    description={description}
+                />
             ))}
         </CommandGroup>
     );
 }
 
 function SearchInput({
-                         placeholder,
-                         query,
-                         onQueryChange,
+                         placeholder, query, onQueryChange,
                      }: {
     placeholder: string;
     query: string;
@@ -254,13 +256,13 @@ function SearchResultItem({subResult, parentTitle, query, onSelect}: {
     subResult: PagefindResult['sub_results'][0];
     parentTitle: string;
     query: string;
-    onSelect: () => void
+    onSelect: OnSelect
 }) {
-    const cleanExcerpt = subResult.excerpt.replace(/<[^>]*>/g, '').substring(0, 100);
+    const cleanExcerpt = (subResult.excerpt || '').replace(/<[^>]*>/g, '').substring(0, 100);
 
     return (
         <SearchItem url={subResult.url}
-                    title={highlightQuery(subResult.title, query)}
+                    title={highlightQuery(subResult.title || '', query)}
                     description={<>{highlightQuery(cleanExcerpt, query)}...</>}
                     onSelect={onSelect}
                     value={`${parentTitle} ${subResult.title}`}
@@ -268,29 +270,38 @@ function SearchResultItem({subResult, parentTitle, query, onSelect}: {
     );
 }
 
-function SearchItem({url, title, description, onSelect, value}: {
-    url: string;
+function SearchItem({url, title, description, onSelect, value, parent}: {
+    url?: string;
+    parent?: string;
     title: any | string;
     description: any | string;
-    onSelect?: () => void;
+    onSelect?: OnSelect;
     value?: string;
 }) {
     return (
         <CommandItem onSelect={onSelect} value={value}>
-            <Link href={url} className="flex flex-col gap-1 w-full">
-                <div className="font-semibold">{title}</div>
+            <div className="flex flex-col gap-1 w-full">
+                <div className="flex items-center gap-1">
+                    {parent && (
+                        <>
+                            <span className="text-xs text-muted-foreground">{parent}</span>
+                            <span className="text-xs text-muted-foreground">/</span>
+                        </>
+                    )}
+                    <div className="font-semibold">{title}</div>
+                </div>
                 <div className="text-xs text-gray-600">
                     {description}
                 </div>
-            </Link>
+            </div>
         </CommandItem>
     )
 }
 
-function SearchResults({results, query, onResultClick}: {
+function SearchResults({results, query, onSelect}: {
     results: PagefindResult[];
     query: string;
-    onResultClick: (url: string) => void
+    onSelect: OnSelect
 }) {
     return (
         <>
@@ -299,13 +310,13 @@ function SearchResults({results, query, onResultClick}: {
                     key={result.url}
                     heading={result.meta.title}
                 >
-                    {result.sub_results.map((subResult) => (
+                    {(result.sub_results || []).map((subResult) => (
                         <SearchResultItem
                             key={subResult.url}
                             subResult={subResult}
                             parentTitle={result.meta.title}
                             query={query}
-                            onSelect={() => onResultClick(subResult.url)}
+                            onSelect={() => onSelect(subResult.url)}
                         />
                     ))}
                 </CommandGroup>
@@ -314,10 +325,15 @@ function SearchResults({results, query, onResultClick}: {
     );
 }
 
+function escapeRegExp(s: string) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function highlightQuery(text: string, query: string) {
     if (!query) return text;
-
-    const regex = new RegExp(`(${query})`, 'gi');
+    const cleanedQuery = escapeRegExp(query.trim());
+    if (!cleanedQuery) return text;
+    const regex = new RegExp(`(${cleanedQuery})`, 'gi');
     const parts = text.split(regex);
 
     return parts.map((part, index) =>
