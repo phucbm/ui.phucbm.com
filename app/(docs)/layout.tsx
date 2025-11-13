@@ -4,9 +4,9 @@ import 'app/globals.css'
 import {Metadata} from "next";
 import {IconBrandDiscord} from "@tabler/icons-react";
 import {MyFooter} from "@/components/footer";
-import {MySearch} from "@/components/search";
 import {getPagesFromPageMap, PageItem} from "@/lib/getPagesFromPageMap";
 import {getRegistryItem} from "@/lib/getRegistryItem";
+import {NextraSearchDialog} from "@/components/nextra-search-dialog";
 
 export const metadata: Metadata = {
     title: {
@@ -55,7 +55,7 @@ export default async function RootLayout({children}) {
                 </div>,
                 link: "https://discord.gg/HnWtpWQRTt"
             }}
-            search={<MySearch pages={pages}/>}
+            search={<NextraSearchDialog pages={pages}/>}
         >
             <div className="p-docs-container relative z-[1]">
                 {children}

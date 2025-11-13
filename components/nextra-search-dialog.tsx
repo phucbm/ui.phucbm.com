@@ -1,8 +1,7 @@
 'use client'
 
-import * as React from "react";
 import {useEffect, useRef, useState} from "react";
-import {CommandDialog, CommandEmpty, CommandGroup, CommandItem, CommandList,} from "@/components/ui/command";
+import {CommandDialog, CommandEmpty, CommandGroup, CommandItem, CommandList} from "@/components/ui/command";
 import {addBasePath} from 'next/dist/client/add-base-path';
 import {SearchIcon} from "lucide-react";
 import {Command as CommandPrimitive} from "cmdk";
@@ -16,7 +15,7 @@ type Props = {
 };
 type OnSelect = (url: string) => void;
 
-export function MySearch({placeholder = "Search components...", pages = []}: Props) {
+export function NextraSearchDialog({placeholder = "Search...", pages = []}: Props) {
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState("");
@@ -173,13 +172,13 @@ function SearchWelcomePages(
 
     return (
         <CommandGroup heading="Pages">
-            {pages.map(({title, url, parent, description}) => (
+            {pages.map(({title, url, parent, description}, index) => (
                 <SearchItem
-                    key={url}
+                    key={`${url}-${index}`}
                     value={title}
                     title={title}
                     parent={parent}
-                    onSelect={onSelect}
+                    onSelect={() => onSelect(url)}
                     description={description}
                 />
             ))}
@@ -279,7 +278,7 @@ function SearchItem({url, title, description, onSelect, value, parent}: {
     value?: string;
 }) {
     return (
-        <CommandItem onSelect={onSelect} value={value}>
+        <CommandItem onSelect={() => onSelect(url)} value={value}>
             <div className="flex flex-col gap-1 w-full">
                 <div className="flex items-center gap-1">
                     {parent && (
