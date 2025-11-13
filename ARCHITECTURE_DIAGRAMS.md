@@ -89,11 +89,11 @@ postbuild: pnpm build:pagefind && pnpm build:registry
 │  ├── magnetic-example.json                                          │
 │  └── ... (one JSON per registry item)                              │
 │                                                                       │
-│  Served as: https://ui.perxel.com/r/{name}.json                    │
+│  Served as: https://ui.phucbm.com/r/{name}.json                    │
 │  Consumed by: shadcn CLI, custom UIs                                │
 │                                                                       │
 │  Example Usage:                                                      │
-│  pnpm dlx shadcn@latest add https://ui.perxel.com/r/draw-svg.json  │
+│  pnpm dlx shadcn@latest add https://ui.phucbm.com/r/draw-svg.json  │
 │                                                                       │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -138,7 +138,7 @@ public/r/draw-svg-example.json (Generated)
         "name": "draw-svg-example",
         "type": "registry:component",
         "registryDependencies": [
-            "https://ui.perxel.com/r/draw-svg.json"
+            "https://ui.phucbm.com/r/draw-svg.json"
         ],
         "files": [
             {

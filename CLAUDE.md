@@ -1,433 +1,266 @@
-# Nextra Documentation Site Architecture
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Overview
 
-This is a **Nextra-based documentation site** (Next.js 16 + Nextra 4.6.0) with a sophisticated **component registry system** for shadcn-compatible components. The site combines MDX documentation with interactive code examples using Sandpack.
+This is a Nextra-based documentation site (Next.js 16 + Nextra 4.6) with a sophisticated component registry system for shadcn-compatible components. The site combines MDX documentation with interactive code examples using Sandpack.
 
-Key Tech Stack:
-- Next.js 16.0.1 with Turbopack
-- Nextra 4.6.0 + nextra-theme-docs
-- TypeScript 5.9.3
-- Tailwind CSS 4.1.17 + PostCSS
-- React 19.2.0
-- Sandpack 2.20.0 (code editor/preview)
-- Pagefind 1.4.0 (search indexing)
+**Tech Stack:** Next.js 16, React 19, TypeScript 5.9, Nextra 4.6, Tailwind CSS 4, Sandpack 2.20, Pagefind 1.4
 
----
+## Development Commands
 
-## Architecture Layers
-
-### 1. Build System & Postbuild Process
-
-**Flow:** `pnpm build` → `next build` → `postbuild` scripts
-
-The build process has critical postbuild steps defined in `package.json`:
-
-```json
-"postbuild": "pnpm build:pagefind && pnpm build:registry",
-"build:pagefind": "pagefind --site .next/server/app --output-path public/_pagefind",
-"build:registry": "pnpm index-registry && pnpm shadcn build && pnpm clean-example-registry"
-```
-
-**Postbuild Steps:**
-1. **Pagefind**: Generates static search index from `.next/server/app`
-2. **Index Registry**: Generates `registry.json` and publishes components to `public/r/`
-3. **shadcn build**: Builds shadcn components
-4. **Clean Example Registry**: Removes temporary `.transformed.tsx` files
-
-### 2. Registry System Architecture
-
-The registry system has **three layers**:
-
-#### Layer 1: Source Registry (Development)
-- Location: `registry/phucbm/blocks/*/`
-- Structure per component:
-  ```
-  registry/phucbm/blocks/draw-svg/
-  ├── registry-item.json          (metadata)
-  ├── draw-svg.tsx                (main component)
-  ├── example.tsx                 (first example)
-  ├── example-02.tsx              (second example)
-  └── lib/                        (shared utilities)
-  ```
-
-- **registry-item.json format:**
-  ```json
-  {
-    "$schema": "https://ui.shadcn.com/schema/registry-item.json",
-    "name": "draw-svg",
-    "type": "registry:component",
-    "title": "Draw SVG",
-    "description": "...",
-    "dependencies": ["react", "gsap", "@gsap/react"],
-    "files": [
-      {
-        "path": "registry/phucbm/blocks/draw-svg/draw-svg.tsx",
-        "type": "registry:component",
-        "target": "components/phucbm/draw-svg.tsx"
-      }
-    ]
-  }
-  ```
-
-- **Key Conventions:**
-  - Component files must match their parent directory name
-  - Example files: `example.tsx`, `example-01.tsx`, `example-02.tsx` etc.
-  - Files without explicit relative paths are resolved relative to the registry-item.json's directory
-
-#### Layer 2: Registry Indexing (Build Time)
-- Script: `scripts/index-registry.ts`
-- Processes: All `registry-item.json` files
-- Generates: `registry.json` (aggregated registry) + `public/r/*.json` (individual items)
-
-**How index-registry.ts Works:**
-
-1. **Discovery Phase**: Walks `registry/` directory finding all `registry-item.json` files
-2. **Normalization Phase**: For each item:
-   - Normalizes file paths from relative to absolute
-   - Discovers example files (`example.tsx`, `example-*.tsx`)
-3. **Transformation Phase**: For each example file:
-   - Creates a copy with `.transformed.tsx` extension
-   - Rewrites imports from registry paths to target paths
-   - Example: `@/registry/phucbm/blocks/draw-svg/draw-svg` → `@/components/phucbm/draw-svg`
-4. **Generation Phase**: Creates example registry items:
-   - Name: `{base-name}-example` or `{base-name}-example-{suffix}`
-   - Files: Single example file with target `index.tsx`
-   - Dependencies: References the base component via `registryDependencies`
-5. **Deduplication & Output**: 
-   - Dedupes by name (last one wins)
-   - Sorts alphabetically
-   - Writes to `registry.json`
-
-**Environment Variables** (from `.env.local`):
-```
-NEXT_PUBLIC_SITE_URL=http://localhost:3000    # Dev URL
-NEXT_PUBLIC_LIVE_SITE_URL=https://ui.perxel.com  # Production URL
-NEXT_PUBLIC_REGISTRY_FOLDER=r                 # Folder in public/
-```
-
-#### Layer 3: Published Registry (Runtime)
-- Location: `public/r/*.json`
-- Contains:
-  - `registry.json` - Main registry index
-  - Individual component JSONs (e.g., `draw-svg.json`, `draw-svg-example.json`)
-  - Each includes full `content` field with transpiled source code
-
-**Important:** These files are served statically and can be consumed by shadcn CLI:
 ```bash
-pnpm dlx shadcn@latest add https://ui.perxel.com/r/draw-svg.json
+# Development
+pnpm dev                    # Start dev server with Turbopack
+
+# Building
+pnpm build                  # Full build (Next.js + postbuild steps)
+pnpm start                  # Production server
+
+# Registry Operations
+pnpm index-registry         # Generate registry.json and publish to public/r/
+pnpm index-registry:dry     # Preview registry generation (no write)
+pnpm clean-example-registry # Remove temp .transformed.tsx files
+
+# Individual Build Steps (normally run via postbuild)
+pnpm build:pagefind        # Generate search index
+pnpm build:registry        # Build registry (index + shadcn + clean)
 ```
 
-### 3. Content Structure
+## Architecture Overview
 
-Two directories for MDX documentation:
+### Three-Layer Registry System
 
-#### Documentation Files
-- Location: `content/components/` (production) + `content-draft/` (drafts)
-- Format: `.mdx` files with YAML frontmatter
-- Example structure:
-  ```
-  content/components/
-  ├── index.mdx              (overview page)
-  ├── draw-svg.mdx          (per-component page)
-  ├── magnetic.mdx
-  └── ...
-  ```
+The core architecture revolves around a registry system with three distinct layers:
 
-#### Frontmatter Schema
+**Layer 1: Source Registry** (`registry/phucbm/blocks/`)
+- Each component has its own directory with:
+  - `registry-item.json` - Metadata and configuration
+  - `{name}.tsx` - Main component file (must match directory name)
+  - `example.tsx`, `example-02.tsx`, etc. - Example files
+  - `lib/` - Optional shared utilities
+
+**Layer 2: Build-Time Processing** (`scripts/index-registry.ts`)
+- Discovers all `registry-item.json` files
+- Transforms import paths from registry paths to target paths
+  - From: `@/registry/phucbm/blocks/draw-svg/draw-svg`
+  - To: `@/components/phucbm/draw-svg`
+- Creates separate registry items for each example file
+  - Base: `my-component`
+  - Examples: `my-component-example`, `my-component-example-02`
+- Generates `registry.json` (aggregated) and individual JSON files
+
+**Layer 3: Published Registry** (`public/r/`)
+- Static JSON files served at runtime
+- Each includes full transpiled source code in `content` field
+- Consumable via: `pnpm dlx shadcn@latest add https://ui.phucbm.com/r/{name}.json`
+
+### Build Pipeline
+
+```
+pnpm build
+  ↓
+next build (generates .next/)
+  ↓
+postbuild (automatic)
+  ↓
+  ├─ build:pagefind → Creates search index in public/_pagefind/
+  └─ build:registry → index-registry + shadcn build + clean
+```
+
+**Critical:** Changes to components require a full `pnpm build` to regenerate the registry.
+
+### Content Structure
+
+**MDX Documentation:**
+- `content/components/*.mdx` - Production docs
+- `content-draft/*.mdx` - Draft documentation
+
+**Frontmatter Schema:**
 ```yaml
 ---
-category: "SVG"           # For sidebar grouping
-tags: ["playground", "svg"]  # Metadata
-description: "..."        # Optional override
-order: 1                   # Sort order in category
+category: "SVG"              # Sidebar grouping
+tags: ["playground", "svg"]  # Metadata/filtering
+description: "..."           # Optional override
+order: 1                     # Sort order in category
 ---
 ```
 
-#### MDX Utilities (`lib/mdx.ts`)
-- `getMdxFiles(dir)` - List all MDX files in directory
-- `getMdxData(fileDir)` - Read single MDX file with frontmatter + timestamps
-- `getMdxFile(fileDir)` - Resolve MDX file by directory path
-- Uses `gray-matter` to parse YAML frontmatter
-- Tracks file creation/update times via git
-
-### 4. App Router & Page Routing
-
-#### Root Layout
-- File: `app/layout.tsx`
-- Sets up HTML structure, metadata, analytics
-- Imports globals CSS
-
-#### Docs Layout
-- File: `app/(docs)/layout.tsx`
-- Renders Nextra `Layout` component with:
-  - Navbar: Logo, branding, navigation
-  - Footer: Custom footer component
-  - Sidebar: Auto-generated from `_meta.global.tsx`
-  - Search: Custom search component with registry awareness
-  - Page map: Generated by `getPageMap()` (Nextra function)
-
-#### Dynamic Page Handler
-- File: `app/(docs)/[[...mdxPath]]/page.jsx`
-- Uses catch-all route: `[[...mdxPath]]` matches any depth
-- Key functions:
-  - `generateStaticParams()` - Generates static paths for all content
-  - `generateMetadata()` - Per-page SEO metadata
-  - Uses Nextra's `importPage()` to load MDX files
-  - Fetches registry item for component pages
-  - Renders copy-to-clipboard buttons for component pages
-
-#### Sidebar Navigation (`_meta.global.tsx`)
-- Dynamically generates Nextra meta structure
+**Sidebar Generation:**
+- Auto-generated from MDX files via `app/(docs)/_meta.global.tsx`
 - Uses `getComponentPages()` to read all component files
 - Organizes by category with separators
-- Shows "new" badge for recently created components
-- Shows "playground" icon for interactive components
+- Shows "new" badge for recently created components (<7 days)
 
-### 5. Custom MDX Components
+### App Router Structure
 
+```
+app/
+├── layout.tsx                          # Root layout
+├── (docs)/
+│   ├── layout.tsx                     # Nextra layout wrapper
+│   ├── _meta.global.tsx              # Sidebar navigation config
+│   └── [[...mdxPath]]/page.jsx       # Catch-all MDX handler
+```
+
+**Key Route Features:**
+- `[[...mdxPath]]` matches any depth for MDX files
+- `generateStaticParams()` creates static paths for all content
+- Uses Nextra's `importPage()` to load MDX dynamically
+- Fetches registry data for component pages
+
+### Interactive Demo System
+
+**RegistryDemo Flow:**
+1. MDX contains: `<RegistryDemo name="draw-svg"/>`
+2. Server component fetches registry item from disk
+3. `getSandpackFiles()` prepares file map with transformed imports
+4. `<SandpackDemo />` client component renders Sandpack editor
+5. Preview wrapped in `<RegistryPreview />` with resize controls
+
+**Sandpack File Preparation:**
+- `/App.tsx` - Example code (transformed imports)
+- `/{target-path}` - Component files (transformed imports)
+- `/tsconfig.json` - Auto-generated build config
+
+## Key Files Reference
+
+### Configuration
+- `next.config.mjs` - Nextra config, search enabled, MDX options
+- `tsconfig.json` - Path aliases (`@/*` → project root)
+- `components.json` - shadcn config (New York style, Lucide icons)
+- `.env.local` - Environment variables (NEXT_PUBLIC_SITE_URL, etc.)
+
+### Scripts
+- `scripts/index-registry.ts` - Registry builder (discovery → transformation → output)
+- `scripts/clean-example-registry.ts` - Removes `.transformed.tsx` temp files
+
+### Core Libraries
+- `lib/mdx.ts` - MDX file discovery/loading with gray-matter
+- `lib/getComponents.ts` - Aggregates MDX + registry data
+- `lib/getSandpackFiles.ts` - Prepares files for Sandpack editor
+- `lib/getComponentPages.tsx` - Generates sidebar structure
+- `lib/getRegistryItem.ts` - Loads registry items from disk
+
+### Custom MDX Components
 Registered in `mdx-components.tsx`:
-- `RegistryDemo` - Interactive Sandpack editor (server component)
-- `RegistryInstall` - Copy-paste install commands
-- `RegistryPropsTable` - Renders component props table
-- `RegistryExample` - Shows specific example
-- `OpenInV0Button` - Opens component in v0.dev
-- `Components` - Custom component list
-- Plus Nextra defaults (Callout, etc.)
+- `<RegistryDemo />` - Interactive Sandpack editor
+- `<RegistryInstall />` - Copy-paste install commands
+- `<RegistryPropsTable />` - Auto-generates props table from TypeScript
+- `<RegistryExample />` - Shows specific example variant
+- `<OpenInV0Button />` - Opens component in v0.dev
 
-### 6. Interactive Demo System
+## Adding a New Component
 
-#### RegistryDemo Flow
-1. **Server Component** (`components/registry-demo.tsx`):
-   - Accepts: name, height, exampleFileName, etc.
-   - Fetches: Registry item for the component
-   - Returns: `<SandpackDemo />` client component
-
-2. **Sandpack Setup** (`components/sandpack-demo.tsx`):
-   - Uses `getSandpackFiles()` to prepare files
-   - Sets up Sandpack provider with theme
-   - Includes code editor, file explorer, preview
-   - Wraps preview in resizable `RegistryPreview`
-
-3. **File Preparation** (`lib/getSandpackFiles.ts`):
-   - Reads all registry files from disk
-   - Transforms imports: registry paths → target paths
-   - Creates file map for Sandpack:
-     - `/App.tsx` - Example code (transformed)
-     - `/{target}` - Registry files (transformed)
-     - `/tsconfig.json` - Build config (auto-generated)
-
-4. **Registry Preview** (`components/registry-preview.tsx`):
-   - Client component with ResizablePanel
-   - Shows responsive width indicator
-   - Supports resizable/non-resizable modes
-   - Height customizable via props
-
-### 7. Build Time Data Loading
-
-Key helpers in `lib/`:
-
-- `getRegistryItem(name)` - Loads `registry/phucbm/blocks/{name}/registry-item.json`
-- `getRegistryUrl({name})` - Constructs `{SITE_URL}/r/{name}.json`
-- `getComponents()` - Loads all MDX + registry items in parallel
-- `getComponentPages()` - Generates Nextra meta structure
-- `getCodeItemFromPath()` - Reads source files from disk
-- `getSandpackFiles()` - Prepares files for Sandpack editor
-
-All use static imports or Node.js `fs` APIs - only run at build/server time.
-
-### 8. Search System
-
-- **Pagefind**: Full-text search index built post-build
-- **Custom Search UI** (`components/search.tsx`):
-  - Integrates with Pagefind index
-  - Shows registry items + documentation pages
-  - Links to both component pages and registry URLs
-
----
-
-## Development Workflow
-
-### Adding a New Component
-
-1. **Create registry item:**
+1. **Create registry structure:**
    ```bash
    mkdir -p registry/phucbm/blocks/my-component
+   cd registry/phucbm/blocks/my-component
    ```
 
-2. **Add registry-item.json:**
+2. **Add `registry-item.json`:**
    ```json
    {
+     "$schema": "https://ui.shadcn.com/schema/registry-item.json",
      "name": "my-component",
      "type": "registry:component",
      "title": "My Component",
-     "description": "...",
+     "description": "Component description",
      "dependencies": ["react"],
-     "files": [
-       {
-         "path": "registry/phucbm/blocks/my-component/my-component.tsx",
-         "type": "registry:component",
-         "target": "components/phucbm/my-component.tsx"
-       }
-     ]
+     "files": [{
+       "path": "registry/phucbm/blocks/my-component/my-component.tsx",
+       "type": "registry:component",
+       "target": "components/phucbm/my-component.tsx"
+     }]
    }
    ```
 
-3. **Add component files:**
-   - `my-component.tsx` - Main component
+3. **Create component files:**
+   - `my-component.tsx` - Main component (name must match directory)
    - `example.tsx` - Default example
-   - `example-02.tsx` - Optional additional examples
+   - `example-02.tsx` - Additional examples (optional)
 
-4. **Add documentation:**
+4. **Add MDX documentation:**
    ```bash
    cat > content/components/my-component.mdx << 'EOF'
    ---
    category: "Category Name"
-   tags: ["tag1", "tag2"]
+   tags: ["tag1"]
    ---
-   
+
    # My Component
-   
+
    <RegistryDemo name="my-component"/>
    <RegistryInstall name="my-component"/>
    <RegistryPropsTable name="my-component"/>
    EOF
    ```
 
-5. **Build & test:**
+5. **Build and verify:**
    ```bash
-   pnpm build
-   # Registry files appear in public/r/
-   pnpm dev
-   # Component appears in sidebar and is searchable
+   pnpm build                    # Generates public/r/my-component.json
+   pnpm dev                      # Component appears in sidebar
    ```
 
-### Running Registry Indexing
+## Important Patterns
 
-Manual commands:
-```bash
-pnpm index-registry          # Generate registry.json
-pnpm index-registry:dry      # Preview (no write)
-pnpm clean-example-registry  # Clean temp files
-```
-
----
-
-## Key Files Reference
-
-### Configuration
-- `next.config.mjs` - Nextra config, search enabled, code highlighting
-- `tsconfig.json` - Path alias: `@/*` maps to project root
-- `components.json` - shadcn config (New York style, Lucide icons)
-- `.env.local` - Environment variables for URLs
-
-### Scripts
-- `scripts/index-registry.ts` - Main registry builder
-- `scripts/clean-example-registry.ts` - Cleanup transformed files
-
-### Components
-- `mdx-components.tsx` - MDX component registry
-- `components/registry-*.tsx` - Registry UI components
-- `components/sandpack-demo.tsx` - Interactive editor wrapper
-
-### Content & Data
-- `content/components/` - MDX documentation
-- `content-draft/` - Draft documentation
-- `registry/phucbm/blocks/` - Source components
-- `public/r/` - Published registry JSONs
-
-### Utilities
-- `lib/mdx.ts` - MDX file discovery/loading
-- `lib/getComponents.ts` - Aggregates MDX + registry
-- `lib/getSandpackFiles.ts` - Prepares code for editor
-- `lib/getComponentPages.tsx` - Generates sidebar structure
-
----
-
-## Important Patterns & Conventions
-
-### 1. Registry Item Naming
+### Registry Item Naming Convention
 - Base component: `{name}`
-- Examples: `{name}-example`, `{name}-example-01`, `{name}-example-02`
+- First example: `{name}-example`
+- Additional: `{name}-example-01`, `{name}-example-02`
 
-### 2. File Organization
-- Components organized by namespace: `phucbm/blocks/`, `phucbm/lib/`
-- Target paths standardize: `components/phucbm/{name}.tsx`
-- All paths use forward slashes (POSIX) internally
+### Import Path Transformation
+Example files are automatically transformed during build:
+- **Source:** `import { DrawSvg } from "@/registry/phucbm/blocks/draw-svg/draw-svg"`
+- **Published:** `import { DrawSvg } from "@/components/phucbm/draw-svg"`
 
-### 3. Import Path Transformation
-When example files are published:
-- **Before:** `@/registry/phucbm/blocks/draw-svg/draw-svg.tsx`
-- **After:** `@/components/phucbm/draw-svg.tsx`
+This ensures Sandpack can resolve imports correctly.
 
-This allows Sandpack to work with the transformed paths.
-
-### 4. Registry Dependencies
-Example items reference their base via:
+### Registry Dependencies
+Example items automatically reference their base component:
 ```json
-"registryDependencies": ["https://ui.perxel.com/r/draw-svg.json"]
+"registryDependencies": ["https://ui.phucbm.com/r/draw-svg.json"]
 ```
 
-This chains component installations in shadcn.
+### File Path Resolution
+Paths in `registry-item.json` without explicit relative prefixes are resolved relative to the JSON file's directory.
 
-### 5. Markdown Metadata
-- Uses YAML frontmatter (gray-matter)
-- `category` field controls sidebar grouping
-- `tags` field enables filtering/search
-- `order` field controls sort within category
+## Environment Variables
 
-### 6. Component Props Table
-`<RegistryPropsTable name="draw-svg"/>` - Auto-generates props documentation from TypeScript types.
-
----
+Located in `.env.local`:
+```
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_LIVE_SITE_URL=https://ui.phucbm.com
+NEXT_PUBLIC_REGISTRY_FOLDER=r
+```
 
 ## Build Artifacts
 
 After `pnpm build`:
-
 ```
-.next/                          # Next.js build output
-public/r/                       # Published registry
-├── registry.json              # Main index
-├── draw-svg.json              # Component registry item
-├── draw-svg-example.json      # Example variant
-└── ... (all components)
+.next/                      # Next.js build output
+public/r/                   # Published registry
+├── registry.json          # Main index
+├── {name}.json           # Component registry items
+└── {name}-example.json   # Example variants
 
-public/_pagefind/              # Search index
-├── pagefind-entry.json
-└── ... (search files)
-
-registry/phucbm/blocks/*/
-└── *.transformed.tsx          # Temp files (cleaned by postbuild)
+public/_pagefind/          # Search index
+registry/**/*.transformed.tsx  # Temp files (auto-cleaned)
 ```
 
----
+## Key Architecture Insights
 
-## Key Insights for Modifications
+1. **Registry is Build-Time:** All registry logic runs during build. Component changes require `pnpm build`.
 
-1. **Registry System is Build-Time**: All registry logic runs during build, outputs to `public/r/`. Changes to components require rebuilds.
+2. **Dual Data Sources:** Components have both MDX files (documentation) and registry items (code/examples). These must be kept in sync manually.
 
-2. **Example Files are Transformed**: The `.transformed.tsx` files are intermediates - they get published to `public/r/` with full code embedded, then deleted.
+3. **Example Transformation:** Example files are copied, imports are rewritten, and published as separate registry items with the main component as a dependency.
 
-3. **Dynamic Sidebar**: Sidebar is generated from `content/components/` structure + MDX frontmatter. No manual navigation needed.
+4. **Dynamic Sidebar:** Navigation is auto-generated from `content/components/` structure and MDX frontmatter. No manual configuration needed.
 
-4. **Dual Input Sources**: Components have both:
-   - **MDX files** (documentation, display)
-   - **Registry items** (code, examples, metadata)
-   
-   These are kept in sync manually.
-
-5. **Sandpack Integration**: Interactive editor reads files from disk at build time and embeds them. Each example is a self-contained registry item.
-
-6. **Search is Dual**: 
+5. **Search is Dual:**
    - Pagefind indexes MDX content (full-text search)
-   - Registry items are manually searchable via custom search UI
+   - Custom search UI shows registry items
 
----
-
-## Next Steps for Development
-
-- Review `scripts/index-registry.ts` to understand import path transformation logic
-- Check `lib/getSandpackFiles.ts` for file preparation details
-- Examine `components/sandpack-demo.tsx` for Sandpack configuration
-- Test registry publishing with `pnpm dlx shadcn@latest add`
+6. **Sandpack Integration:** Interactive editor embeds transformed files at build time. Each example is self-contained.

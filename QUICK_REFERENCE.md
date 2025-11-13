@@ -61,7 +61,7 @@ pnpm tsc --noEmit                # Check TypeScript (no emit)
 
 ```env
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
-NEXT_PUBLIC_LIVE_SITE_URL=https://ui.perxel.com
+NEXT_PUBLIC_LIVE_SITE_URL=https://ui.phucbm.com
 NEXT_PUBLIC_REGISTRY_FOLDER=r
 ```
 
