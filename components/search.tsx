@@ -9,11 +9,11 @@ import {Command as CommandPrimitive} from "cmdk";
 import {cn} from "@/lib/utils";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
-import {SearchWelcomePages} from "@/components/search-welcome-pages";
 
 interface PageItem {
     title: string;
     url: string;
+    parent?: string;
 }
 
 type Props = {
@@ -152,6 +152,36 @@ export function MySearch({placeholder = "Search components...", pages = []}: Pro
     );
 }
 
+function SearchWelcomePages(
+    {pages = [], onSelect}:
+    {
+        pages: PageItem[],
+        onSelect?: (url: string) => void
+    }) {
+    if (pages.length === 0) {
+        return null;
+    }
+
+    return (
+        <CommandGroup heading="Pages">
+            {pages.map(({title, url, parent}) => (
+                <CommandItem onSelect={onSelect} value={title}>
+                    {parent && (
+                        <>
+                            <div className="parent-page text-muted-foreground text-xs">{parent}</div>
+                            <div className="text-muted-foreground text-xs">/</div>
+                        </>
+                    )}
+                    <div>
+                        <Link href={url} className="flex flex-col gap-1 w-full">
+                            <div className="font-semibold">{title}</div>
+                        </Link>
+                    </div>
+                </CommandItem>
+            ))}
+        </CommandGroup>
+    );
+}
 
 function SearchInput({
                          placeholder,
