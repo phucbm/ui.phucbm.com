@@ -4,7 +4,8 @@
       "Bash(find:*)",
       "Bash(cat:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(pnpm index-registry:*)"
     ],
     "deny": [],
     "ask": []

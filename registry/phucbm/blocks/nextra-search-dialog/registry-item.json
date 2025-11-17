@@ -1,0 +1,32 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "nextra-search-dialog",
+  "type": "registry:component",
+  "title": "Nextra Search Dialog",
+  "description": "A search dialog component integrated with Pagefind for documentation sites. Features search input, result filtering, and navigation.",
+  "dependencies": [
+    "react",
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "command",
+    "kbd"
+  ],
+  "files": [
+    {
+      "path": "registry/phucbm/blocks/nextra-search-dialog/nextra-search-dialog.tsx",
+      "type": "registry:component",
+      "target": "components/nextra-search-dialog.tsx"
+    },
+    {
+      "path": "registry/phucbm/lib/getPagesFromPageMap.ts",
+      "type": "registry:lib",
+      "target": "lib/getPagesFromPageMap.ts"
+    },
+    {
+      "path": "registry/phucbm/lib/utils.ts",
+      "type": "registry:lib",
+      "target": "lib/utils.ts"
+    }
+  ]
+}
