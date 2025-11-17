@@ -1,14 +1,14 @@
 'use client'
 
 import {useEffect, useRef, useState} from "react";
-import {CommandDialog, CommandEmpty, CommandGroup, CommandItem, CommandList} from "@/components/ui/command";
 import {addBasePath} from 'next/dist/client/add-base-path';
+import {useRouter} from "next/navigation";
+import {cn} from "@/registry/phucbm/lib/utils";
+import {PageItem} from "@/registry/phucbm/lib/getPagesFromPageMap";
 import {SearchIcon} from "lucide-react";
 import {Command as CommandPrimitive} from "cmdk";
-import {cn} from "@/lib/utils";
-import {useRouter} from "next/navigation";
-import {PageItem} from "@/lib/getPagesFromPageMap";
 import {Kbd} from "@/components/ui/kbd";
+import {CommandDialog, CommandEmpty, CommandGroup, CommandItem, CommandList} from "@/components/ui/command";
 
 type Props = {
     placeholder?: string;

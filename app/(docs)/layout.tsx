@@ -4,9 +4,9 @@ import 'app/globals.css'
 import {Metadata} from "next";
 import {IconBrandDiscord} from "@tabler/icons-react";
 import {MyFooter} from "@/components/footer";
-import {getPagesFromPageMap, PageItem} from "@/lib/getPagesFromPageMap";
 import {getRegistryItem} from "@/lib/getRegistryItem";
-import {NextraSearchDialog} from "@/components/nextra-search-dialog";
+import {NextraSearchDialog} from "@/registry/phucbm/blocks/nextra-search-dialog/nextra-search-dialog";
+import {getPagesFromPageMap, PageItem} from "@/registry/phucbm/lib/getPagesFromPageMap";
 
 export const metadata: Metadata = {
     title: {
@@ -30,7 +30,7 @@ export default async function RootLayout({children}) {
     const pageMap = await getPageMap();
 
     const pages = await getPagesFromPageMap({
-        pageMapArray: pageMap,
+        pageMap: pageMap,
         filterItem: async (item) => {
             const registry = await getRegistryItem(item.name);
 
@@ -61,5 +61,6 @@ export default async function RootLayout({children}) {
                 {children}
             </div>
         </Layout>
+
     )
 }

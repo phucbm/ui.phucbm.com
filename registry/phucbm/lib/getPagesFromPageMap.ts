@@ -7,18 +7,18 @@ export interface PageItem {
 }
 
 export async function getPagesFromPageMap({
-                                              pageMapArray,
+                                              pageMap,
                                               parentTitle,
                                               filterItem,
                                           }: {
-    pageMapArray: any[];
+    pageMap: any[];
     parentTitle?: string;
     filterItem?: (item: PageItem) => PageItem | Promise<PageItem>;
 }): Promise<PageItem[]> {
-    const metaData = pageMapArray[0]?.data || {};
+    const metaData = pageMap[0]?.data || {};
     const results: PageItem[] = [];
 
-    for (const item of pageMapArray.slice(1)) {
+    for (const item of pageMap.slice(1)) {
         if (!item.route) continue;
         const itemMeta = metaData[item.name];
         if (itemMeta?.display === 'hidden') continue;
@@ -40,7 +40,7 @@ export async function getPagesFromPageMap({
 
         if (item.children && Array.isArray(item.children)) {
             const childPages = await getPagesFromPageMap({
-                pageMapArray: item.children,
+                pageMap: item.children,
                 parentTitle: itemValue.title,
                 filterItem,
             });

@@ -1,0 +1,83 @@
+---
+category: "Nextra"
+tags: ["nextra"]
+---
+
+# Nextra Search Dialog
+
+A search dialog component integrated with Pagefind for documentation sites. Features search input, result filtering, and navigation.
+
+Live demo at https://nextra.phucbm.com/
+
+![nextra-search-dialog](/images/nextra-search-dialog.gif)
+
+## Installation
+
+<Steps>
+    ### Step 1
+
+    <RegistryInstall name="nextra-search-dialog"/>
+
+    ### Step 2
+
+    Add search bar into your site.
+
+    ```tsx
+    import {getPageMap} from "nextra/page-map";
+    import {NextraSearchDialog} from "@/components/nextra-search-dialog";
+    import {getPagesFromPageMap} from "@/lib/getPagesFromPageMap";
+    ```
+
+    ```tsx
+    <NextraSearchDialog pages={await getPagesFromPageMap({pageMap: await getPageMap()})}/>
+    ```
+</Steps>
+
+## Examples
+
+### Nextra Docs Theme
+Replace the default Nextra search with this component in `layout.tsx`
+
+```tsx
+export default async function RootLayout({children}) {
+    const pageMap = await getPageMap();
+
+    const pages = await getPagesFromPageMap({
+        pageMap: pageMap,
+        // Modify the items if needed
+        filterItem: async (item) => {
+            console.log('item', item);
+            return {
+                ...item,
+            } as PageItem;
+        }
+    });
+
+
+    return (
+        <Layout
+            // banner={banner}
+            navbar={navbar}
+            pageMap={pageMap}
+            search={<NextraSearchDialog pages={pages}/>}
+        >
+            {children}
+        </Layout>
+
+    )
+}
+```
+
+### Nextra Blog Theme
+
+Put `<NextraSearchDialog/>` anywhere you want.
+
+```tsx
+import {getPageMap} from "nextra/page-map";
+import {NextraSearchDialog} from "@/components/nextra-search-dialog";
+import {getPagesFromPageMap} from "@/lib/getPagesFromPageMap";
+```
+
+```tsx
+<NextraSearchDialog pages={await getPagesFromPageMap({pageMap: await getPageMap()})}/>
+```
