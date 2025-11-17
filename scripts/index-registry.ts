@@ -34,6 +34,15 @@ interface RegistryItem {
     files?: RegistryFile[];
 }
 
+interface ExampleMetadata {
+    $schema?: string;
+    type?: string;
+    title?: string;
+    description?: string;
+    dependencies?: string[];
+    registryDependencies?: string[];
+}
+
 interface RegistryRoot {
     $schema: string;
     name: string;
@@ -153,6 +162,16 @@ async function transformImportPaths(
     return transformed;
 }
 
+async function readExampleMetadata(metadataPath: string): Promise<ExampleMetadata> {
+    try {
+        const content = await fs.readFile(metadataPath, "utf8");
+        return JSON.parse(content);
+    } catch {
+        // File doesn't exist or is invalid JSON - return empty metadata
+        return {};
+    }
+}
+
 async function generateExampleItem(
     baseItem: RegistryItem,
     exampleFileName: string,
@@ -166,6 +185,11 @@ async function generateExampleItem(
 
     // Build the example file path
     const exampleFilePath = path.join(itemDir, exampleFileName);
+
+    // Check for example metadata file (e.g., example.json, example-02.json)
+    const metadataFileName = exampleFileName.replace(/\.tsx$/, ".json");
+    const metadataPath = path.join(itemDir, metadataFileName);
+    const metadata = await readExampleMetadata(metadataPath);
 
     // Transform import paths in the example file content
     const transformedContent = await transformImportPaths(exampleFilePath, baseItem);
@@ -188,18 +212,27 @@ async function generateExampleItem(
     ];
 
     // Add base registry as registryDependencies using getRegistryUrl
+    // Merge with base component's registry dependencies and example's registry dependencies
     const registryDependencies: string[] = [
         getRegistryUrl({ name: baseItem.name }),
         ...(baseItem.registryDependencies || []),
+        ...(metadata.registryDependencies || []),
     ];
 
+    // Resolve fields: use metadata if available, otherwise use base component values
+    const resolvedSchema = metadata.$schema ?? baseItem.$schema;
+    const resolvedType = metadata.type ?? baseItem.type;
+    const resolvedTitle = metadata.title ?? `${baseItem.title || baseItem.name}${titleSuffix}`;
+    const resolvedDescription = metadata.description ?? baseItem.description;
+    const resolvedDependencies = metadata.dependencies ?? baseItem.dependencies;
+
     const exampleItem: RegistryItem = {
-        ...(baseItem.$schema && { $schema: baseItem.$schema }),
+        ...(resolvedSchema && { $schema: resolvedSchema }),
         name: `${baseItem.name}${nameSuffix}`,
-        ...(baseItem.type && { type: baseItem.type }),
-        title: `${baseItem.title || baseItem.name}${titleSuffix}`,
-        ...(baseItem.description && { description: baseItem.description }),
-        ...(baseItem.dependencies && { dependencies: [...baseItem.dependencies] }),
+        ...(resolvedType && { type: resolvedType }),
+        ...(resolvedTitle && { title: resolvedTitle }),
+        ...(resolvedDescription && { description: resolvedDescription }),
+        ...(resolvedDependencies && { dependencies: resolvedDependencies }),
         registryDependencies,
         files,
     };
