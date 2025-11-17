@@ -3,7 +3,7 @@ import {MovingBorder} from "@/registry/phucbm/blocks/moving-border/moving-border
 
 export function OpenInV0Button({url, text = "Open in"}: { url: string, text?: string }) {
     return (
-        <MovingBorder gradientWidth={50} radius={8} colors={['#179cf9']}>
+        <MovingBorder gradientWidth={50} radius={8} colors={['#179cf9']} as="span">
             <Button
                 variant="secondary"
                 size="sm"

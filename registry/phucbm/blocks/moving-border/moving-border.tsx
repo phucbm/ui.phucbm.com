@@ -1,6 +1,6 @@
 "use client";
 import * as React from 'react';
-import {useRef} from 'react';
+import {JSX, useRef} from 'react';
 import gsap from "gsap";
 import {useGSAP} from "@gsap/react";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
@@ -36,6 +36,9 @@ export type MovingBorderProps = {
 
     /** Whether to render as a perfect circle with circular path animation. @default false */
     isCircle?: boolean;
+
+    /** Tag name for the outer wrapper (e.g. 'div', 'section', 'figure', etc.). @default "div" */
+    as?: keyof JSX.IntrinsicElements;
 };
 
 export function MovingBorder({
@@ -47,9 +50,10 @@ export function MovingBorder({
                                  gradientWidth,
                                  duration = 3,
                                  colors = ["#355bd2"],
-                                 isCircle = false
+                                 isCircle = false,
+                                 as = "div",
                              }: MovingBorderProps) {
-    const scope = useRef(null);
+    const scope = useRef<HTMLElement | null>(null);
 
     // Use a large radius for perfect circle
     const effectiveRadius = isCircle ? 9999 : radius;
@@ -169,17 +173,19 @@ export function MovingBorder({
                 resizeObserver.disconnect();
             };
         },
-        {scope, dependencies: [borderWidth, effectiveRadius, gradientWidth, duration, colors, isCircle]}
+        {scope, dependencies: [borderWidth, effectiveRadius, gradientWidth, duration, colors, isCircle, as]}
     );
+
+    const Wrapper = as as any;
 
     return (
         // wrapper
-        <div ref={scope} className={cn(`wrapper relative overflow-hidden`, outerClassName)}
-             style={{
-                 ['--color' as any]: colors[0],
-                 padding: `${borderWidth}px`,
-                 borderRadius: `${effectiveRadius + borderWidth}px`,
-             }}>
+        <Wrapper ref={scope} className={cn(`wrapper relative overflow-hidden inline-block`, outerClassName)}
+                 style={{
+                     ['--color' as any]: colors[0],
+                     padding: `${borderWidth}px`,
+                     borderRadius: `${effectiveRadius + borderWidth}px`,
+                 }}>
 
             {/* moving gradient*/}
             <div className="moving-gradient aspect-square absolute top-0 left-0" style={{width: `${borderWidth}px`}}>
@@ -199,6 +205,6 @@ export function MovingBorder({
                  }}>
                 {children}
             </div>
-        </div>
+        </Wrapper>
     );
 }
