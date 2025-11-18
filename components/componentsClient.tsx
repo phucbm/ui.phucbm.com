@@ -10,9 +10,11 @@ import {cn} from "@/lib/utils";
 type Props = {
     components: Component[];
     availableTags: string[];
+    max?: number;
+    totalCount?: number;
 };
 
-export function ComponentsClient({ components, availableTags }: Props) {
+export function ComponentsClient({ components, availableTags, max = 9, totalCount = 0 }: Props) {
     const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
 
     // On mount, read hash from URL and initialize selected tags
@@ -48,6 +50,14 @@ export function ComponentsClient({ components, availableTags }: Props) {
         });
     }, [components, selectedTags]);
 
+    // Limit displayed components to max
+    const displayedComponents = useMemo(() => {
+        return filteredComponents.slice(0, max);
+    }, [filteredComponents, max]);
+
+    // Check if there are more components than max
+    const hasMore = filteredComponents.length > max;
+
     // Dynamic tag counts based on currently filtered components
     const tagCounts = useMemo(() => {
         const counts: Record<string, number> = {};
@@ -70,7 +80,11 @@ export function ComponentsClient({ components, availableTags }: Props) {
 
     return (
         <div className="space-y-6">
-            <div className="heading-2">Showing {filteredComponents.length} components</div>
+            <div className="flex items-center justify-between">
+                <div className="heading-2">
+                    {hasMore ? `Showing ${displayedComponents.length} out of ${filteredComponents.length} components` : `Showing ${filteredComponents.length} components`}
+                </div>
+            </div>
 
             {/* Filter Section */}
             <div className="flex flex-wrap items-center gap-2">
@@ -111,7 +125,7 @@ export function ComponentsClient({ components, availableTags }: Props) {
 
             {/* Components Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredComponents.map(component => (
+                {displayedComponents.map(component => (
                     <Link
                         key={component.name}
                         href={component.url}
@@ -138,6 +152,15 @@ export function ComponentsClient({ components, availableTags }: Props) {
                     </Link>
                 ))}
             </div>
+
+            {hasMore && (
+                <Link
+                    href="/components"
+                    className="px-4 py-2 text-sm font-medium rounded-md border border-border hover:border-primary hover:bg-accent transition-colors"
+                >
+                    View all components
+                </Link>
+            )}
         </div>
     );
 }
