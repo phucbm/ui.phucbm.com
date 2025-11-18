@@ -1,9 +1,7 @@
 import {MetaRecord} from "nextra";
-import * as React from "react";
-import {IconDeviceGamepad} from "@tabler/icons-react";
-import {Component, getComponents} from "@/lib/getComponents";
+import {getComponents} from "@/lib/getComponents";
 import {PageFrontMatter} from "@/lib/mdx";
-import {Tooltip} from "@/components/tooltip";
+import {SidebarCustomItem} from "@/components/sidebar-custom-item";
 
 interface GroupedPages {
     [category: string]: Array<{
@@ -64,33 +62,10 @@ export async function getComponentPages(componentsDir: string = 'content/compone
         for (const page of sortedPages) {
             const component = components.find(c => c.name === page.name);
             if (component) {
-                result[page.name] = CustomPageTitle(component);
+                result[page.name] = SidebarCustomItem(component);
             }
         }
     }
 
     return result;
-}
-
-/**
- * Custom page title renderer with description
- */
-function CustomPageTitle(component: Component): React.ReactElement {
-    const isPlayground = component.mdx.frontMatter?.tags && Array.from(component.mdx.frontMatter.tags).includes('playground');
-
-    return (
-        <div className="flex justify-between gap-2 relative w-full">
-            <div>{component.title}</div>
-            <div className="hidden [aside_&]:flex items-center gap-2">
-                {isPlayground && <IconDeviceGamepad className="w-5 text-brand"/>}
-                {component.isNew &&
-                    <Tooltip tooltip={component.isNew}>
-                        <div
-                            className="text-xs bg-green-200 px-border border-green-500 px-1 pb-0.5 font-mono rounded-[2px] text-gray-900">new
-                        </div>
-                    </Tooltip>
-                }
-            </div>
-        </div>
-    );
 }
