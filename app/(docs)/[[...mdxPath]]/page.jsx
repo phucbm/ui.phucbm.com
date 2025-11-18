@@ -10,7 +10,7 @@ export const generateStaticParams = generateStaticParamsFor('mdxPath')
 
 export const generateMetadata = generatePageMetadata(async(props) => {
     const params = await props.params;
-    if(!params.mdxPath) return {};
+    if(!params.mdxPath) return {..._metadata};
     const {metadata} = await importPage(params.mdxPath)
 
     let registry = {};
@@ -30,9 +30,14 @@ export const generateMetadata = generatePageMetadata(async(props) => {
         title = `${metadata.title}: ${metadata.description || registry?.description}`;
     }
 
+    let socialImage = {
+        title: metadata.title,
+    };
+
     if(canonicalPath === '/'){
         // homepage
-        title = `${_metadata.siteName}: ${_metadata.description}`
+        title = `${_metadata.siteName}: ${_metadata.description}`;
+        socialImage = null;
     }
 
     return {
@@ -40,9 +45,7 @@ export const generateMetadata = generatePageMetadata(async(props) => {
         title,
         canonicalPath,
         description,
-        socialImage: {
-            title: metadata.title,
-        },
+        socialImage,
     };
 });
 

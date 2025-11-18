@@ -24,8 +24,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
       '@phucbm/next-og-image':
-        specifier: ^1.0.1
-        version: 1.0.1(next@16.0.1(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: ^2.0.0
+        version: 2.0.0(next@16.0.1(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@phucbm/ripple-effect':
         specifier: ^1.0.0
         version: 1.0.0
@@ -1116,8 +1116,8 @@ packages:
     resolution: {integrity: sha512-irUvI0xdypRw9S8aBN6A5qJw8YvttHhA41kF6ZFyoeMhLmVRZ1VkLX5bDlWd8r86OTlaQiCXWXi5VswvciMLJQ==}
     engines: {node: '>=16'}
 
-  '@phucbm/next-og-image@1.0.1':
-    resolution: {integrity: sha512-FFv/PXisrIyb1XSN3LCEIU+4KJ5dLtRaJ6nc2ks4huirn+DeprQky8CKzBKSyQrtw/zHPatB4pqxQZ4oVuJgcA==}
+  '@phucbm/next-og-image@2.0.0':
+    resolution: {integrity: sha512-XuBsdpuxOrYp1bz/iZ3w25lZlC1ivNNqcv4X7aPXg1nRGzeePFd2c1bFka1WVckb3le+TK2qIlQYz0Ffl9ea0g==}
     peerDependencies:
       next: '>=13.4.0'
       react: '>=18.2.0'
@@ -6304,7 +6304,7 @@ snapshots:
     dependencies:
       '@phucbm/lerp': 1.0.1
 
-  '@phucbm/next-og-image@1.0.1(next@16.0.1(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+  '@phucbm/next-og-image@2.0.0(next@16.0.1(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
       next: 16.0.1(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react: 19.2.0
