@@ -1,19 +1,18 @@
 import {Layout, Navbar} from 'nextra-theme-docs'
 import {getPageMap} from 'nextra/page-map'
 import 'app/globals.css'
-import {Metadata} from "next";
 import {IconBrandDiscord} from "@tabler/icons-react";
 import {MyFooter} from "@/components/footer";
 import {getRegistryItem} from "@/lib/getRegistryItem";
 import {NextraSearchDialog} from "@/registry/phucbm/blocks/nextra-search-dialog/nextra-search-dialog";
 import {getPagesFromPageMap, PageItem} from "@/registry/phucbm/lib/getPagesFromPageMap";
+import {generatePageMetadata} from "@phucbm/next-og-image";
+import {_metadata} from "@/lib/seo";
 
-export const metadata: Metadata = {
-    title: {
-        absolute: '',
-        template: '%s - ui/phucbm'
-    }
-}
+export const generateMetadata = generatePageMetadata({
+    ..._metadata,
+    canonicalPath: "/"
+});
 
 // const banner = <Banner storageKey="some-key">This template was created with 🩸 and 💦 by <Link href="https://github.com/phucbm">PHUCBM</Link> 🐧</Banner>
 const navbar = (

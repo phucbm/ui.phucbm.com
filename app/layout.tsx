@@ -5,7 +5,7 @@ import {_metadata} from "@/lib/seo";
 
 export const generateMetadata = generatePageMetadata({
     ..._metadata,
-    canonicalPath: "/",
+    canonicalPath: "/"
 });
 
 export default async function RootLayout({children}) {

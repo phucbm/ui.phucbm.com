@@ -4,6 +4,7 @@ export const _metadata = {
     title: "ui/phucbm",
     description: "A collection of modern React UI components with GSAP animations, built with TypeScript, Tailwind CSS, and Nextra documentation.",
     locale: "en_US",
+    imageUrl: "/og-image.jpg",
 
     // viewport
     themeColor: "#179cf9",
