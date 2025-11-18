@@ -1,0 +1,108 @@
+---
+category: "Showcase"
+tags: ["stats", "jsdelivr","playground"]
+---
+
+# jsDelivr Package Stats
+
+Display jsDelivr packages from a provided namespace and package names with real-time stats, rankings, and bandwidth usage. Perfect for showcasing your packages and their adoption metrics.
+
+<RegistryDemo name="jsdelivr" resizable={false}/>
+
+## Installation
+
+<RegistryInstall name="jsdelivr" />
+
+## Props
+
+<RegistryPropsTable name="jsdelivr" type="JsDelivrPackagesProps"/>
+
+## Usage
+
+### Basic Usage
+
+```tsx
+import JsDelivrPackages from '@/components/phucbm/jsdelivr'
+import { getJsDelivrPackages } from '@/lib/getJsDelivrPackages'
+
+export default async function ShowPackages() {
+  const packages = await getJsDelivrPackages(
+    ['draw-svg', 'cursorjs'],        // Package names
+    'phucbm',                         // GitHub namespace
+    'month',                          // Stats period: 'week' | 'month' | 'year'
+    10                                // minHits: only show packages with hits >= this
+  )
+
+  return <JsDelivrPackages packages={packages} />
+}
+```
+
+### Custom Item Renderer
+
+```tsx
+import JsDelivrPackages, { JsDelivrPackage } from '@/components/phucbm/jsdelivr'
+import { getJsDelivrPackages } from '@/lib/getJsDelivrPackages'
+
+export default async function ShowPackages() {
+  const packages = await getJsDelivrPackages(
+    ['flickity-responsive', 'cursorjs', 'scroll-snooper'],
+    'phucbm',
+    'month',
+    1
+  )
+
+  const customRenderer = (pkg: JsDelivrPackage, periodText: string) => (
+    <div className="p-4 border rounded-lg hover:bg-slate-50">
+      <div className="flex items-start justify-between">
+        <div>
+          <h4 className="font-semibold">{pkg.name}</h4>
+          <p className="text-sm text-slate-600">{pkg.description}</p>
+        </div>
+        <span className="text-blue-600 font-semibold">{pkg.hits.toLocaleString()} hits</span>
+      </div>
+      <a href={pkg.jsDelivrUrl} className="text-blue-500 text-sm hover:underline">
+        View on jsDelivr →
+      </a>
+    </div>
+  )
+
+  return (
+    <JsDelivrPackages
+      packages={packages}
+      statsPeriod="month"
+      showBandwidth={true}
+      showRankText={true}
+      renderItem={customRenderer}
+    />
+  )
+}
+```
+
+## How It Works
+
+1. **Package Names Input** – Pass an array of jsDelivr package names to display
+2. **jsDelivr API** – Fetches real-time stats for each package from the jsDelivr CDN
+3. **Data Processing** – Aggregates hits and bandwidth data for the specified time period
+4. **Sorting** – Orders packages by hits/downloads in descending order
+5. **Rendering** – Displays with configurable options and optional custom renderer
+
+All API calls are cached with 1-hour revalidation for optimal performance.
+
+## Data Sources
+
+- **jsDelivr API**: `https://data.jsdelivr.com/v1/stats/packages/gh/{namespace}/{packageName}`
+
+## Notes
+
+- Pass package names directly to display; no GitHub API calls needed
+- Fetches real-time statistics directly from jsDelivr
+- Cached responses revalidate every 1 hour
+- No rate limiting concerns with GitHub API
+
+## Interactive Example
+
+Explore jsDelivr packages from any GitHub user. Enter a username to see all public repositories and which ones are published on jsDelivr.
+
+Try **`sindresorhus`** or **`locomotivemtl`** for popular packages:
+
+<RegistryDemo name="jsdelivr" exampleFileName="example-02" codeEditor={false} resizable={false}/>

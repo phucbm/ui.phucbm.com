@@ -1,0 +1,29 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "jsdelivr",
+  "type": "registry:component",
+  "title": "jsDelivr Package Stats",
+  "description": "Display jsDelivr packages from a provided namespace and package names with real-time stats, rankings, and bandwidth usage.",
+  "dependencies": [
+    "react",
+    "@tabler/icons-react"
+  ],
+  "files": [
+    {
+      "path": "registry/phucbm/blocks/jsdelivr/jsdelivr.tsx",
+      "type": "registry:component",
+      "target": "components/phucbm/jsdelivr.tsx"
+    },
+    {
+      "path": "registry/phucbm/lib/formatOrdinal.ts",
+      "type": "registry:lib",
+      "target": "lib/formatOrdinal.ts"
+    },
+    {
+      "path": "registry/phucbm/lib/getJsDelivrPackages.ts",
+      "type": "registry:lib",
+      "target": "lib/getJsDelivrPackages.ts"
+    }
+  ]
+}
+

@@ -20,7 +20,7 @@ export async function RegistryDemo({
                                        codeEditor = true,
                                        resizable = true
                                    }: Props) {
-    const registryItem = await getRegistryItem(name);
+    const registryItem = await getRegistryItem(name, exampleFileName);
 
     return <SandpackDemo registryItem={registryItem}
                          height={height}

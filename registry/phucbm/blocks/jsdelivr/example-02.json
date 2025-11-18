@@ -1,0 +1,9 @@
+{
+  "files": [
+    {
+      "path": "registry/phucbm/lib/getPublicGithubRepos.ts",
+      "type": "registry:lib",
+      "target": "lib/getPublicGithubRepos.ts"
+    }
+  ]
+}
