@@ -1,0 +1,122 @@
+---
+category: "Showcase"
+tags: ["stats", "GitHub", "jsdelivr"]
+---
+
+# jsDelivr Package Stats
+
+Display GitHub repositories published on jsDelivr with real-time stats, rankings, and bandwidth usage. Perfect for showcasing your npm packages and their adoption metrics.
+
+## Try it Out
+
+<RegistryDemo name="jsdelivr" height={500} />
+
+## Installation
+
+<RegistryInstall name="jsdelivr" />
+
+## Props
+
+<RegistryPropsTable name="jsdelivr" type="JsDelivrPackagesProps"/>
+
+## Usage
+
+### Basic Usage
+
+```tsx
+import JsDelivrPackages from '@/components/phucbm/jsdelivr'
+
+export default function MyPackages() {
+  return (
+    <JsDelivrPackages username="phucbm" />
+  )
+}
+```
+
+### With Options
+
+```tsx
+import JsDelivrPackages from '@/components/phucbm/jsdelivr'
+
+export default function MyPackages() {
+  return (
+    <JsDelivrPackages
+      username="phucbm"
+      max={15}
+      lastUpdatedMonths={3}
+      statsPeriod="month"
+      showBandwidth={true}
+      showRankText={true}
+      minHits={100}
+    />
+  )
+}
+```
+
+### With Loading State
+
+Wrap in `Suspense` with the skeleton component for a smooth loading experience:
+
+```tsx
+'use client'
+
+import {Suspense} from 'react'
+import JsDelivrPackages, {JsDelivrPackagesSkeleton} from '@/components/phucbm/jsdelivr'
+
+export default function PackagesList() {
+  return (
+    <Suspense fallback={<JsDelivrPackagesSkeleton />}>
+      <JsDelivrPackages username="phucbm" />
+    </Suspense>
+  )
+}
+```
+
+### Custom Item Renderer
+
+Pass a custom `renderItem` prop to completely control how each package is displayed:
+
+```tsx
+import JsDelivrPackages, {JsDelivrPackage} from '@/components/phucbm/jsdelivr'
+
+export default function CustomPackages() {
+  const customRenderer = (pkg: JsDelivrPackage, periodText: string) => (
+    <div className="custom-card">
+      <a href={pkg.jsDelivrUrl}>
+        <h4>{pkg.name}</h4>
+        <p>{pkg.description}</p>
+        <small>{pkg.hits} hits {periodText}</small>
+      </a>
+    </div>
+  )
+
+  return (
+    <JsDelivrPackages
+      username="phucbm"
+      renderItem={customRenderer}
+    />
+  )
+}
+```
+
+## How It Works
+
+1. **GitHub API** – Fetches all public repositories for the given username
+2. **Filtering** – Filters repos by last updated date
+3. **jsDelivr API** – Fetches stats for each repository published on jsDelivr
+4. **Sorting** – Orders by hits/downloads in descending order
+5. **Display** – Renders with configurable options and optional custom renderer
+
+All API calls are cached with 1-hour revalidation for optimal performance.
+
+## Data Sources
+
+- **GitHub API**: `https://api.github.com/users/{username}/repos`
+- **jsDelivr API**: `https://data.jsdelivr.com/v1/stats/packages/gh/{username}/{repo}`
+
+## Notes
+
+- Requires repositories to be published on jsDelivr via GitHub CDN service
+- API calls are rate-limited; consider your GitHub and jsDelivr API quotas
+- Cached responses revalidate every 1 hour
+- Only public repositories are fetched
