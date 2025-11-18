@@ -9,7 +9,7 @@ Display GitHub repositories published on jsDelivr with real-time stats, rankings
 
 ## Try it Out
 
-<RegistryDemo name="jsdelivr" height={500} />
+<RegistryDemo name="jsdelivr" resizable={false}/>
 
 ## Installation
 
@@ -49,25 +49,6 @@ export default function MyPackages() {
       showRankText={true}
       minHits={100}
     />
-  )
-}
-```
-
-### With Loading State
-
-Wrap in `Suspense` with the skeleton component for a smooth loading experience:
-
-```tsx
-'use client'
-
-import {Suspense} from 'react'
-import JsDelivrPackages, {JsDelivrPackagesSkeleton} from '@/components/phucbm/jsdelivr'
-
-export default function PackagesList() {
-  return (
-    <Suspense fallback={<JsDelivrPackagesSkeleton />}>
-      <JsDelivrPackages username="phucbm" />
-    </Suspense>
   )
 }
 ```
