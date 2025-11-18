@@ -28,7 +28,7 @@ export interface JsDelivrPackage {
 }
 
 // Format numbers for display
-function formatNumber(num: number): string {
+export function formatNumber(num: number): string {
     if (num >= 1000000) {
         return `${(num / 1000000).toFixed(1)}M`
     }
@@ -39,7 +39,7 @@ function formatNumber(num: number): string {
 }
 
 // Format bandwidth (bytes to human readable)
-function formatBandwidth(bytes: number): string {
+export function formatBandwidth(bytes: number): string {
     if (bytes >= 1000000000) {
         return `${(bytes / 1000000000).toFixed(1)}GB`
     }
