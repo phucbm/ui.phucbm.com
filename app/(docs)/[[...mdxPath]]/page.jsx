@@ -42,9 +42,7 @@ export const generateMetadata = generatePageMetadata(async(props) => {
         description,
         socialImage: {
             title: metadata.title,
-            // description: ',
         },
-        // imageUrl: "/images/perxel.webp"
     };
 });
 

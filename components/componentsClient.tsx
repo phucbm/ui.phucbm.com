@@ -121,7 +121,7 @@ export function ComponentsClient({ components, availableTags }: Props) {
                     >
                         <div>
                             <h3 className="text-lg font-semibold mb-2">{component.title}</h3>
-                            <div>{component.description}</div>
+                            <div className="text-sm">{component.description}</div>
                         </div>
 
                         <div className="flex flex-wrap gap-1">

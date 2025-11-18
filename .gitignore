@@ -43,9 +43,10 @@ next-env.d.ts
 /.idea/.gitignore
 /.idea/modules.xml
 /.idea/php.xml
-/.idea/ui.perxel.com.iml
+/.idea/ui.phucbm.com.iml
 /.idea/vcs.xml
 
 # avoid committing generated index files
 _pagefind/
 public/r
+/.idea/ui.perxel.com.iml

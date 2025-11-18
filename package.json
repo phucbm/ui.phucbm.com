@@ -1,7 +1,7 @@
 {
   "name": "ui.phucbm.com",
   "version": "1.0.0",
-  "description": "Nextra docs starter with search included.",
+  "description": "A collection of modern React UI components with GSAP animations, built with TypeScript, Tailwind CSS, and Nextra documentation.",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -14,15 +14,15 @@
     "index-registry:dry": "tsx scripts/index-registry.ts --dry"
   },
   "repository": {
-    "type": "module",
-    "url": "https://github.com/phucbm/nextra-docs-starter"
+    "type": "git",
+    "url": "https://github.com/phucbm/ui.phucbm.com"
   },
   "author": "PHUCBM",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/phucbm/nextra-docs-starter/issues"
+    "url": "https://github.com/phucbm/ui.phucbm.com/issues"
   },
-  "homepage": "https://github.com/phucbm/nextra-docs-starter#readme",
+  "homepage": "https://github.com/phucbm/ui.phucbm.com#readme",
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.20.0",
     "@codesandbox/sandpack-themes": "^2.0.21",
