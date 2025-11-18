@@ -60,7 +60,7 @@ function DefaultItemRenderer(pkg: JsDelivrPackage, periodText: string, showRankT
             href={pkg.jsDelivrUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="block p-4 rounded-lg border border-border hover:border-primary hover:bg-accent transition-colors"
+            className="block p-4 rounded-lg border border-border hover:border-primary hover:bg-accent transition-colors bg-white"
         >
             {/* Title with badges */}
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-3">
