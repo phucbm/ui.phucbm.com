@@ -6,6 +6,8 @@ import {Tooltip} from "@/components/tooltip";
 export function SidebarCustomItem(component: Component): React.ReactElement {
     const isPlayground = component.mdx.frontMatter?.tags && Array.from(component.mdx.frontMatter.tags).includes('playground');
 
+    // temporarily disable new badge as not works as expected
+    component.isNew = false;
     return (
         <div className="flex justify-between gap-2 relative w-full">
             <div>{component.title}</div>
