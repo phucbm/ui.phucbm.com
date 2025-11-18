@@ -1,24 +1,17 @@
 import {IconActivity, IconCaretDownFilled, IconCaretUpFilled} from "@tabler/icons-react";
-import {getJsDelivrPackages} from "@/registry/phucbm/lib/getJsDelivrPackages";
 import {formatOrdinal} from "@/registry/phucbm/lib/formatOrdinal";
 
 export type JsDelivrPackagesProps = {
-    /** GitHub username to fetch repositories from */
-    username: string
-    /** Show repos updated within this many months @default 12 */
-    lastUpdatedMonths?: number
-    /** Maximum number of packages to display @default 10 */
-    max?: number
+    /** Fetched packages data */
+    packages: JsDelivrPackage[]
     /** Time period for statistics aggregation @default 'month' */
     statsPeriod?: 'week' | 'month' | 'year'
-    /** Hide packages with zero hits @default false */
-    hideZeroHits?: boolean
     /** Display bandwidth usage statistics @default false */
     showBandwidth?: boolean
     /** Show "Xth most popular" text @default true */
     showRankText?: boolean
-    /** Minimum hits required to display package @default 10 */
-    minHits?: number
+    /** Number of months used for fetching (for display message) @default 12 */
+    lastUpdatedMonths?: number
     /** Custom renderer for each package item */
     renderItem?: (pkg: JsDelivrPackage, periodText: string) => React.ReactNode
 }
@@ -120,18 +113,15 @@ function DefaultItemRenderer(pkg: JsDelivrPackage, periodText: string, showRankT
     )
 }
 
-export async function JsDelivrPackages({
-                                                   username,
-                                                   lastUpdatedMonths = 12,
-                                                   max = 10,
-                                                   statsPeriod = 'month',
-                                                   hideZeroHits = false,
-                                                   showBandwidth = false,
-                                                   showRankText = true,
-                                                   minHits = 10,
-                                                   renderItem
-                                               }: JsDelivrPackagesProps) {
-    const packages = await getJsDelivrPackages(username, lastUpdatedMonths, max, statsPeriod, hideZeroHits, minHits)
+export function JsDelivrPackages({
+                                      packages,
+                                      lastUpdatedMonths = 12,
+                                      statsPeriod = 'month',
+                                      showBandwidth = false,
+                                      showRankText = true,
+                                      renderItem
+                                  }: JsDelivrPackagesProps) {
+    console.log('render JsDelivrPackages')
 
     if (packages.length === 0) {
         return <div className="text-muted-foreground">No packages found on jsDelivr in the

@@ -13,6 +13,16 @@
       "path": "registry/phucbm/blocks/jsdelivr/jsdelivr.tsx",
       "type": "registry:component",
       "target": "components/phucbm/jsdelivr.tsx"
+    },
+    {
+      "path": "registry/phucbm/lib/formatOrdinal.ts",
+      "type": "registry:lib",
+      "target": "lib/formatOrdinal.ts"
+    },
+    {
+      "path": "registry/phucbm/lib/getJsDelivrPackages.ts",
+      "type": "registry:lib",
+      "target": "lib/getJsDelivrPackages.ts"
     }
   ]
 }

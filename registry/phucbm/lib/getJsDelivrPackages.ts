@@ -7,9 +7,10 @@ export async function getJsDelivrPackages(username: string,
                                     hideZeroHits: boolean = false,
                                     minHits: number = 10) {
     try {
+        console.log('getJsDelivrPackages')
         // First, get all GitHub repos
         const reposRes = await fetch(
-            `https://api.github.com/users/${username}/repos?type=public&sort=updated&per_page=100`,
+            `https://api.github.com/users/${username}/repos?type=public&sort=updated&per_page=${max}`,
             {
                 next: {revalidate: 3600}
             }
