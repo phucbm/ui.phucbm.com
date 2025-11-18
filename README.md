@@ -2,6 +2,8 @@
 
 A collection of modern React UI components with smooth GSAP animations. Built with TypeScript, Tailwind CSS, Next.js 16, and Nextra for a component-driven documentation experience.
 
+<img width="1624" height="1056" alt="Screenshot 2025-11-18 at 10 14 34" src="https://github.com/user-attachments/assets/72f39562-a883-4db1-a221-853967d8ebfd" />
+
 ## Features
 
 - **Production-Ready Components** – Fully reusable React components optimized for real-world projects
