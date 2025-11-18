@@ -10,7 +10,8 @@ export function OgImage(props: Props) {
             display: "flex",
             width: `100%`,
             height: `100%`,
-            borderBottom: `15px solid ${_metadata.themeColor}`
+            borderBottom: `15px solid ${_metadata.themeColor}`,
+            background:"#fff"
         }}>
             <div
                 style={{

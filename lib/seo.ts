@@ -2,7 +2,7 @@ export const _metadata = {
     baseUrl: 'https://ui.phucbm.com',
     siteName: "ui/phucbm",
     title: "ui/phucbm",
-    description: "A collection of production-ready React UI components built with GSAP animations and Tailwind CSS. Fully reusable, responsive, and easy to integrate into any project.",
+    description: "A collection of modern React UI components with GSAP animations, built with TypeScript, Tailwind CSS, and Nextra documentation.",
     locale: "en_US",
 
     // viewport
