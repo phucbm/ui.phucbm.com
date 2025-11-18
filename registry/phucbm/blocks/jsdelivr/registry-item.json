@@ -3,7 +3,7 @@
   "name": "jsdelivr",
   "type": "registry:component",
   "title": "jsDelivr Package Stats",
-  "description": "Display GitHub repositories published on jsDelivr with real-time stats, rankings, and bandwidth usage.",
+  "description": "Display jsDelivr packages from a provided namespace and package names with real-time stats, rankings, and bandwidth usage.",
   "dependencies": [
     "react",
     "@tabler/icons-react"

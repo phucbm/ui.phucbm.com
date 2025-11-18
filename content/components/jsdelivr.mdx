@@ -1,11 +1,11 @@
 ---
 category: "Showcase"
-tags: ["stats", "GitHub", "jsdelivr"]
+tags: ["stats", "jsdelivr"]
 ---
 
 # jsDelivr Package Stats
 
-Display GitHub repositories published on jsDelivr with real-time stats, rankings, and bandwidth usage. Perfect for showcasing your npm packages and their adoption metrics.
+Display jsDelivr packages from a provided namespace and package names with real-time stats, rankings, and bandwidth usage. Perfect for showcasing your packages and their adoption metrics.
 
 <RegistryDemo name="jsdelivr" resizable={false}/>
 
@@ -22,30 +22,61 @@ Display GitHub repositories published on jsDelivr with real-time stats, rankings
 ### Basic Usage
 
 ```tsx
-import JsDelivrPackages from '@/components/phucbm/jsdelivr'
+'use client'
+
+import { useEffect, useState } from 'react'
+import JsDelivrPackages, { JsDelivrPackage } from '@/components/phucbm/jsdelivr'
+import { getJsDelivrPackages } from '@/lib/getJsDelivrPackages'
 
 export default function MyPackages() {
-  return (
-    <JsDelivrPackages username="phucbm" />
-  )
+  const [packages, setPackages] = useState<JsDelivrPackage[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    getJsDelivrPackages(['package-1', 'package-2'], 'phucbm', 'month', 10)
+      .then(setPackages)
+      .catch(err => setError(err.message))
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (loading) return <div>Loading...</div>
+  if (error) return <div className="text-red-600">Error: {error}</div>
+
+  return <JsDelivrPackages packages={packages} />
 }
 ```
 
 ### With Options
 
 ```tsx
-import JsDelivrPackages from '@/components/phucbm/jsdelivr'
+'use client'
+
+import { useEffect, useState } from 'react'
+import JsDelivrPackages, { JsDelivrPackage } from '@/components/phucbm/jsdelivr'
+import { getJsDelivrPackages } from '@/lib/getJsDelivrPackages'
 
 export default function MyPackages() {
+  const [packages, setPackages] = useState<JsDelivrPackage[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getJsDelivrPackages(
+      ['flickity-responsive', 'cursorjs', 'scroll-snooper'],
+      'phucbm',
+      'week',  // or 'month', 'year'
+      50       // minHits
+    ).then(setPackages).finally(() => setLoading(false))
+  }, [])
+
+  if (loading) return <div>Loading...</div>
+
   return (
     <JsDelivrPackages
-      username="phucbm"
-      max={15}
-      lastUpdatedMonths={3}
-      statsPeriod="month"
+      packages={packages}
+      statsPeriod="week"
       showBandwidth={true}
       showRankText={true}
-      minHits={100}
     />
   )
 }
@@ -56,7 +87,7 @@ export default function MyPackages() {
 Pass a custom `renderItem` prop to completely control how each package is displayed:
 
 ```tsx
-import JsDelivrPackages, {JsDelivrPackage} from '@/components/phucbm/jsdelivr'
+import JsDelivrPackages, { JsDelivrPackage } from '@/components/phucbm/jsdelivr'
 
 export default function CustomPackages() {
   const customRenderer = (pkg: JsDelivrPackage, periodText: string) => (
@@ -71,7 +102,7 @@ export default function CustomPackages() {
 
   return (
     <JsDelivrPackages
-      username="phucbm"
+      packages={packages}
       renderItem={customRenderer}
     />
   )
@@ -80,22 +111,21 @@ export default function CustomPackages() {
 
 ## How It Works
 
-1. **GitHub API** – Fetches all public repositories for the given username
-2. **Filtering** – Filters repos by last updated date
-3. **jsDelivr API** – Fetches stats for each repository published on jsDelivr
-4. **Sorting** – Orders by hits/downloads in descending order
-5. **Display** – Renders with configurable options and optional custom renderer
+1. **Package Names Input** – Pass an array of jsDelivr package names to display
+2. **jsDelivr API** – Fetches real-time stats for each package from the jsDelivr CDN
+3. **Data Processing** – Aggregates hits and bandwidth data for the specified time period
+4. **Sorting** – Orders packages by hits/downloads in descending order
+5. **Rendering** – Displays with configurable options and optional custom renderer
 
 All API calls are cached with 1-hour revalidation for optimal performance.
 
 ## Data Sources
 
-- **GitHub API**: `https://api.github.com/users/{username}/repos`
-- **jsDelivr API**: `https://data.jsdelivr.com/v1/stats/packages/gh/{username}/{repo}`
+- **jsDelivr API**: `https://data.jsdelivr.com/v1/stats/packages/gh/{namespace}/{packageName}`
 
 ## Notes
 
-- Requires repositories to be published on jsDelivr via GitHub CDN service
-- API calls are rate-limited; consider your GitHub and jsDelivr API quotas
+- Pass package names directly to display; no GitHub API calls needed
+- Fetches real-time statistics directly from jsDelivr
 - Cached responses revalidate every 1 hour
-- Only public repositories are fetched
+- No rate limiting concerns with GitHub API

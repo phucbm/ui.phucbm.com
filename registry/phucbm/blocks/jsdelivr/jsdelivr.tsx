@@ -117,11 +117,10 @@ export function JsDelivrPackages({
                                       packages,
                                       lastUpdatedMonths = 12,
                                       statsPeriod = 'month',
-                                      showBandwidth = false,
+                                      showBandwidth = true,
                                       showRankText = true,
                                       renderItem
                                   }: JsDelivrPackagesProps) {
-    console.log('render JsDelivrPackages')
 
     if (packages.length === 0) {
         return <div className="text-muted-foreground">No packages found on jsDelivr in the
