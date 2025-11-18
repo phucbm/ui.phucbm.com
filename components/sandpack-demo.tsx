@@ -21,6 +21,7 @@ type Props = {
     exampleFileName?: string;
     codeEditor?: boolean;
     resizable?: boolean;
+    openInV0?: boolean;
 };
 
 async function SandpackDemo({
@@ -29,7 +30,8 @@ async function SandpackDemo({
                                 editorHeight = 300,
                                 exampleFileName = "example",
                                 codeEditor = true,
-                                resizable = true
+                                resizable = true,
+                                openInV0 = true,
                             }: Props) {
     const files = await getSandpackFiles({registryItem, exampleFileName});
 
@@ -76,7 +78,7 @@ async function SandpackDemo({
                                 <IconDeviceGamepad className="w-5"/> Interactive Playground
                             </div>
                             <div className="flex items-center gap-2">
-                                <OpenInV0Button text="Open in" url={exampleRegistryUrl}/>
+                                {openInV0 && <OpenInV0Button text="Open in" url={exampleRegistryUrl}/>}
                             </div>
                         </div>
                     </>

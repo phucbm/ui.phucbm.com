@@ -10,6 +10,7 @@ type Props = {
     exampleFileName?: string;
     codeEditor?: boolean;
     resizable?: boolean;
+    openInV0?: boolean;
 };
 
 export async function RegistryDemo({
@@ -18,7 +19,8 @@ export async function RegistryDemo({
                                        editorHeight,
                                        exampleFileName,
                                        codeEditor = true,
-                                       resizable = true
+                                       resizable = true,
+                                       openInV0 = true,
                                    }: Props) {
     const registryItem = await getRegistryItem(name, exampleFileName);
 
@@ -28,5 +30,6 @@ export async function RegistryDemo({
                          exampleFileName={exampleFileName}
                          codeEditor={codeEditor}
                          resizable={resizable}
+                         openInV0={openInV0}
     />;
 }
