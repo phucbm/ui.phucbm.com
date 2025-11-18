@@ -30,7 +30,7 @@ export default function Example02() {
 
             try {
                 // Fetch public repos from GitHub
-                const repos = await getPublicGithubRepos(username, 20, 12)
+                const repos = await getPublicGithubRepos(username, 50, 36)
                 setReposFound(repos.length)
 
                 if (repos.length === 0) {
@@ -43,7 +43,8 @@ export default function Example02() {
                 const packageNames = repos.map((repo: any) => repo.name)
 
                 // Fetch jsDelivr stats for those packages
-                const jsDelivrPackages = await getJsDelivrPackages(packageNames, username, 'month', 0)
+                // Only show packages with actual hits (minHits: 1)
+                const jsDelivrPackages = await getJsDelivrPackages(packageNames, username, 'month', 1)
                 setPackagesFound(jsDelivrPackages.length)
                 setPackages(jsDelivrPackages)
             } catch (err) {
@@ -58,79 +59,87 @@ export default function Example02() {
     }, [username])
 
     return (
-        <div className="space-y-6 bg-slate-50 p-6 rounded-lg">
-            {/* Input Section */}
-            <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700">GitHub Username</label>
-                <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Enter GitHub username..."
-                    className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <p className="text-xs text-slate-500">
-                    Fetches up to 20 public repositories and displays those published on jsDelivr
-                </p>
+        <div className="bg-slate-50">
+            {/* Sticky Header */}
+            <div className="sticky top-0 bg-white border-b border-slate-200 p-4 z-10">
+                <div className="flex items-end gap-4">
+                    {/* Input Section */}
+                    <div className="flex-1 relative">
+                        <label className="text-xs font-semibold text-slate-700 block mb-1">GitHub Username</label>
+                        <input
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            placeholder="Enter username..."
+                            className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <p className="text-xs text-slate-500 mt-1">
+                            Shows repos with CDN downloads on jsDelivr
+                        </p>
+
+                        {/* Loading Indicator - Absolute to prevent CLS */}
+                        {loading && (
+                            <div className="absolute right-3 top-8 text-slate-500 text-xs whitespace-nowrap">
+                                Loading...
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Stats Section */}
+                    {(reposFound > 0 || packagesFound > 0) && (
+                        <div className="flex gap-3">
+                            <div className="bg-blue-50 px-3 py-2 rounded border border-blue-200">
+                                <p className="text-blue-600 font-semibold text-sm">{reposFound}</p>
+                                <p className="text-blue-700 text-xs whitespace-nowrap">Repos</p>
+                            </div>
+                            <div className="bg-green-50 px-3 py-2 rounded border border-green-200">
+                                <p className="text-green-600 font-semibold text-sm">{packagesFound}</p>
+                                <p className="text-green-700 text-xs whitespace-nowrap">Downloads</p>
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
 
-            {/* Stats Section */}
-            {(reposFound > 0 || packagesFound > 0) && (
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div className="bg-blue-50 p-3 rounded border border-blue-200">
-                        <p className="text-blue-600 font-semibold">{reposFound}</p>
-                        <p className="text-blue-700 text-xs">Repos Found</p>
+            {/* Scrollable Content */}
+            <div className="flex-1 p-6 space-y-4">
+                {/* Error State */}
+                {error && (
+                    <div className="bg-red-50 border border-red-200 rounded p-4">
+                        <p className="text-red-600 text-sm font-semibold">Error</p>
+                        <p className="text-red-700 text-sm">{error}</p>
                     </div>
-                    <div className="bg-green-50 p-3 rounded border border-green-200">
-                        <p className="text-green-600 font-semibold">{packagesFound}</p>
-                        <p className="text-green-700 text-xs">Packages on jsDelivr</p>
+                )}
+
+                {/* Results Section */}
+                {!loading && !error && packages.length > 0 && (
+                    <div className="space-y-4">
+                        <div className="text-sm font-semibold text-slate-700">
+                            jsDelivr Packages ({packages.length})
+                        </div>
+                        <JsDelivrPackages packages={packages} statsPeriod="month" showBandwidth={true} />
                     </div>
-                </div>
-            )}
+                )}
 
-            {/* Loading State */}
-            {loading && (
-                <div className="flex items-center justify-center py-8">
-                    <div className="text-slate-600">Loading...</div>
-                </div>
-            )}
-
-            {/* Error State */}
-            {error && (
-                <div className="bg-red-50 border border-red-200 rounded p-4">
-                    <p className="text-red-600 text-sm font-semibold">Error</p>
-                    <p className="text-red-700 text-sm">{error}</p>
-                </div>
-            )}
-
-            {/* Results Section */}
-            {!loading && !error && packages.length > 0 && (
-                <div className="space-y-4">
-                    <div className="text-sm font-semibold text-slate-700">
-                        jsDelivr Packages ({packages.length})
+                {/* No Results */}
+                {!loading && !error && reposFound > 0 && packages.length === 0 && (
+                    <div className="bg-yellow-50 border border-yellow-200 rounded p-4">
+                        <p className="text-yellow-700 text-sm">
+                            Found {reposFound} repositories, but none have actual CDN downloads on jsDelivr.
+                            Repos need distributed files and active downloads to appear here.
+                        </p>
                     </div>
-                    <JsDelivrPackages packages={packages} statsPeriod="month" showBandwidth={true} />
-                </div>
-            )}
+                )}
 
-            {/* No Results */}
-            {!loading && !error && reposFound > 0 && packages.length === 0 && (
-                <div className="bg-yellow-50 border border-yellow-200 rounded p-4">
-                    <p className="text-yellow-700 text-sm">
-                        Found {reposFound} repositories, but none are published on jsDelivr.
-                        This is normal - publish your repos to jsDelivr to see them here.
-                    </p>
-                </div>
-            )}
-
-            {/* Empty State */}
-            {!loading && !error && reposFound === 0 && username.trim() && (
-                <div className="bg-slate-100 border border-slate-300 rounded p-4">
-                    <p className="text-slate-600 text-sm">
-                        No public repositories found for "{username}"
-                    </p>
-                </div>
-            )}
+                {/* Empty State */}
+                {!loading && !error && reposFound === 0 && username.trim() && (
+                    <div className="bg-slate-100 border border-slate-300 rounded p-4">
+                        <p className="text-slate-600 text-sm">
+                            No public repositories found for "{username}"
+                        </p>
+                    </div>
+                )}
+            </div>
         </div>
     )
 }
