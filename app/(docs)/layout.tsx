@@ -18,6 +18,8 @@ export const metadata: Metadata = {
 // const banner = <Banner storageKey="some-key">This template was created with 🩸 and 💦 by <Link href="https://github.com/phucbm">PHUCBM</Link> 🐧</Banner>
 const navbar = (
     <Navbar
+        projectLink="https://github.com/phucbm/ui.phucbm.com"
+        chatLink="https://discord.gg/HnWtpWQRTt"
         logo={<div className="flex items-center justify-start gap-2">
             <img src="/images/icon.svg" alt="Logo" width={30} height={30} className="h-[30px] aspect-square"/>
             <span className="font-bold">ui/phucbm</span>
@@ -48,13 +50,13 @@ export default async function RootLayout({children}) {
             navbar={navbar}
             pageMap={pageMap}
             footer={<MyFooter/>}
-            editLink={null}
             feedback={{
                 content: <div className="flex items-center gap-1">
                     Got questions? Join my <IconBrandDiscord className="w-5"/>
                 </div>,
                 link: "https://discord.gg/HnWtpWQRTt"
             }}
+            docsRepositoryBase="https://github.com/phucbm/ui.phucbm.com/tree/main"
             search={<NextraSearchDialog pages={pages}/>}
         >
             <div className="p-docs-container relative z-[1]">

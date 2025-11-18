@@ -10,7 +10,15 @@ export function SidebarCustomItem(component: Component): React.ReactElement {
         <div className="flex justify-between gap-2 relative w-full">
             <div>{component.title}</div>
             <div className="hidden [aside_&]:flex items-center gap-2">
-                {isPlayground && <IconDeviceGamepad className="w-5 text-brand"/>}
+                {isPlayground &&
+                    <Tooltip tooltip={
+                        <span className="text-[10px] w-[60px] block text-center leading-[1.05] py-0.5">
+                            Interactive playground
+                        </span>
+                    } classNameTooltip="whitespace-normal">
+                        <IconDeviceGamepad className="w-5 text-brand"/>
+                    </Tooltip>
+                }
                 {component.isNew &&
                     <Tooltip tooltip={component.isNew}>
                         <div

@@ -17,6 +17,8 @@ export interface TooltipProps {
     tooltipAlign?: TooltipAlign;
     /** Custom CSS class for the wrapper */
     className?: string;
+    /** Custom CSS class for the tooltip */
+    classNameTooltip?: string;
 }
 
 /**
@@ -33,6 +35,7 @@ export function Tooltip({
                             tooltip,
                             tooltipAlign = "top",
                             className,
+                            classNameTooltip,
                             children,
                         }: TooltipProps) {
     const id = useId();
@@ -123,9 +126,10 @@ export function Tooltip({
                         role="tooltip"
                         style={tooltipStyle}
                         className={cn(
-                            "tooltip absolute z-10 left-1/2 -translate-x-1/2 px-1 py-0.5 text-xs font-bold rounded bg-black text-white pointer-events-none whitespace-nowrap origin-center",
+                            "opacity-0 tooltip absolute z-10 left-1/2 -translate-x-1/2 px-1 py-0.5 text-xs font-bold rounded bg-black text-white pointer-events-none whitespace-nowrap origin-center",
                             tooltipAlign === "top" && "bottom-full mb-1",
-                            tooltipAlign === "bottom" && "top-full mt-1"
+                            tooltipAlign === "bottom" && "top-full mt-1",
+                            classNameTooltip
                         )}
                     >
                         {tooltip}
