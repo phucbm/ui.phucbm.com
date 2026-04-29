@@ -1,3 +1,5 @@
+> ⚠️ This project was moved to phucbm.com and deprecated.
+
 # ui.phucbm.com
 
 A collection of modern React UI components with smooth GSAP animations. Built with TypeScript, Tailwind CSS, Next.js 16, and Nextra for a component-driven documentation experience.
