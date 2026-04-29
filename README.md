@@ -1,4 +1,4 @@
-> ⚠️ This project was moved to phucbm.com and deprecated.
+> ⚠️ This project was moved to phucbm.com and archived.
 
 # ui.phucbm.com
 
